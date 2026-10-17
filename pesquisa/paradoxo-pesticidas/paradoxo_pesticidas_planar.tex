@@ -48,12 +48,16 @@ Neumann), e o pesticida é aplicado durante um intervalo de duração $\epsilon$
 temporal $\rho_\epsilon$ de suporte compacto, \emph{apenas} na zona tratada $\omega\subset\Omega$.
 O termo de aplicação é $\alpha\,\rho_\epsilon(t)\,\chi_\omega(x)\,u$, e $\Omega\setminus\omega$ é
 o refúgio, como no experimento de \cite{Lester} discutido em \cite{LiYang}. Provamos existência
-global e positividade, e estudamos o limite impulsivo $\epsilon\to0$. A borda nítida do refúgio
-muda a natureza do limite: a convergência é de ordem $\sqrt\epsilon$ em $L^1$, e essa ordem é
-ótima; logo após a aplicação o erro em $L^\infty$ não tende a zero. Uma transição suave dá ordem
-$\epsilon$. A diferença vem de uma camada limite de largura $\sqrt{D\epsilon}$ ao longo de
-$\partial\omega$, que produz uma \emph{mortalidade de borda}
-$c^*(\alpha,\varphi)\sqrt{D\epsilon}\int_{\partial\omega}u\dd\sigma$, com constante explícita.
+global e positividade, e estudamos o limite impulsivo $\epsilon\to0$ para uma família de zonas
+$\psi_\delta$ cuja borda tem largura de transição $\delta\ge0$, com $\delta=0$ a borda nítida
+$\chi_\omega$. A convergência em $L^1$ é de ordem $\epsilon/\max\{\delta,\sqrt\epsilon\}$, uniformemente
+em $\delta$: $\sqrt\epsilon$ para borda nítida, caso em que logo após a aplicação o erro em $L^\infty$
+não tende a zero, e $\epsilon/\delta$ para transição larga. As duas ordens são ótimas. A diferença vem
+de uma camada limite de largura $\sqrt{D\epsilon}$ ao longo de $\partial\omega$, que produz uma
+\emph{mortalidade de borda} $\sqrt{D\epsilon}\,c^*(\alpha,\varphi,\delta/\sqrt{D\epsilon})\int_{\partial\omega}u\dd\sigma$.
+A constante $c^*$ passa de um valor fixo (borda nítida) para $k/\lambda$ com $k$ explícito (transição
+larga). Por isso suavizar a borda reduz a mortalidade de borda mas a torna mais seletiva contra a
+espécie mais móvel: a dependência passa de $\sqrt D$ para $D$.
 Uma identidade de energia para o funcional de Lyapunov $\E=\int_\Omega V(H,P)$ mostra que o
 efeito de uma aplicação depende só das \emph{médias} de $H$ e $P$ na zona tratada. Disso saem
 o critério de instante e de dose, uma cota garantida para a densidade média da praga após a
@@ -90,7 +94,8 @@ Este texto trata o problema no plano, com três ingredientes:
 \item \textbf{aplicação de duração finita}: $\Delta$ é substituída por
 $\rho_\epsilon(t)=\epsilon^{-1}\varphi((t-T)/\epsilon)$, com $\varphi$ de suporte compacto em $[0,1]$;
 \item \textbf{refúgio}: o pesticida age só na zona tratada $\omega\subset\Omega$, por meio da
-função característica $\chi_\omega$.
+função característica $\chi_\omega$, ou de uma versão $\psi_\delta$ com transição de largura $\delta$ e
+dose variável (Seção~\ref{sec:delta}).
 \end{enumerate}
 Usamos mortalidade proporcional ($-\alpha\rho_\epsilon\chi_\omega u$), que preserva positividade.
 O termo aditivo de \eqref{eq:liyang} não preserva (Observação~\ref{obs:aditiva}).
@@ -99,15 +104,19 @@ O termo aditivo de \eqref{eq:liyang} não preserva (Observação~\ref{obs:aditiv
 \begin{itemize}
 \item Existência global, unicidade, positividade e cotas uniformes em $\epsilon$
 (Teorema~\ref{teo:existencia}).
-\item Limite impulsivo $\epsilon\to0$ (Teorema~\ref{teo:limite}). Para uma zona com transição suave a
-convergência é $O(\epsilon)$ uniforme. Para a zona com borda nítida $\chi_\omega$ ela é
-$O(\sqrt\epsilon)$ em $L^1$ e $O(\epsilon^{1/(2p)})$ em $L^p$. Essas ordens são ótimas, e em
-$t=T+\epsilon$ não há convergência em $L^\infty$ (Proposição~\ref{prop:camada}).
-\item Mortalidade de borda com constante explícita $c^*(\alpha,\varphi)$
-(Proposição~\ref{prop:camada}). Ela é proporcional a $\sqrt D$, logo penaliza mais a espécie
-mais móvel.
-\item Identidade de energia (Teorema~\ref{teo:energia}). O salto de energia de uma aplicação
-depende só das médias $\med H,\med P$ na zona tratada (Teorema~\ref{teo:salto}). Daí vêm o
+\item Limite impulsivo $\epsilon\to0$ para zonas com largura de transição $\delta$
+(Teorema~\ref{teo:limite}). O erro em $L^1$ é $O(\epsilon/\max\{\delta,\sqrt\epsilon\})$,
+uniformemente em $\delta$. Com borda nítida: $O(\sqrt\epsilon)$ em $L^1$, e em $t=T+\epsilon$ não há
+convergência em $L^\infty$. Com transição larga: $O(\epsilon/\delta)$. As duas ordens são ótimas
+(Proposições~\ref{prop:camada} e \ref{prop:regimes}).
+\item Mortalidade de borda $\sqrt{D\epsilon}\,c^*(\alpha,\varphi,\delta/\sqrt{D\epsilon})\int_{\partial\omega}u$,
+com dois regimes explícitos (Proposição~\ref{prop:regimes}): $c^*(\alpha,\varphi)$ para borda nítida e
+$k/\lambda$, $k=\alpha^2A_\varphi B_\alpha$, para transição larga. Daí vem a seletividade
+(Corolário~\ref{cor:seletividade}): a borda penaliza a espécie mais móvel na proporção $\sqrt{D_P/D_H}$
+(nítida) até $D_P/D_H$ (suave).
+\item Identidade de energia (Teorema~\ref{teo:energia}). O salto de energia de uma aplicação é uma
+integral ponderada pela dose; com borda nítida e dose constante ele depende só das médias
+$\med H,\med P$ na zona tratada (Teorema~\ref{teo:salto}). Daí vêm o
 critério de instante e de dose (Corolário~\ref{cor:limiar}) e uma cota para a média da praga
 após a última aplicação (Teorema~\ref{teo:cota}).
 \item Zona tratada ótima com área limitada: um conjunto de subnível da densidade de salto
@@ -177,9 +186,38 @@ $\partial\Omega$ não geram salto.
 \begin{observacao}[o modelo original como caso particular]
 Com $D_H=D_P=0$, dados homogêneos e $\omega=\Omega$, \eqref{eq:modelo} é a versão com mortalidade
 proporcional de \eqref{eq:liyang}. O caso aditivo $-\alpha\rho_\epsilon\chi_\omega$ é discutido na
-Observação~\ref{obs:aditiva}. A dose pode variar dentro de $\omega$, trocando $\chi_\omega$ por
-$\eta\chi_\omega$ com $\eta\in C^2(\overline\Omega)$, sem mudar nenhum resultado abaixo.
+Observação~\ref{obs:aditiva}. Dose variável e bordas com transição de largura $\delta$ são
+tratadas na Seção~\ref{sec:delta}.
 \end{observacao}
+
+\subsection{Dose variável e transição de largura $\delta$}\label{sec:delta}
+
+Na prática a borda de uma pulverização não é nítida: a deriva do produto cria uma faixa de
+transição entre zona tratada e refúgio. Seja $K\in C^\infty_c(\R^2)$ radial, $K\ge0$, $\int K=1$,
+$\operatorname{supp}K\subset B_{1/2}$, e $K_\delta=\delta^{-2}K(\cdot/\delta)$. Seja $(\chi_\omega)_\delta$ a
+regularização de \ref{H2} construída com $K_\delta$ (convolução, com as reflexões do Lema~\ref{lem:reg}(b)
+quando for o caso). Dada uma \emph{modulação de dose} $m\in C^2(\overline\Omega)$, $0\le m\le1$,
+$\partial_\nu m=0$, definimos
+\begin{equation}\label{eq:psidelta}
+\psi_\delta=m\,(\chi_\omega)_\delta\quad(\delta>0),\qquad \psi_0=m\,\chi_\omega,
+\end{equation}
+e consideramos \eqref{eq:modelo} com $\chi_\omega$ trocada por $\psi_\delta$. O parâmetro $\delta\ge0$ é a
+\emph{largura da transição}; $\delta=0$ é a borda nítida. Para o semiplano $\omega=\{x_1>0\}$,
+\[
+(\chi_\omega)_\delta(x)=\Psi(x_1/\delta),\qquad \Psi(z)=\int_{-\infty}^z\bar K,
+\]
+em que $\bar K$ é a marginal unidimensional de $K$. Assim $\Psi\in C^\infty$ é crescente, vale $0$ para
+$z\le-1/2$ e $1$ para $z\ge1/2$, e $\Psi-1/2$ é ímpar: perto de uma borda reta, a transição
+\emph{preserva a quantidade total de produto}. Pelas estimativas \eqref{eq:reg},
+\begin{equation}\label{eq:regdelta}
+\|\psi_\delta-\psi_0\|_{L^1}\le C\delta,\quad \|\nabla\psi_\delta\|_{L^1}\le C,\quad
+\|\nabla\psi_\delta\|_{L^\infty}\le\frac C\delta,\quad \|D^2\psi_\delta\|_{L^1}\le\frac C\delta,\quad
+\|D^2\psi_\delta\|_{L^\infty}\le\frac C{\delta^2}.
+\end{equation}
+Os resultados da Seção~3 valem sem mudança para toda a família. O que muda com $\delta$ e com $m$ é
+o seguinte: a taxa do limite impulsivo e a camada limite (Seção~\ref{sec:limite}); e o salto de
+energia, que passa a ser uma integral ponderada e só se reduz às médias em $\omega$ quando $m\equiv1$ e
+$\delta=0$ (Teorema~\ref{teo:salto}).
 
 %======================================================================
 \section{Boa colocação e positividade}
@@ -238,23 +276,28 @@ manejo integrado de \cite{Tang}.
 O salto depende de $\varphi$ só por $\int\varphi=1$. Mesmo para dados suaves, $u_0(T^+)$ é
 descontínua ao longo de $\partial\omega\cap\Omega$, e é isso que distingue o caso do refúgio.
 
-\begin{teorema}[convergência]\label{teo:limite}
+\begin{teorema}[convergência, uniforme na largura da transição]\label{teo:limite}
 Suponha \ref{H1}--\ref{H2}, $0\le H_0,P_0\in L^\infty$, e sejam $u_\epsilon$, $u_0$ as soluções do
-problema com pulso e do impulsivo. Fixe $t_f>T_K$ e seja
-$J_\epsilon=[0,t_f]\setminus\bigcup_k(T_k,T_k+\epsilon)$. Então $u_\epsilon=u_0$ em $[0,T_1]$ e existe
-$C$ independente de $\epsilon\in(0,\epsilon_0]$ tal que:
+problema com pulso e do impulsivo, ambas com a zona $\psi_\delta$ de \eqref{eq:psidelta}. Fixe
+$t_f>T_K$, seja $J_\epsilon=[0,t_f]\setminus\bigcup_k(T_k,T_k+\epsilon)$ e
+$\sigma=\max\{\delta,\sqrt\epsilon\}$. Então $u_\epsilon=u_0$ em $[0,T_1]$ e existe $C$ independente de
+$\epsilon\in(0,\epsilon_0]$ \emph{e de} $\delta\in[0,\delta_0]$ tal que:
 \begin{enumerate}
-\item[(a)] \textbf{zona suave.} Se $\chi_\omega$ for trocada por $\psi\in C^2(\overline\Omega)$,
-$0\le\psi\le1$, $\partial_\nu\psi=0$, então $\sup_{t\in J_\epsilon}\|u_\epsilon(t)-u_0(t)\|_{L^\infty}\le C\epsilon$;
-\item[(b)] \textbf{refúgio com borda nítida.}
+\item[(a)] em $L^1$ e $L^p$, $1\le p<\infty$:
 \begin{equation}\label{eq:convL1}
-\sup_{t\in J_\epsilon}\|u_\epsilon(t)-u_0(t)\|_{L^1(\Omega)}\le C\sqrt\epsilon,\qquad
-\sup_{t\in J_\epsilon}\|u_\epsilon(t)-u_0(t)\|_{L^p(\Omega)}\le C\epsilon^{1/(2p)}\ (1\le p<\infty);
+\sup_{t\in J_\epsilon}\|u_\epsilon(t)-u_0(t)\|_{L^1(\Omega)}\le C\,\frac{\epsilon}{\sigma},\qquad
+\sup_{t\in J_\epsilon}\|u_\epsilon(t)-u_0(t)\|_{L^p(\Omega)}\le C\Big(\frac{\epsilon}{\sigma}\Big)^{1/p};
 \end{equation}
+\item[(b)] em $L^\infty$, se $\delta>0$: $\sup_{t\in J_\epsilon}\|u_\epsilon(t)-u_0(t)\|_{L^\infty}\le C\epsilon(1+\delta^{-2})$;
 \item[(c)] longe dos instantes de aplicação, para todo $\tau>0$ há $C_\tau$ com
-$\|u_\epsilon(t)-u_0(t)\|_{L^\infty}\le C_\tau\sqrt\epsilon$ se $t\in J_\epsilon$ e
+$\|u_\epsilon(t)-u_0(t)\|_{L^\infty}\le C_\tau\,\epsilon/\sigma$ se $t\in J_\epsilon$ e
 $t-T_k\ge\tau$ para o último $T_k<t$.
 \end{enumerate}
+Há dois regimes. Com \textbf{borda nítida} ou \textbf{quase nítida} ($\delta\le\sqrt\epsilon$) a
+ordem é $\sqrt\epsilon$ em $L^1$ e $\epsilon^{1/(2p)}$ em $L^p$. Com \textbf{transição larga}
+($\delta\ge\sqrt\epsilon$) a ordem é $\epsilon/\delta$, isto é, $O(\epsilon)$ para $\delta$ fixo.
+A Proposição~\ref{prop:regimes} mostra que essas ordens são ótimas nos dois regimes, e que a
+transição ocorre em $\delta\approx\sqrt{D\epsilon}$.
 \end{teorema}
 
 A prova usa dois lemas. O primeiro diz que a solução depende de modo Lipschitz, em $L^1$, da zona
@@ -318,61 +361,77 @@ de Kato.
 \end{proof}
 
 \begin{proof}[Demonstração do Teorema~\ref{teo:limite}]
-(a) é o Lema~\ref{lem:suave} em $L^\infty$. (b) Para $\delta\in(0,\delta_0]$ use $\psi_\delta$ de
-\ref{H2} e a desigualdade triangular:
+(a) \emph{Caso $\delta\ge\sqrt\epsilon$} ($\sigma=\delta$). O Lema~\ref{lem:suave} com $\psi=\psi_\delta$ e
+\eqref{eq:regdelta} dá $C\epsilon(1+1/\delta)\le C\epsilon/\sigma$.
+\emph{Caso $\delta<\sqrt\epsilon$} ($\sigma=\sqrt\epsilon$). Pela desigualdade triangular,
 \[
-\|u^{\chi}_\epsilon-u^\chi_0\|_1\le\|u^{\chi}_\epsilon-u^{\psi_\delta}_\epsilon\|_1+\|u^{\psi_\delta}_\epsilon-u^{\psi_\delta}_0\|_1+\|u^{\psi_\delta}_0-u^\chi_0\|_1
-\le C\delta+C\epsilon\Big(1+\frac1\delta\Big)+C\delta ,
+\|u^{\psi_\delta}_\epsilon-u^{\psi_\delta}_0\|_1\le\|u^{\psi_\delta}_\epsilon-u^{\psi_\sigma}_\epsilon\|_1
++\|u^{\psi_\sigma}_\epsilon-u^{\psi_\sigma}_0\|_1+\|u^{\psi_\sigma}_0-u^{\psi_\delta}_0\|_1
+\le 2C\|\psi_\delta-\psi_\sigma\|_1+C\epsilon\Big(1+\frac1\sigma\Big),
 \]
-pelos Lemas~\ref{lem:L1zona} e \ref{lem:suave} com \eqref{eq:reg}. Com $\delta=\sqrt\epsilon$ obtemos
-$C\sqrt\epsilon$. A estimativa em $L^p$ segue de $\|g\|_p\le\|g\|_1^{1/p}\|g\|_\infty^{1-1/p}$ e das
-cotas uniformes \eqref{eq:cotas}.
+pelos Lemas~\ref{lem:L1zona} e \ref{lem:suave}. Como
+$\|\psi_\delta-\psi_\sigma\|_1\le\|\psi_\delta-\psi_0\|_1+\|\psi_0-\psi_\sigma\|_1\le C(\delta+\sigma)\le2C\sigma$,
+o total é $\le C(\sigma+\epsilon/\sigma)=2C\sqrt\epsilon=2C\epsilon/\sigma$. A estimativa em $L^p$ segue de
+$\|g\|_p\le\|g\|_1^{1/p}\|g\|_\infty^{1-1/p}$ e das cotas uniformes \eqref{eq:cotas}.
+
+(b) é o Lema~\ref{lem:suave} em $L^\infty$ com \eqref{eq:regdelta}.
 
 (c) Em $[t-\tau,t]$, $w=u_\epsilon-u_0$ resolve um sistema linear $\partial_tw=D\Delta w+B(t,x)w$ com
 $\|B\|_\infty\le C$, pelo teorema do valor médio e \eqref{eq:cotas}. Em dimensão $2$, o semigrupo de
 Neumann satisfaz $\|S(\theta)g\|_{L^r}\le C(1+\theta^{-(1/q-1/r)})\|g\|_{L^q}$ para
 $\theta\in(0,t_f]$ \cite{QS}. Na fórmula de Duhamel em $[t-\tau,t-\tau/2]$, com $q=1$, $r=2$
-(singularidade $\theta^{-1/2}$, integrável), obtemos $\|w\|_{L^2}\le C_\tau\sqrt\epsilon$ em
-$[t-\tau/2,t]$. Repetindo com $q=2$, $r=\infty$ (de novo $\theta^{-1/2}$), obtemos
-$\|w(t)\|_\infty\le C_\tau\sqrt\epsilon$.
+(singularidade $\theta^{-1/2}$, integrável), obtemos $\|w\|_{L^2}\le C_\tau\epsilon/\sigma$ em
+$[t-\tau/2,t]$, a partir de (a). Repetindo com $q=2$, $r=\infty$ (de novo $\theta^{-1/2}$), obtemos
+$\|w(t)\|_\infty\le C_\tau\epsilon/\sigma$.
 \end{proof}
 
 \subsection{A camada limite e a mortalidade de borda}
 
-A taxa $\sqrt\epsilon$ não é um artefato da prova. Durante a aplicação, indivíduos do refúgio
-difundem para dentro de $\omega$, onde são mortos; no limite impulsivo isso não acontece. O
-fenômeno ocorre numa faixa de largura $\sqrt{D\epsilon}$ em torno de $\partial\omega$ e é descrito
-exatamente por um problema unidimensional reescalado.
+A taxa $\epsilon/\sigma$ não é um artefato da prova. Durante a aplicação, indivíduos do refúgio
+difundem para dentro da zona tratada, onde são mortos; no limite impulsivo isso não acontece. O
+fenômeno ocorre numa faixa de largura $\sqrt{D\epsilon}$ em torno de $\partial\omega$, e sua intensidade
+depende de quanto a transição $\delta$ é larga em comparação com $\sqrt{D\epsilon}$. Ele é descrito
+exatamente por um problema unidimensional reescalado, cujo único parâmetro geométrico é
+\[
+\lambda=\frac{\delta}{\sqrt{D\epsilon}} .
+\]
 
 \begin{definicao}[constante de borda]
-Para $\alpha>0$ e $\varphi$ como em \ref{H1}, seja $U$ a solução limitada de
-$U_\tau=U_{yy}-\alpha\varphi(\tau)\mathbf 1_{\{y>0\}}U$ em $\R\times(0,1)$, $U(\cdot,0)=1$, e
+Para $\alpha>0$, $\varphi$ como em \ref{H1} e $\lambda\ge0$, seja $\Psi_\lambda(y)=\Psi(y/\lambda)$ se
+$\lambda>0$ e $\Psi_0=\mathbf 1_{\{y>0\}}$. Seja $U^\lambda$ a solução limitada de
+$U_\tau=U_{yy}-\alpha\varphi(\tau)\Psi_\lambda(y)U$ em $\R\times(0,1)$, $U(\cdot,0)=1$, e
 \[
-c^*(\alpha,\varphi):=\int_\R\big(e^{-\alpha\mathbf 1_{\{y>0\}}}-U(y,1)\big)\dd y .
+c^*(\alpha,\varphi,\lambda):=\int_\R\big(e^{-\alpha\Psi_\lambda(y)}-U^\lambda(y,1)\big)\dd y,
+\qquad c^*(\alpha,\varphi):=c^*(\alpha,\varphi,0).
 \]
 \end{definicao}
 
 \begin{proposicao}[camada limite; otimalidade das taxas]\label{prop:camada}
 \begin{enumerate}
 \item[(i)] $0<c^*(\alpha,\varphi)<\infty$.
-\item[(ii)] Considere o problema linear (sem reação) $\partial_tu=D\Delta u-\alpha\rho_\epsilon\chi_\omega u$ em
-$\R^2$, com $\omega=\{x_1>0\}$ e $u(T)\equiv h>0$. Seja $u_0$ a solução impulsiva. Então, para todo
-$t\ge T+\epsilon$ e por unidade de comprimento de $\partial\omega$,
+\item[(ii)] Considere o problema linear (sem reação) $\partial_tu=D\Delta u-\alpha\rho_\epsilon\psi_\delta u$ em
+$\R^2$, com $\omega=\{x_1>0\}$, $m\equiv1$ (logo $\psi_\delta=\Psi(x_1/\delta)$) e $u(T)\equiv h>0$. Seja
+$u_0$ a solução impulsiva. Então, para todo $t\ge T+\epsilon$ e por unidade de comprimento de
+$\partial\omega$,
 \begin{equation}\label{eq:borda}
-\int_\R\big(u_0-u_\epsilon\big)(t,x_1)\dd x_1=c^*(\alpha,\varphi)\,h\,\sqrt{D\epsilon},
+\int_\R\big(u_0-u_\epsilon\big)(t,x_1)\dd x_1=c^*\Big(\alpha,\varphi,\frac{\delta}{\sqrt{D\epsilon}}\Big)\,h\,\sqrt{D\epsilon}.
 \end{equation}
-e $\|u_\epsilon(T+\epsilon)-u_0(T+\epsilon)\|_{L^\infty}=h\,\|U(\cdot,1)-V(\cdot,1)\|_\infty>0$ não depende de
-$\epsilon$, onde $V$ é o calor aplicado a $e^{-\alpha\mathbf 1_{\{y>0\}}}$.
-\item[(iii)] Em particular, nenhuma estimativa $o(\sqrt\epsilon)$ em $L^1$, nem convergência em
-$L^\infty$ em $t=T+\epsilon$, pode valer para essa classe de problemas. A ordem do
-Teorema~\ref{teo:limite}(b) é, portanto, ótima.
+Se $\delta=0$, vale ainda
+$\|u_\epsilon(T+\epsilon)-u_0(T+\epsilon)\|_{L^\infty}=h\,\|U^0(\cdot,1)-V(\cdot,1)\|_\infty>0$, independente
+de $\epsilon$, onde $V$ é o calor aplicado a $e^{-\alpha\mathbf 1_{\{y>0\}}}$.
+\item[(iii)] Em particular, com borda nítida nenhuma estimativa $o(\sqrt\epsilon)$ em $L^1$, nem
+convergência em $L^\infty$ em $t=T+\epsilon$, pode valer para essa classe de problemas. A ordem do
+Teorema~\ref{teo:limite}(a) com $\delta=0$ é, portanto, ótima.
 \end{enumerate}
 \end{proposicao}
 
 \begin{proof}
 O problema em (ii) depende só de $x_1$, e as mudanças $x_1=\sqrt{D\epsilon}\,y$,
-$t=T+\epsilon\tau$ o levam exatamente ao problema que define $U$, com $u_\epsilon(T+\epsilon\tau)=hU(\cdot,\tau)$
-e $u_0(T+\epsilon\tau)=hV(\cdot,\tau)$. Seja
+$t=T+\epsilon\tau$ o levam exatamente ao problema que define $U^\lambda$, pois
+$\Psi(x_1/\delta)=\Psi(y/\lambda)$, com $u_\epsilon(T+\epsilon\tau)=hU^\lambda(\cdot,\tau)$ e
+$u_0(T+\epsilon\tau)=hV^\lambda(\cdot,\tau)$, $V^\lambda$ o calor aplicado a $e^{-\alpha\Psi_\lambda}$.
+Como o calor conserva a integral das diferenças, isso dá \eqref{eq:borda} para todo $\lambda$. Resta
+provar (i) e a afirmação em $L^\infty$, onde $\lambda=0$; escrevemos $U=U^0$, $V=V^0$. Seja
 $\mathcal D(\tau)=\int(U(\tau)-e^{-\alpha\Phi(\tau)\mathbf 1_{\{y>0\}}})\dd y$, com
 $\Phi(\tau)=\int_0^\tau\varphi$. As diferenças decaem como gaussianas quando $|y|\to\infty$, e
 derivando,
@@ -397,18 +456,84 @@ não formalizamos, indica que o mesmo comportamento vale em $\Omega$. A Figura~\
 confirma \eqref{eq:borda} com três algarismos numa faixa de $\Omega=(0,10)\times(0,1)$.
 \end{observacao}
 
-\begin{observacao}[mortalidade de borda e paradoxo]\label{obs:borda}
-Para $\omega$ com fronteira suave, um argumento formal de camada limite, que despreza a curvatura,
-dá a massa morta a mais em relação ao limite impulsivo:
+\begin{proposicao}[os dois regimes da constante de borda]\label{prop:regimes}
+\begin{enumerate}
+\item[(a)] \textbf{Regime nítido.} Para todo $\lambda\ge0$,
+$|c^*(\alpha,\varphi,\lambda)-c^*(\alpha,\varphi)|\le2\alpha\,\|\Psi-\mathbf 1_{\{z>0\}}\|_{L^1}\,\lambda$.
+\item[(b)] \textbf{Regime suave} (expansão formal). Quando $\lambda\to\infty$,
+\begin{equation}\label{eq:ksuave}
+c^*(\alpha,\varphi,\lambda)=\frac{k(\alpha,\varphi)}{\lambda}+O(\lambda^{-3}),\qquad
+k=\alpha^2A_\varphi B_\alpha,\quad A_\varphi=\int_0^1\Phi(1-\Phi)\dd\tau,\quad
+B_\alpha=\int_\R e^{-\alpha\Psi}(\Psi')^2\dd z,
+\end{equation}
+com $\Phi(\tau)=\int_0^\tau\varphi$. Mais geralmente, para o problema linear com zona
+$\psi\in C^2(\overline\Omega)$, $\partial_\nu\psi=0$, e dado $u(T)\in C^2(\overline\Omega)$,
+\begin{equation}\label{eq:excessosuave}
+\int_\Omega(u_0-u_\epsilon)(T+\epsilon)\dd x=\epsilon D\Big[\alpha^2A_\varphi\int_\Omega e^{-\alpha\psi}|\nabla\psi|^2u(T)\dd x
+-\alpha\bar A_\varphi\int_\Omega e^{-\alpha\psi}\nabla\psi\cdot\nabla u(T)\dd x\Big]+O(\epsilon^2),
+\end{equation}
+com $\bar A_\varphi=\int_0^1(1-\Phi)\dd\tau$.
+\end{enumerate}
+Em particular, a massa morta a mais em \eqref{eq:borda} vale $\approx c^*(\alpha,\varphi)h\sqrt{D\epsilon}$
+se $\delta\ll\sqrt{D\epsilon}$ e $\approx k\,h\,D\epsilon/\delta$ se $\delta\gg\sqrt{D\epsilon}$. Isso
+reproduz as duas ordens $\epsilon/\max\{\delta,\sqrt\epsilon\}$ do Teorema~\ref{teo:limite}, que portanto
+são ótimas.
+\end{proposicao}
+
+\begin{proof}
+(a) Aplique o argumento do Lema~\ref{lem:L1zona} (Kato e Gronwall, sem reação) ao problema reescalado
+em $\R$, com os potenciais $\alpha\varphi\Psi_\lambda$ e $\alpha\varphi\Psi_0$. Ele dá
+$\|U^\lambda(1)-U^0(1)\|_{L^1}\le\alpha\|\Psi_\lambda-\Psi_0\|_{L^1}=\alpha\lambda\|\Psi-\mathbf 1_{\{z>0\}}\|_{L^1}$.
+Além disso, $\|e^{-\alpha\Psi_\lambda}-e^{-\alpha\Psi_0}\|_{L^1}\le\alpha\|\Psi_\lambda-\Psi_0\|_{L^1}$.
+
+(b) Repita o passo da janela do Lema~\ref{lem:suave}: $u_\epsilon=G+R$, com $G(s)=e^{-\alpha\psi\Phi(s)}u(T)$ no
+tempo reescalado $s\in[0,1]$. Até a primeira ordem em $\epsilon$,
+$R(1)=\epsilon D\int_0^1e^{-\alpha\psi(1-\Phi(s))}\Delta G(s)\dd s+O(\epsilon^2)$. Como
+$u_0(T+\epsilon)=e^{-\alpha\psi}u(T)+\epsilon D\Delta(e^{-\alpha\psi}u(T))+O(\epsilon^2)$, cuja integral de
+$\Delta(\cdot)$ é nula, a diferença de massas é $-\int R(1)$. Integrando por partes,
+$-\int a\,\Delta G=\int\nabla a\cdot\nabla G$ com $a=e^{-\alpha\psi(1-\Phi)}$, e
 \[
-c^*(\alpha_H,\varphi)\sqrt{D_H\epsilon}\int_{\partial\omega\cap\Omega}H(T)\dd\sigma
-\quad\text{(praga)},\qquad
-c^*(\alpha_P,\varphi)\sqrt{D_P\epsilon}\int_{\partial\omega\cap\Omega}P(T)\dd\sigma
-\quad\text{(predador)}.
+\nabla a\cdot\nabla G=\alpha^2\Phi(1-\Phi)e^{-\alpha\psi}|\nabla\psi|^2u(T)-\alpha(1-\Phi)e^{-\alpha\psi}\nabla\psi\cdot\nabla u(T).
 \]
-Três consequências: (1) a mortalidade de borda é proporcional ao \emph{perímetro} da zona tratada;
-(2) depende do formato do pulso via $c^*(\alpha,\varphi)$, ao contrário do limite impulsivo;
-(3) é proporcional a $\sqrt D$. A Figura~\ref{fig:perimetro} confirma (1) e (3) em simulações 2D, e a Figura~\ref{fig:conv}(c) mostra (2). Se o predador se move mais ($D_P>D_H$), como observado em
+Integrando em $s$ obtemos \eqref{eq:excessosuave}. Para $\psi=\Psi(x_1/\delta)$ e $u(T)\equiv h$, a integral
+vale $\epsilon D\alpha^2A_\varphi B_\alpha h/\delta$ por unidade de comprimento. Comparando com
+\eqref{eq:borda}, $c^*\sqrt{D\epsilon}=k D\epsilon/\delta$, isto é, $c^*=k/\lambda$. O resto é
+$O(\lambda^{-3})$, porque a próxima correção envolve $\Delta^2$ e traz um fator $\epsilon D/\delta^2=\lambda^{-2}$.
+Não controlamos rigorosamente o resto; a Figura~\ref{fig:delta}(a) confirma \eqref{eq:ksuave} numericamente
+(razão $\lambda c^*/k=0{,}999$ em $\lambda=40$).
+\end{proof}
+
+\begin{corolario}[seletividade da borda]\label{cor:seletividade}
+Suponha a mesma dose $\alpha$ e a mesma densidade nas duas espécies junto à borda, e seja $r=D_P/D_H$.
+A razão entre as mortalidades de borda do predador e da praga é
+\[
+\mathcal R(\delta)=\sqrt r\;\frac{c^*\big(\alpha,\varphi,\delta/\sqrt{D_P\epsilon}\big)}{c^*\big(\alpha,\varphi,\delta/\sqrt{D_H\epsilon}\big)}
+\ \longrightarrow\ \begin{cases}\sqrt r,&\delta\ll\sqrt{D\epsilon},\\ r,&\delta\gg\sqrt{D\epsilon}.\end{cases}
+\]
+Suavizar a borda \emph{reduz} a mortalidade de borda das duas espécies, mas a torna \emph{mais seletiva}
+contra a espécie mais móvel: a dependência em $D$ passa de $\sqrt D$ para $D$.
+\end{corolario}
+
+\begin{proof}
+Segue de \eqref{eq:borda} e da Proposição~\ref{prop:regimes}: $\sqrt{D_P}\,c^*(\cdot,\lambda_P)/(\sqrt{D_H}\,c^*(\cdot,\lambda_H))$
+tende a $\sqrt r$ quando $\lambda\to0$, e a $\sqrt r\cdot\lambda_H/\lambda_P=\sqrt r\cdot\sqrt r=r$ quando
+$\lambda\to\infty$.
+\end{proof}
+
+\begin{observacao}[mortalidade de borda e paradoxo]\label{obs:borda}
+Para $\omega$ com fronteira suave e $m\equiv1$, um argumento formal de camada limite, que despreza a
+curvatura, dá a massa morta a mais em relação ao limite impulsivo:
+\[
+\sqrt{D_H\epsilon}\;c^*\Big(\alpha_H,\varphi,\tfrac{\delta}{\sqrt{D_H\epsilon}}\Big)\int_{\partial\omega\cap\Omega}H(T)\dd\sigma
+\quad\text{(praga)},
+\]
+e o análogo para o predador. Com borda nítida isso é $c^*(\alpha_H,\varphi)\sqrt{D_H\epsilon}\int_{\partial\omega}H$.
+Com dose variável, $\alpha$ é trocado pela dose local $\alpha m(x)$ na borda.
+Quatro consequências: (1) a mortalidade de borda é proporcional ao \emph{perímetro} da zona tratada;
+(2) depende do formato do pulso via $c^*(\alpha,\varphi,\cdot)$, ao contrário do limite impulsivo;
+(3) é proporcional a $\sqrt D$ com borda nítida e a $D$ com transição larga
+(Corolário~\ref{cor:seletividade}); (4) decresce com a largura $\delta$ da transição, como $1/\delta$
+quando $\delta\gg\sqrt{D\epsilon}$. A Figura~\ref{fig:perimetro} confirma (1) e (3) em simulações 2D, e a Figura~\ref{fig:conv}(c) mostra (2). Se o predador se move mais ($D_P>D_H$), como observado em
 \cite{Heong}, a borda do refúgio o penaliza seletivamente, o que favorece a ressurgência.
 Isso dá um mecanismo espacial para a observação de \cite{Heong} de que os predadores, por se
 moverem mais, entram mais em contato com o pesticida.
@@ -448,18 +573,28 @@ $\chi_\omega$.
 Sem pesticida, $\E$ é não crescente, e estritamente decrescente enquanto houver heterogeneidade
 espacial. Durante uma aplicação, o pesticida reduz $\E$ se, e somente se, $c\alpha_H\med H+\alpha_P\med P$
 excede $c\alpha_H\Hs+\alpha_P\Ps$. O que importa são as populações \emph{na zona tratada}, não no
-campo todo.
+campo todo. Para a zona $\psi_\delta$ da Seção~\ref{sec:delta}, a identidade \eqref{eq:identidade} vale
+com $I(t)=\int_\Omega\psi_\delta\big(c\alpha_H(H-\Hs)+\alpha_P(P-\Ps)\big)\dd x$: as médias em $\omega$ são
+trocadas por médias ponderadas por $\psi_\delta$.
 
 \begin{teorema}[salto de energia]\label{teo:salto}
-No problema impulsivo, numa aplicação em $T$, com $\med H,\med P$ calculadas em $T^-$,
+No problema impulsivo com zona $\psi_\delta$, numa aplicação em $T$, com $s_H=\alpha_H\psi_\delta$,
+$s_P=\alpha_P\psi_\delta$ e $H,P$ calculadas em $T^-$,
+\begin{equation}\label{eq:saltoEgeral}
+\jump{\E}_T=\int_\Omega\Big\{c\big[\Hs s_H-(1-e^{-s_H})H\big]+\big[\Ps s_P-(1-e^{-s_P})P\big]\Big\}\dd x .
+\end{equation}
+No caso da borda nítida com dose constante ($\delta=0$, $m\equiv1$) o salto depende só das médias em $\omega$:
 \begin{equation}\label{eq:saltoE}
 \jump{\E}_T=|\omega|\Big\{c\big[\Hs\alpha_H-(1-e^{-\alpha_H})\med H\big]+\big[\Ps\alpha_P-(1-e^{-\alpha_P})\med P\big]\Big\}.
 \end{equation}
+Para $\delta>0$ e $m\equiv1$, a diferença entre \eqref{eq:saltoEgeral} e \eqref{eq:saltoE} é $O(\delta\,\Per(\omega))$.
 \end{teorema}
 
 \begin{proof}
-Com $V_H(h)=c(h-\Hs-\Hs\ln(h/\Hs))$ vale $V_H(he^{-s})-V_H(h)=c[\Hs s-h(1-e^{-s})]$. Integre sobre
-$\omega$ (fora de $\omega$ não há salto), e faça o mesmo para $P$.
+Com $V_H(h)=c(h-\Hs-\Hs\ln(h/\Hs))$ vale $V_H(he^{-s})-V_H(h)=c[\Hs s-h(1-e^{-s})]$. Integre em $\Omega$
+(onde $\psi_\delta=0$ não há salto), e faça o mesmo para $P$. Com $\psi_0=\chi_\omega$ o integrando é afim
+em $(H,P)$ e constante em $s$ dentro de $\omega$, o que dá \eqref{eq:saltoE}. A última afirmação segue de
+$\|\psi_\delta-\chi_\omega\|_1\le C\delta$ e de o integrando ser Lipschitz em $s$.
 \end{proof}
 
 \begin{corolario}[instante, dose e lugar]\label{cor:limiar}
@@ -560,6 +695,17 @@ Para $\epsilon>0$, a Observação~\ref{obs:borda} acrescenta um custo proporcion
 O problema natural para pulsos finitos é então
 $\min\{\int_\omega j+\kappa\sqrt\epsilon\Per(\omega;\Omega)\}$, do tipo área--perímetro, que regulariza
 $\omega^*$. Não o analisamos aqui.
+
+\begin{observacao}[dose livre: a transição suave é ótima]
+Se a dose local $s(x)=\alpha_H\psi(x)\in[0,s_{\max}]$ puder variar livremente (com $s_P=\kappa s$), o mínimo de
+\eqref{eq:saltoEgeral} é atingido ponto a ponto. O integrando é estritamente convexo em $s$, e o minimizador é
+$s^*(x)=0$ onde $cH+\kappa P\le c\Hs+\kappa\Ps$; nos demais pontos, $s^*(x)$ é a raiz de
+$cHe^{-s}+\kappa Pe^{-\kappa s}=c\Hs+\kappa\Ps$, truncada em $s_{\max}$. Para $\kappa=0$,
+$s^*=\min\{\ln(H/\Hs)_+,s_{\max}\}$. Como $H,P$ são contínuas em $T>0$, $s^*$ é contínua: a dose ótima
+\emph{não tem borda nítida}. Ela sobe a partir de zero numa transição cuja largura é a escala de variação
+de $H$, em geral muito maior que $\sqrt{D\epsilon}$. Pela Proposição~\ref{prop:regimes}, a política
+ótima fica automaticamente no regime suave, em que a mortalidade de borda é $O(\epsilon)$.
+\end{observacao}
 
 %======================================================================
 \section{Simulações numéricas}

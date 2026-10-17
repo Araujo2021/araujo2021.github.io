@@ -136,3 +136,52 @@ def c_star(alpha, phi=phi_bump, Y=12., N=4801):
     s = solve_ivp(f, (0, 1), np.ones(N), method='BDF', rtol=1e-10, atol=1e-12,
                   max_step=0.005)
     return w @ np.exp(-alpha * chi) - w @ s.y[:, -1]
+
+
+def Psi(z):
+    """Perfil de transicao C^infty: 0 para z<=-1/2, 1 para z>=1/2, Psi-1/2 impar.
+    Psi = H * K com K = Psi' nucleo simetrico de suporte [-1/2,1/2]."""
+    from pest import smooth_step
+    return smooth_step(np.asarray(z, float) + 0.5)
+
+
+def faixa_delta(x, a, b, delta):
+    """Zona omega=(a,b) (em x) com transicao de largura delta; delta=0 -> indicadora."""
+    if delta == 0:
+        return ((x > a) & (x < b)).astype(float)
+    return Psi((x - a) / delta) * Psi((b - x) / delta)
+
+
+def c_star_lambda(alpha, lam, phi=phi_bump, Y=10., h=None):
+    """Constante de borda generalizada (problema reescalado, perfil Psi(y/lam)):
+    c*(alpha,phi,lam) = int [e^{-alpha Psi(y/lam)} - U(y,1)] dy,
+    U_tau = U_yy - alpha phi(tau) Psi(y/lam) U, U(0)=1. lam=0 -> borda nitida."""
+    from scipy.sparse import diags as _d
+    Yt = Y + lam
+    if h is None:
+        h = min(0.01, lam / 25) if lam > 0 else 0.005
+    N = int(2 * Yt / h) + 1
+    y = np.linspace(-Yt, Yt, N); h = y[1] - y[0]
+    e = np.ones(N)
+    L = _d([e[:-1], -2 * e, e[:-1]], [-1, 0, 1]).tolil()
+    L[0, 1] = 2; L[-1, -2] = 2
+    L = (L / h ** 2).tocsr()
+    w = np.full(N, h); w[[0, -1]] = h / 2
+    prof = ((y > 0) + 0.5 * (y == 0)).astype(float) if lam == 0 else Psi(y / lam)
+    f = lambda t, u: L @ u - alpha * phi(np.array([t]))[0] * prof * u
+    s = solve_ivp(f, (0, 1), np.ones(N), method='BDF', rtol=1e-10, atol=1e-12,
+                  max_step=0.005, jac_sparsity=_d([e[:-1], e, e[:-1]], [-1, 0, 1]))
+    return w @ np.exp(-alpha * prof) - w @ s.y[:, -1]
+
+
+def k_suave(alpha, phi=phi_bump):
+    """Coeficiente do regime suave: c* ~ k/lam, k = alpha^2 A_phi B_{alpha,Psi},
+    A_phi = int_0^1 Phi(1-Phi) ds, B = int e^{-alpha Psi} Psi'^2 dz."""
+    from scipy.integrate import quad, cumulative_trapezoid
+    s = np.linspace(0, 1, 20001)
+    Phi = cumulative_trapezoid(phi(s), s, initial=0)
+    A = np.trapezoid(Phi * (1 - Phi), s)
+    z = np.linspace(-.5, .5, 20001)
+    dP = np.gradient(Psi(z), z)
+    B = np.trapezoid(np.exp(-alpha * Psi(z)) * dP ** 2, z)
+    return alpha ** 2 * A * B, A, B
