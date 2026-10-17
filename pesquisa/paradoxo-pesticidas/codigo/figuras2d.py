@@ -50,9 +50,9 @@ def f3():
     ax[0].loglog(epss, pred, 'k-', lw=.8, label='$c^*\\sqrt{D\\varepsilon}\\int_{\\partial\\omega}H\\,d\\sigma$')
     ax[0].set_xlabel('$\\varepsilon$'); ax[0].set_ylabel('massa morta a mais')
     ax[0].set_title('(a) mortalidade de borda $\\propto\\sqrt{\\varepsilon}$'); ax[0].legend(fontsize=8)
-    print('f3a', list(zip(epss, dm, pred)))
+    print('f3a', list(zip(epss, dm, pred)), flush=True)
     # (b) modelo completo na faixa: erros em t = T + eps
-    m = Planar(Nx=4000, Ny=1, Lx=L, Ly=1.)
+    m = Planar(Nx=2000, Ny=1, Lx=L, Ly=1.)
     H0, P0 = init_strip(m)
     T = 10.5
     zonas = {'$\\chi_\\omega$': m.chi(lambda X, Y: (X > 3) & (X < 7)),
@@ -70,7 +70,7 @@ def f3():
             dH, dP = He[-1] - Hr[-1], Pe[-1] - Pr[-1]
             e1.append(m.integral(abs(dH) + abs(dP))); ei.append(max(abs(dH).max(), abs(dP).max()))
         res[nm] = (e1, ei)
-        print('f3b', nm, ['%.2e' % v for v in e1], ['%.2e' % v for v in ei])
+        print('f3b', nm, ['%.2e' % v for v in e1], ['%.2e' % v for v in ei], flush=True)
     for (nm, (e1, ei)), col in zip(res.items(), [C2, C1]):
         ax[1].loglog(epss, e1, 'o-', color=col, ms=4, label=nm + ', $L^1$')
         ax[1].loglog(epss, ei, 's--', color=col, ms=4, label=nm + ', $L^\\infty$')
@@ -81,7 +81,7 @@ def f3():
     ax[1].set_xlabel('$\\varepsilon$'); ax[1].set_title('(b) erro em $t=T+\\varepsilon$')
     ax[1].legend(fontsize=7, ncol=2)
     # (c) c*(alpha, phi)
-    al = np.linspace(.1, 3, 15)
+    al = np.linspace(.3, 3, 10)
     for phi, nm, col in [(phi_bump, 'bump $C^\\infty_c$', C1), (phi_rect, 'retângulo', C2)]:
         cv = [c_star(a, phi) for a in al]
         ax[2].plot(al, cv, 'o-', ms=3, color=col, label=nm)
