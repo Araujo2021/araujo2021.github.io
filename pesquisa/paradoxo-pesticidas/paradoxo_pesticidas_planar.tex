@@ -408,7 +408,7 @@ c^*(\alpha_P,\varphi)\sqrt{D_P\epsilon}\int_{\partial\omega\cap\Omega}P(T)\dd\si
 \]
 Três consequências: (1) a mortalidade de borda é proporcional ao \emph{perímetro} da zona tratada;
 (2) depende do formato do pulso via $c^*(\alpha,\varphi)$, ao contrário do limite impulsivo;
-(3) é proporcional a $\sqrt D$. Se o predador se move mais ($D_P>D_H$), como observado em
+(3) é proporcional a $\sqrt D$. A Figura~\ref{fig:perimetro} confirma (1) e (3) em simulações 2D, e a Figura~\ref{fig:conv}(c) mostra (2). Se o predador se move mais ($D_P>D_H$), como observado em
 \cite{Heong}, a borda do refúgio o penaliza seletivamente, o que favorece a ressurgência.
 Isso dá um mecanismo espacial para a observação de \cite{Heong} de que os predadores, por se
 moverem mais, entram mais em contato com o pesticida.
@@ -639,9 +639,16 @@ por \eqref{eq:saltoE} com as médias em $\omega$ no instante $T$. A correlação
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.85\textwidth]{figuras/p7_perimetro.pdf}
-\caption{Efeito do perímetro: a mesma área total ($36$) dividida em $k^2$ quadrados
-($k=1,2,3,4,6$), estado inicial em $T=9{,}5$, malha $200\times200$. Massa morta a mais que no limite
-impulsivo, para três durações $\epsilon$. \FIGSETE}
+\caption{Mortalidade de borda no plano (Observação~\ref{obs:borda}). Problema linear (só difusão e
+abate) com densidades uniformes $h=4$ (praga, $D_H=0{,}1$) e $p=1$ (predador, $D_P=0{,}05$), mesma dose
+$\alpha=1{,}2$, área tratada fixa ($36$) dividida em $1$, $4$, $9$ ou $16$ quadrados ou num disco; malha
+$160\times160$. (a) Massa morta a mais que no limite impulsivo em função do perímetro. (b) Simulação contra a
+previsão $c^*\sqrt{D\epsilon}\,u\,\Per(\omega)$. Com a camada resolvida ($\epsilon=0{,}8$) e bordas
+alinhadas à malha ($1$, $4$, $16$ quadrados), o erro fica entre $3$ e $6\%$; o resíduo vem dos cantos.
+A razão predador/praga é $0{,}173$, contra $\sqrt{D_P/D_H}\,p/h=0{,}177$ previsto. Os desvios maiores
+(disco, $9$ quadrados, $\epsilon=0{,}2$) ocorrem onde a malha suaviza a borda de $\omega$ ou não
+resolve a camada $\sqrt{D\epsilon}$. Isso concorda com a teoria: uma transição suave reduz a mortalidade
+de borda.}
 \label{fig:perimetro}
 \end{figure}
 
