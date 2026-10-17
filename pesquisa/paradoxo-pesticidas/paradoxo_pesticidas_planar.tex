@@ -458,20 +458,23 @@ confirma \eqref{eq:borda} com três algarismos numa faixa de $\Omega=(0,10)\time
 
 \begin{proposicao}[os dois regimes da constante de borda]\label{prop:regimes}
 \begin{enumerate}
-\item[(a)] \textbf{Regime nítido.} Para todo $\lambda\ge0$,
-$|c^*(\alpha,\varphi,\lambda)-c^*(\alpha,\varphi)|\le2\alpha\,\|\Psi-\mathbf 1_{\{z>0\}}\|_{L^1}\,\lambda$.
+\item[(a)] \textbf{Regime nítido.} A constante de borda depende de $\lambda$ de modo Lipschitz:
+\[
+|c^*(\alpha,\varphi,\lambda)-c^*(\alpha,\varphi)|\le2\alpha\,\|\Psi-\mathbf 1_{\{z>0\}}\|_{L^1}\,\lambda .
+\]
 \item[(b)] \textbf{Regime suave} (expansão formal). Quando $\lambda\to\infty$,
 \begin{equation}\label{eq:ksuave}
 c^*(\alpha,\varphi,\lambda)=\frac{k(\alpha,\varphi)}{\lambda}+O(\lambda^{-3}),\qquad
-k=\alpha^2A_\varphi B_\alpha,\quad A_\varphi=\int_0^1\Phi(1-\Phi)\dd\tau,\quad
-B_\alpha=\int_\R e^{-\alpha\Psi}(\Psi')^2\dd z,
+k=\alpha^2A_\varphi B_\alpha,
 \end{equation}
+em que $A_\varphi=\int_0^1\Phi(1-\Phi)\dd\tau$ e $B_\alpha=\int_\R e^{-\alpha\Psi}(\Psi')^2\dd z$,
 com $\Phi(\tau)=\int_0^\tau\varphi$. Mais geralmente, para o problema linear com zona
 $\psi\in C^2(\overline\Omega)$, $\partial_\nu\psi=0$, e dado $u(T)\in C^2(\overline\Omega)$,
-\begin{equation}\label{eq:excessosuave}
-\int_\Omega(u_0-u_\epsilon)(T+\epsilon)\dd x=\epsilon D\Big[\alpha^2A_\varphi\int_\Omega e^{-\alpha\psi}|\nabla\psi|^2u(T)\dd x
+\begin{multline}\label{eq:excessosuave}
+\int_\Omega(u_0-u_\epsilon)(T+\epsilon)\dd x\\
+=\epsilon D\Big[\alpha^2A_\varphi\int_\Omega e^{-\alpha\psi}|\nabla\psi|^2u(T)\dd x
 -\alpha\bar A_\varphi\int_\Omega e^{-\alpha\psi}\nabla\psi\cdot\nabla u(T)\dd x\Big]+O(\epsilon^2),
-\end{equation}
+\end{multline}
 com $\bar A_\varphi=\int_0^1(1-\Phi)\dd\tau$.
 \end{enumerate}
 Em particular, a massa morta a mais em \eqref{eq:borda} vale $\approx c^*(\alpha,\varphi)h\sqrt{D\epsilon}$
@@ -799,6 +802,48 @@ de borda.}
 \label{fig:perimetro}
 \end{figure}
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{figuras/p8_familia_delta.pdf}
+\caption{A família com largura de transição $\delta$ (Seção~\ref{sec:delta}). (a) Constante de borda
+$c^*(\alpha,\varphi,\lambda)$, $\lambda=\delta/\sqrt{D\epsilon}$, para três doses. Tracejado: valor da borda
+nítida $c^*(\alpha,\varphi)$; pontilhado: assíntota $k/\lambda$ de \eqref{eq:ksuave}. Círculos: massa morta a
+mais em simulações do problema linear numa faixa com $\delta\in\{0{,}02;\,0{,}1;\,0{,}5\}$ e
+$\epsilon\in\{0{,}05;\,0{,}2;\,0{,}8\}$, divididas por $2h\sqrt{D\epsilon}$. Elas colapsam sobre a curva, como
+prevê \eqref{eq:borda}. (b) Modelo completo na faixa: erro em $L^1$ em $t=T+\epsilon$ para vários $\delta$.
+Com $\delta=0$ a ordem tende a $1/2$ ($0{,}56$ no último passo); com $\delta=1$ é $1{,}00$; para
+$\delta=0{,}1$ e $0{,}3$ a ordem cresce de $\approx0{,}6$--$0{,}8$ para $\approx0{,}7$--$0{,}9$ ao atravessar
+$\epsilon^*=\delta^2/D_H$ (marcas $\times$), como prevê o Teorema~\ref{teo:limite}. (c) Seletividade
+(Corolário~\ref{cor:seletividade}), $\alpha=1{,}2$: a razão entre as mortalidades de borda do predador e da
+praga vai de $\sqrt{D_P/D_H}$ para $D_P/D_H$ quando a transição se alarga (por exemplo, de $1{,}416$ a
+$1{,}997$ para $D_P/D_H=2$).}
+\label{fig:delta}
+\end{figure}
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{lcccc}
+\toprule
+refúgio & $\delta$ & $\E(T)\to\E(T+\epsilon)$ & pico local & pico de $\bar H$ \\
+\midrule
+sem pesticida & -- & -- & $5{,}57$ & $4{,}00$\\
+faixa $\{x_1<2{,}5\}$ & $0$ & $43{,}6\to67{,}8$ & $8{,}05$ & $4{,}19$\\
+ & $1$ & $43{,}6\to67{,}6$ & $8{,}05$ & $4{,}20$\\
+ & $2$ & $43{,}6\to67{,}2$ & $8{,}04$ & $4{,}22$\\
+16 quadrados de lado $1{,}25$ & $0$ & $43{,}6\to53{,}2$ & $6{,}28$ & $3{,}73$\\
+ & $1$ & $43{,}6\to53{,}9$ & $6{,}42$ & $3{,}92$\\
+ & $2$ & $43{,}6\to54{,}4$ & $6{,}60$ & $4{,}22$\\
+\bottomrule
+\end{tabular}
+\caption{Efeito de $\delta$ no campo 2D com predador mais móvel ($D_H=0{,}05$, $D_P=0{,}2$), aplicação longa
+($\epsilon=1$, a partir de $T=9$), $\alpha_H=\alpha_P=1{,}2$ e mesma área tratada ($75\%$) nos dois arranjos.
+Nesse cenário a aplicação é prejudicial nos dois casos. O efeito de $\delta$ no desfecho é pequeno: até
+$1\%$ na energia para a faixa, e até $2{,}3\%$ na energia e $13\%$ no pico de $\bar H$ para os $16$ refúgios,
+onde há mais borda. O \emph{arranjo} dos refúgios, com a mesma área tratada, pesa muito mais. Código:
+\texttt{codigo/tabela\_delta2d.py}.}
+\label{tab:delta2d}
+\end{table}
+
 \clearpage
 %======================================================================
 \section{Discussão}
@@ -818,6 +863,15 @@ $\sqrt\epsilon$ em $L^1$, com ordem ótima, contra $\epsilon$ para uma zona suav
 tem significado biológico: uma mortalidade de borda proporcional ao perímetro de $\omega$, a
 $\sqrt{D\epsilon}$ e a uma constante $c^*(\alpha,\varphi)$ que depende do formato do pulso. Ela atinge
 mais a espécie mais móvel, o que dá um mecanismo espacial a mais para o paradoxo.
+
+\emph{A largura da transição} $\delta$ interpola os dois comportamentos, e o parâmetro que decide é
+$\lambda=\delta/\sqrt{D\epsilon}$, que compara a largura da transição com a distância percorrida por difusão
+durante a aplicação. Isso dá recomendações qualitativas. Para matar mais pragas na borda, a borda deve
+ser nítida em relação a $\sqrt{D\epsilon}$. Para \emph{proteger} um predador mais móvel, a borda nítida é
+menos seletiva contra ele ($\sqrt{D_P/D_H}$) que a suave ($D_P/D_H$), embora a suave mate menos em termos
+absolutos. A política de dose ótima no limite impulsivo é contínua e, portanto, está no regime suave.
+No cenário 2D da Tabela~\ref{tab:delta2d}, porém, o efeito de $\delta$ no desfecho é de segunda ordem
+perto do efeito do instante, da dose e do arranjo dos refúgios.
 
 \paragraph{Problemas em aberto.} (1) Uma prova rigorosa da expansão da Observação~\ref{obs:borda}
 para $\partial\omega$ curva, com o termo de curvatura; (2) o problema área--perímetro para

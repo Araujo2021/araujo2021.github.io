@@ -12,6 +12,9 @@ Commun. Nonlinear Sci. Numer. Simul. 29 (2015) 179–187.
   limite impulsivo e constante de borda c*(α, φ).
 - `codigo/figuras2d.py`: figuras `figuras/p3_*.pdf` a `figuras/p7_*.pdf`
   (`python3 figuras2d.py f3`, etc.).
+- Família com largura de transição δ (borda nítida δ = 0 até transição suave): `codigo/figuras_delta.py`
+  gera `figuras/p8_familia_delta.pdf` (usa o cache `figuras/p8_dados.json` se existir; apague-o para
+  recalcular), e `codigo/tabela_delta2d.py` gera os números da Tabela 2.
 
 ## Versão anterior (Ω ⊂ ℝⁿ, perfil espacial suave)
 - `paradoxo_pesticidas_espacial.tex` / `.pdf`, `codigo/pest.py`, `codigo/figuras.py`

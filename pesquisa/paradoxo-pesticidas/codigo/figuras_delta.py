@@ -28,8 +28,11 @@ def g1():
     m = Planar(a=0., b=1e-30, c=.5, d=0., Nx=4000, Ny=1, Lx=L, Ly=1.)
     h0, al, D = 4., 1.2, m.DH
     H0 = np.full((m.Nx, 1), h0); P0 = np.ones((m.Nx, 1))
-    pts = []
-    for delta in [0.02, 0.1, 0.5]:
+    import json
+    cache_f = f'{OUT}/p8_dados.json'
+    dados = json.load(open(cache_f)) if os.path.exists(cache_f) else None
+    pts = [] if dados is None else dados['pontos']
+    for delta in ([] if dados else [0.02, 0.1, 0.5]):
         z = faixa_delta(m.X, 3., 7., delta)
         for eps in [0.05, 0.2, 0.8]:
             _, He, _ = m.simulate(H0, P0, eps, [(0., eps, al, 0.)], chiH=z, store=False,
@@ -50,13 +53,14 @@ def g1():
     X = m.X
     H0 = 1 + .8 * np.cos(2 * np.pi * X / L); P0 = .5 + .4 * np.cos(2 * np.pi * X / L)
     T = 10.5
-    _, HT, PT = m.simulate(H0, P0, T, store=False, rtol=1e-10, atol=1e-12)
-    HT, PT = HT[-1], PT[-1]
+    if dados is None:
+        _, HT, PT = m.simulate(H0, P0, T, store=False, rtol=1e-10, atol=1e-12)
+        HT, PT = HT[-1], PT[-1]
     epss = 0.2 / 2 ** np.arange(0, 7)
     for delta, col in zip([0, 0.03, 0.1, 0.3, 1.0], CS):
         z = faixa_delta(X, 3., 7., delta)
-        err = []
-        for eps in epss:
+        err = [] if dados is None else dados['erros'][str(delta)]
+        for eps in ([] if dados else epss):
             _, He, Pe = m.simulate(HT, PT, eps, [(0., eps, 1., .5)], chiH=z, store=False,
                                    rtol=1e-10, atol=1e-12)
             _, Hr, Pr = m.simulate(HT, PT, eps, [(0., 0., 1., .5)], chiH=z, store=False,
@@ -70,7 +74,7 @@ def g1():
             es = delta ** 2 / m.DH
             if epss[-1] < es < epss[0]:
                 ax[1].plot(es, np.interp(np.log(es), np.log(epss[::-1]), err[::-1]), 'kx', ms=7)
-    ax[1].loglog(epss, 0.9 * np.sqrt(epss / epss[0]), 'k:', lw=.8, label='$\\sqrt\\varepsilon$')
+    ax[1].loglog(epss, 0.9 * np.sqrt(epss / epss[0]), 'k:', lw=.8, label='$\\sqrt{\\varepsilon}$')
     ax[1].loglog(epss, 0.25 * epss / epss[0], 'k-.', lw=.8, label='$\\varepsilon$')
     ax[1].set_xlabel('$\\varepsilon$'); ax[1].set_ylabel('$\\|u_\\varepsilon-u_0\\|_{L^1}$ em $t=T+\\varepsilon$')
     ax[1].set_title('(b) erro $\\sim\\varepsilon/\\max(\\delta,\\sqrt{D\\varepsilon})$;  x: $\\varepsilon=\\delta^2/D_H$')
