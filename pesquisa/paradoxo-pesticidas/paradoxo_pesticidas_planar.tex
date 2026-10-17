@@ -128,7 +128,7 @@ simulações), com normal exterior $\nu$. $\Delta$ denota o Laplaciano. Consider
 \qquad x\in\Omega,\ t>0,
 \end{equation}
 com $\partial_\nu H=\partial_\nu P=0$ em $\partial\Omega$ e dados $H_0,P_0\in L^\infty(\Omega)$,
-$H_0,P_0\ge0$. Os parâmetros $a,b,c,d,D_H,D_P,\alpha_H$ são positivos e $\alpha_P\ge0$
+$H_0,P_0\ge0$. Os parâmetros $a$, $b$, $c$, $d$, $D_H$, $D_P$ e $\alpha_H$ são positivos e $\alpha_P\ge0$
 ($\alpha_P=0$ é um pesticida seletivo).
 
 \begin{hipotese}[pulso temporal]\label{H1}
@@ -438,7 +438,8 @@ Com $\partial_HV=c(1-\Hs/H)$ e $\partial_PV=1-\Ps/P$, os termos de reação se c
 c\Big(1-\frac{\Hs}H\Big)H(a-bP)+\Big(1-\frac{\Ps}P\Big)P(bcH-d)=bc(H-\Hs)(\Ps-P)+bc(P-\Ps)(H-\Hs)=0 .
 \]
 A integração por partes com Neumann dá
-$\int_\Omega c(1-\Hs/H)D_H\Delta H\dd x=-cD_H\Hs\int_\Omega|\nabla H|^2/H^2\dd x$. O termo do pesticida dá
+\[\int_\Omega c\Big(1-\frac{\Hs}H\Big)D_H\Delta H\dd x=-cD_H\Hs\int_\Omega\frac{|\nabla H|^2}{H^2}\dd x.\]
+O termo do pesticida dá
 $-\rho_\epsilon\int_\omega c\alpha_H(1-\Hs/H)H$, e analogamente para $P$. A identidade vale em $t>0$, e
 no sentido integral através das descontinuidades de $\rho_\epsilon$. Nenhuma derivada incide sobre
 $\chi_\omega$.
@@ -482,7 +483,7 @@ quanto o dano.
 
 \begin{proof}
 A equivalência é \eqref{eq:saltoE}. As propriedades de $\theta$ seguem de
-$\theta(s)-s/2=(s/2)\coth(s/2)\ge1$ e de $(1+s)e^{-s}\le1$.
+\[\theta(s)-\frac s2=\frac s2\coth\frac s2\ge1\qquad\text{e}\qquad(1+s)e^{-s}\le1.\]
 \end{proof}
 
 \subsection{Por que $\E$ mede a ressurgência}
@@ -569,8 +570,8 @@ bordas (Neumann). $\chi_\omega$ é aproximada pela fração de área de cada cé
 $[T_k,T_k+\epsilon]$ são integradas separadamente, com passo máximo $\epsilon/50$, e os saltos
 impulsivos são aplicados exatamente. Para os testes de convergência usamos faixas
 $\omega=(3,7)\times(0,L_y)$ e dados que não dependem de $x_2$. Nesse caso \eqref{eq:modelo} se reduz
-\emph{exatamente} a um problema em $x_1$, que resolvemos com $4000$ células (largura $0{,}0025$, bem
-menor que $\sqrt{D\epsilon}$). O código está em \texttt{codigo/pest2d.py} e
+\emph{exatamente} a um problema em $x_1$, que resolvemos com $2000$ a $4000$ células (largura $0{,}005$ a $0{,}0025$, menor que
+$\sqrt{D\epsilon}$ para todos os $\epsilon$ testados, exceto o menor valor da Figura~\ref{fig:conv}(a), cujo desvio é de $9\%$). O código está em \texttt{codigo/pest2d.py} e
 \texttt{codigo/figuras2d.py}.
 
 \paragraph{Parâmetros.} Como em \cite{LiYang}, $a=b=d=1$, $c=0{,}5$, logo $\Hs=2$, $\Ps=1$;
@@ -600,7 +601,7 @@ $P_0=0{,}5+0{,}4\cos(2\pi x_1/10)$; pulso bump $C^\infty_c$.
 \includegraphics[width=\textwidth]{figuras/p3_convergencia_refugio.pdf}
 \caption{O limite impulsivo com refúgio. (a) Problema linear numa faixa: a massa morta a mais em
 relação ao limite impulsivo, medida em $t=T+5$, coincide com a previsão \eqref{eq:borda}
-($2$ bordas, $h=4$, $c^*(1,\text{bump})=\CSTAR$) e decai como $\sqrt\epsilon$.
+($2$ bordas, $h=4$, $c^*(1,\text{bump})=0{,}064$) e decai como $\sqrt\epsilon$.
 (b) Modelo completo, erro em $t=T+\epsilon$. Com a borda nítida $\chi_\omega$: $L^1$ de ordem $1/2$
 e $L^\infty$ que não decai (Proposição~\ref{prop:camada}). Com uma transição suave $\psi$: ordem $1$
 nas duas normas. (c) Constante de borda $c^*(\alpha,\varphi)$ para o bump e para o retângulo de
