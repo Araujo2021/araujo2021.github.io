@@ -238,40 +238,52 @@ def f6():
 
 # ---------------------------------------------------------------- f7
 def f7():
-    """Efeito do perimetro: mesma area pulverizada, perimetros diferentes."""
-    m = Planar(Nx=200, Ny=200)
-    H0, P0 = init2d(m)
-    tn, Hn, Pn = m.simulate(Planar(Nx=200, Ny=200).X * 0 + H0, P0, 9.5, t_out=[9.5], store=False)
-    HT, PT = Hn[-1], Pn[-1]
-    aH, aP = 1.2, .6
+    """Mortalidade de borda no plano: problema linear (so difusao + abate),
+    densidades uniformes h0, p0, mesma area tratada (36) com perimetros diferentes."""
+    m = Planar(a=0., b=1e-30, c=.5, d=0., Nx=160, Ny=160)
+    h0, p0, al = 4., 1., 1.2
+    H0 = np.full((m.Nx, m.Ny), h0); P0 = np.full((m.Nx, m.Ny), p0)
+    cs = c_star(al)
     def blocos(k):
-        s = 6. / k               # area total 36, k^2 blocos de lado 6/k espalhados em [2,8]^2... 
-        g = 10. / k
-        return lambda X, Y: ((np.mod(X, g) > (g - s) / 2) & (np.mod(X, g) < (g + s) / 2) &
-                             (np.mod(Y, g) > (g - s) / 2) & (np.mod(Y, g) < (g + s) / 2))
-    ks = [1, 2, 3, 4, 6]
-    epss = [0.05, 0.2, 0.8]
-    res = {}
-    for kk in ks:
-        z = m.chi(blocos(kk))
-        per = 4 * 6. / kk * kk ** 2
+        s, g = 6. / k, 10. / k
+        return lambda X, Y: ((np.abs(np.mod(X, g) - g / 2) < s / 2) &
+                             (np.abs(np.mod(Y, g) - g / 2) < s / 2))
+    r = np.sqrt(36 / np.pi)
+    zonas = [(f'{k*k} quadrado' + ('s' if k > 1 else ''), blocos(k), 24. * k) for k in (1, 2, 3, 4)]
+    zonas.insert(1, ('disco', lambda X, Y: (X - 5) ** 2 + (Y - 5) ** 2 < r ** 2, 2 * np.pi * r))
+    epss = [0.2, 0.8]
+    res = []
+    for nm, f, per in zonas:
+        z = m.chi(f)
         for eps in epss:
-            _, He, Pe = m.simulate(HT, PT, eps, [(0., eps, aH, aP)], chiH=z, store=False)
-            _, Hi, Pi = m.simulate(HT, PT, eps, [(0., 0., aH, aP)], chiH=z, store=False)
-            dmH = m.integral(Hi[-1] - He[-1]); dmP = m.integral(Pi[-1] - Pe[-1])
-            res[(kk, eps)] = (per, dmH, dmP, m.integral(z))
-            print(f'f7 k={kk} per={per:.0f} area={m.integral(z):.1f} eps={eps}: extra H={dmH:.4f} extra P={dmP:.4f}')
-    np.save(f'{OUT}/p7_dados.npy', res, allow_pickle=True)
-    csH, csP = c_star(aH), c_star(aP)
-    fig, ax = plt.subplots(1, 2, figsize=(9.5, 3.8))
-    for eps, col in zip(epss, [C1, C3, C2]):
-        per = [res[(k, eps)][0] for k in ks]
-        ax[0].plot(per, [res[(k, eps)][1] for k in ks], 'o-', color=col, ms=4, label=f'$\\varepsilon={eps}$')
-        ax[1].plot(per, [res[(k, eps)][2] for k in ks], 'o-', color=col, ms=4, label=f'$\\varepsilon={eps}$')
-    ax[0].set_title('(a) praga: mortalidade extra vs perímetro'); ax[1].set_title('(b) predador')
-    for a in ax:
-        a.set_xlabel('perímetro de $\\omega$ (área fixa = 36)'); a.legend(fontsize=8)
-    ax[0].set_ylabel('massa morta a mais que no limite impulsivo')
+            _, He, Pe = m.simulate(H0, P0, eps, [(0., eps, al, al)], chiH=z, store=False,
+                                   rtol=1e-9, atol=1e-11)
+            Hi, Pi = H0 * np.exp(-al * z), P0 * np.exp(-al * z)
+            eH = m.integral(Hi - He[-1]); eP = m.integral(Pi - Pe[-1])
+            pH = cs * np.sqrt(m.DH * eps) * h0 * per; pP = cs * np.sqrt(m.DP * eps) * p0 * per
+            res.append((nm, per, eps, eH, pH, eP, pP))
+            print(f'f7 {nm:12s} per={per:5.1f} area={m.integral(z):5.2f} eps={eps}: '
+                  f'H {eH:.4f} (prev {pH:.4f})  P {eP:.4f} (prev {pP:.4f})', flush=True)
+    fig, ax = plt.subplots(1, 2, figsize=(10, 3.9))
+    for eps, mk in zip(epss, ['o', 's']):
+        R = [x for x in res if x[2] == eps]
+        per = [x[1] for x in R]
+        ax[0].plot(per, [x[3] for x in R], mk, color=C1, label=f'praga, $\\varepsilon={eps}$')
+        ax[0].plot(per, [x[5] for x in R], mk, color=C2, mfc='none', label=f'predador, $\\varepsilon={eps}$')
+        pp = np.linspace(15, 100, 2)
+        ax[0].plot(pp, cs * np.sqrt(m.DH * eps) * h0 * pp, '-', color=C1, lw=.7)
+        ax[0].plot(pp, cs * np.sqrt(m.DP * eps) * p0 * pp, '--', color=C2, lw=.7)
+    ax[0].set_xlabel('perímetro de $\\omega$ (área fixa $=36$)'); ax[0].set_ylabel('massa morta a mais')
+    ax[0].set_title('(a) pontos: simulação; linhas: previsão'); ax[0].legend(fontsize=7)
+    allp = [x[4] for x in res] + [x[6] for x in res]; alln = [x[3] for x in res] + [x[5] for x in res]
+    ax[1].plot(allp, alln, 'o', ms=4, color=C3)
+    lim = [0, max(allp + alln) * 1.05]
+    ax[1].plot(lim, lim, 'k', lw=.7)
+    for x in res:
+        if x[0] == 'disco':
+            ax[1].annotate('disco', (x[4], x[3]), fontsize=7, xytext=(4, -8), textcoords='offset points')
+    ax[1].set_xlabel('previsão $c^*\\sqrt{D\\varepsilon}\\int_{\\partial\\omega}u\\,d\\sigma$')
+    ax[1].set_ylabel('simulação 2D'); ax[1].set_title('(b) previsão vs. simulação')
     fig.tight_layout(); fig.savefig(f'{OUT}/p7_perimetro.pdf'); plt.close(fig)
 
 if __name__ == '__main__':
