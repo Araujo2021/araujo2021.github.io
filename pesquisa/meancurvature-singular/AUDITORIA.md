@@ -127,3 +127,15 @@ No conjunto $\{u>\overline u_\lambda\}$ a equação (39) tem $f_R(x,\overline u_
 - Lema 5.1: (45), (50)–(53) e a escolha (46)–(49) de $K,\rho,A,B$; a comparação final.
 - Reescalonamento (59) e a cota de $t^{-1}f_{R_\lambda}$.
 - Seção 6: com $C_0t_\lambda<1$, $a(|\nabla u|^2)=(1+|\nabla u|^2)^{-1/2}$ e (3) coincide com (1).
+
+---
+
+## Correções implementadas em `mean-curvature-singular_AMS.tex`
+
+- **G1:** Lema 2.2 reescrito com $\tfrac{19}{40}$ e a nova cota (12) $\nu_0=\tfrac{19}{40\sqrt2}$ para o autovalor radial; cadeia da p. 5 corrigida; (14)/(16) corrigida; Observação 2.3 (o $\tfrac12$ não vale); Observação 2.4 (autovalores de $D\mathcal A$, monotonia forte (19)); (29) agora com prova e cota $\tfrac{59}{40}$.
+- **G2:** Lema 5.5 reescrito em 5 passos, com ordem não circular ($H=1$ → $C_\sharp$ → $C_0=\max\{C_\sharp,G\}$ → $\lambda_0$).
+- **G3:** novo Lema 5.4 (barreira inferior uniforme $u_{0,\lambda}\ge c_1t_\lambda d$, via $\varepsilon_0\varphi_1$).
+- **G4:** Prop. 4.3 agora supõe $R\ge Gt_\lambda$; (38) inclui $\|\nabla\overline u_\lambda\|_\infty\le Gt_\lambda$.
+- **M1–M8:** princípio de comparação (Lema 2.9) reescrito com prova curta; argumento de compacidade do termo singular na Prop. 4.2; citações de regularidade no Lema 2.7; "aumentar $K$" removido do Lema 5.1; $N\ge2$; notação renomeada ($k_1,k_2$; $\overline\psi,\underline\psi$; $\vartheta,R_\Omega,r_\Omega,M_0,B_0$; $\mu$ na norma de Luxemburg; $E$ no Lema 5.1; $m_1,m_2$ no Lema 2.7); frase sobre $a=0$ ou $b=0$ removida.
+- **Texto:** "Lemma ??", acentos (inputenc utf8), erros de digitação e resquícios de revisão.
+- **Referências:** removidas as não citadas e sem relação com o artigo — Brenier, Kesavan, Stampacchia–Lewy, Omari–Zanolin, Tan–Fang. As não citadas mas relacionadas passaram a ser citadas: del Pino e Gui–Lin (regularidade singular), Montenegro (princípio do máximo forte), Ripoll, Tersenov e Lorca–Montenegro 2012 (estimativas de altura/gradiente). Corrigidas [FR] (vol. 200, 2213–2233), Mountain, López, Kufner–John–Fučík.
