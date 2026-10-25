@@ -1,0 +1,869 @@
+\documentclass[11pt]{article}
+
+%------------------------------------------------
+% Pacotes
+%------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[brazilian]{babel}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\geometry{margin=2.6cm}
+
+%------------------------------------------------
+% Ambientes
+%------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{proposition}[theorem]{Proposição}
+\newtheorem{lemma}[theorem]{Lema}
+\newtheorem{corollary}[theorem]{Corolário}
+\newtheorem{conjecture}[theorem]{Conjectura}
+\newtheorem*{conjLY}{Conjectura de Lijun--Yun}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definição}
+\newtheorem{example}[theorem]{Exemplo}
+\newtheorem{problem}[theorem]{Problema}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Observação}
+
+%------------------------------------------------
+% Comandos
+%------------------------------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\fe}{f_{\mathrm e}}
+\newcommand{\fo}{f_{\mathrm o}}
+\newcommand{\ip}[2]{\left\langle #1,#2\right\rangle}
+\newcommand{\sgn}{\operatorname{sgn}}
+
+\title{Generalizações de um critério de centro para equações de Abel:\\
+momentos, ortogonalidade ponderada e condições de ordem superior\\[2mm]
+\large Notas de trabalho a partir de Alves--Lemos--Araujo (2020)}
+\author{Anderson L. A. de Araujo}
+\date{Outubro de 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Organizamos as possíveis generalizações do artigo de Alves, Lemos e Araujo
+\cite{ALA20}, que dá uma resposta parcial positiva a uma conjectura de Lijun e
+Yun \cite{LY01} sobre a equação de Abel
+$x'=f(t)x^3+t^{n-1}x^2$, $t\in[-1,1]$. Partimos de duas extensões já
+redigidas: (i) parte par de $f$ com grau $\le 4$ e parte ímpar arbitrária;
+(ii) parte par com grau $\le 6$ sob uma condição de ortogonalidade ponderada.
+Mostramos que ambas se encaixam num único esquema e o estendemos em quatro
+direções:
+(a) fórmulas fechadas para os coeficientes de centro de ordens $4$, $5$ e $6$,
+que estendem o Teorema~1.7 de \cite{ALA20} e explicam o exemplo de Giné et
+al.\ citado lá;
+(b) um lema elementar de mudanças de sinal, que substitui o uso do teorema de
+Briskin--Françoise--Yomdin, unifica todos os casos e mostra que a
+conjectura equivale a ``centro $\Rightarrow$ todos os momentos nulos'';
+(c) uma fórmula fechada (tipo Cauchy) para o determinante dos momentos, para
+qualquer grau;
+(d) uma versão ``de hiperplano'' do caso de grau $6$, mais forte que a hipótese
+de ortogonalidade, e uma verificação exata assistida por computador da
+conjectura de Lijun--Yun para $\deg f\le 7$ e $n\in\{2,4,6\}$
+(e, para $n=2$, também com $\deg\fe\le6$ e $\deg\fo\le9$).
+Por fim, relacionamos tudo à literatura sobre o problema do centro, momentos e
+a conjectura da composição, e listamos problemas em aberto.
+\end{abstract}
+
+\tableofcontents
+
+%==================================================================
+\section{Contexto e notação}
+%==================================================================
+
+Consideramos a equação de Abel
+\begin{equation}\label{eq:abel}
+ x'(t)=f(t)\,x(t)^3+g(t)\,x(t)^2,\qquad t\in[-1,1],
+\end{equation}
+com $f,g$ analíticas reais (em geral polinômios). Dizemos que $x=0$ é um
+\emph{centro} de \eqref{eq:abel} em $[-1,1]$ se, para todo $\rho$ suficientemente
+pequeno, a solução com $x(-1)=\rho$ está definida em $[-1,1]$ e satisfaz
+$x(1)=\rho$. Escrevemos
+\[
+ F(t)=\int_{-1}^t f,\qquad G(t)=\int_{-1}^t g,\qquad
+ m_k=\int_{-1}^1 f(t)G(t)^k\,dt\quad(k\ge 0),
+\]
+e, para $f$ polinomial,
+\[
+ f=\fe+\fo,\qquad \fe(t)=p(t^2),\qquad \fo(t)=t\,q(t^2).
+\]
+
+\paragraph{O problema e a conjectura.}
+O problema do centro para \eqref{eq:abel} vem do problema centro-foco de
+Poincaré para campos planares: em coordenadas polares e após a transformação
+de Cherkas \cite{Che76}, um sistema $\dot x=-y+P_n$, $\dot y=x+Q_n$ com $P_n,Q_n$
+homogêneos se torna uma equação de Abel trigonométrica
+(ver \cite[\S1.1]{ALA20}). A versão polinomial em um intervalo foi introduzida
+por Briskin, Françoise e Yomdin \cite{BFY99,BFY00a,BFY00b} como modelo do problema
+clássico. A condição suficiente central é a \emph{condição de composição}
+\cite{AL87}: se $F=\tilde F\circ W$, $G=\tilde G\circ W$ com $W(-1)=W(1)$, então
+há centro.
+
+\begin{conjLY}[{\cite[Obs.~5.6]{LY01}}]
+Seja $f$ um polinômio. A equação $x'=2t\,x^2+f(t)\,x^3$, $t\in[-1,1]$, tem centro
+em $x=0$ se, e somente se, $f$ é ímpar.
+\end{conjLY}
+
+A versão ``infinitesimal'' (com $\varepsilon f$ no lugar de $f$, para
+$|\varepsilon|$ pequeno) foi provada por Lijun--Yun \cite[Teo.~5.5]{LY01} e é caso
+particular do teorema de Pakovich sobre o problema do centro paramétrico
+\cite{Pak17}. A versão com $\varepsilon=1$ fixo segue em aberto em geral.
+Por mudança de escala $x\mapsto\lambda x$, o coeficiente $2t$ pode ser trocado
+por $ct$ ($c\ne0$) sem alterar a paridade de $f$; por isso consideramos a
+família $g(t)=t^{n-1}$, $n$ par, que contém o caso $n=2$.
+
+%==================================================================
+\section{O artigo de Alves--Lemos--Araujo: resumo e observações}
+%==================================================================
+
+Os resultados principais de \cite{ALA20} são:
+
+\begin{itemize}[leftmargin=2em]
+\item \textbf{Teorema 1.7.} Se \eqref{eq:abel} tem centro, então
+ $m_0=m_1=m_2=0$.
+\item \textbf{Condição I.} $g$ é ímpar e se anula somente em $t=0$.
+ Então $G$ é par, $G(\pm1)=0$, e $G$ é estritamente monótona em $[-1,0]$ e
+ em $[0,1]$.
+\item \textbf{Teorema 1.10.} Se $g$ satisfaz a Condição I e $p(t^2)$ muda de sinal no
+ máximo duas vezes em $[0,1]$, então há centro se, e somente se, $f$ é ímpar.
+ A prova usa o Teorema~4.1 de Briskin--Françoise--Yomdin \cite{BFY00a}.
+\item \textbf{Teorema 1.12.} Se $g=t^{n-1}$ ($n$ par) e $\deg f\le 5$, então há
+ centro se, e somente se, $f$ é ímpar. A prova resolve um sistema $3\times3$
+ com determinante explícito
+ \[
+ \det M=-\frac{16}{15(n+1)(n+3)(n+5)(2n+1)(2n+3)(2n+5)}.
+ \]
+\item \textbf{Observação 1.8.} Para o exemplo trigonométrico de Giné, Grau e
+ Santallusia \cite{GGS14},
+ $x'=(\sin\theta-\sin2\theta+\sin3\theta)x^3+(\cos\theta+2\cos2\theta)x^2$,
+ há centro, $m_0=m_1=m_2=0$ e $m_3=\pi/2\neq 0$. Logo o Teorema~1.7 não pode
+ ser estendido a ``$m_3=0$''.
+\end{itemize}
+
+\begin{remark}[Teorema 1.12 é caso do Teorema 1.10]\label{rem:112}
+Se $\deg f\le5$, então $p(y)=a_0+a_2y+a_4y^2$ tem no máximo duas raízes, logo
+$p(t^2)$ muda de sinal no máximo duas vezes em $[0,1]$. Assim o Teorema~1.12
+segue do Teorema~1.10 com $g=t^{n-1}$ (que satisfaz a Condição I). O valor do
+Teorema~1.12 está em ter uma prova direta e um determinante explícito; a
+Proposição~\ref{prop:cauchy} abaixo dá a fórmula para qualquer grau.
+\end{remark}
+
+\begin{remark}[O que de fato limita o grau]
+Em todos esses resultados, o argumento tem duas peças:
+\begin{enumerate}[label=(\roman*)]
+\item \emph{dinâmica}: o centro implica $N+1$ condições sobre os momentos;
+\item \emph{álgebra linear/análise}: $N+1$ momentos nulos forçam $p\equiv0$
+ sempre que $p$ tem ``complexidade'' $\le N$ (grau ou mudanças de sinal).
+\end{enumerate}
+A peça (ii) funciona para todo $N$ (Seção~\ref{sec:momentos}). O gargalo é (i):
+\cite{ALA20} só obtém $N=2$, e a Observação~1.8 mostra que $m_3=0$ não decorre
+do centro em geral. Toda generalização abaixo consiste em extrair mais
+informação de (i).
+\end{remark}
+
+%==================================================================
+\section{\texorpdfstring{Primeira generalização: parte par de grau $\le 4$}{Primeira generalização: parte par de grau <= 4}}
+%==================================================================
+
+A nota \emph{A Partial Extension of Theorem~1.12} observa que a prova do Teorema~1.12
+usa apenas a parte par de $f$. Reescrevemos o resultado de forma um pouco mais
+geral.
+
+\begin{corollary}\label{cor:grau4}
+Seja $g$ analítica satisfazendo a Condição~I e seja $f$ um polinômio com
+$\deg\fe\le4$ e parte ímpar $\fo$ de grau arbitrário. Então \eqref{eq:abel} tem
+centro em $x=0$ se, e somente se, $f$ é ímpar.
+\end{corollary}
+
+\begin{proof}
+Necessidade: pela Observação~\ref{rem:112}, $p$ é de grau $\le2$, logo muda de
+sinal no máximo duas vezes em $(0,1)$, e o Teorema~1.10 (ou o
+Teorema~\ref{thm:A}(a) abaixo, que tem prova elementar) dá $p\equiv0$. Para
+$g=t^{n-1}$ também vale a prova direta da nota: como $G$ é par, a parte ímpar não
+contribui para $m_0,m_1,m_2$, e o sistema $3\times3$ em $(a_0,a_2,a_4)$ tem o
+determinante não nulo acima.
+Suficiência: se $f$ e $g$ são ímpares, então $f(t)=t\hat f(t^2)$,
+$g(t)=t\hat g(t^2)$ e a condição de composição vale com $W(t)=t^2$,
+$W(-1)=W(1)$ \cite{AL87}.
+\end{proof}
+
+\begin{remark}
+Na nota original a hipótese ``$r\ge2$'' é desnecessária: o argumento vale para
+qualquer parte ímpar. O ganho real em relação ao Teorema~1.12 é que $\deg f$ pode
+ser arbitrário, desde que $\deg\fe\le4$. Como observado, isso já está contido no
+Teorema~1.10.
+\end{remark}
+
+%==================================================================
+\section{Expansão do centro e identidades de ordem superior}\label{sec:identidades}
+%==================================================================
+
+Seguimos a mudança de variável usada na nota de grau 6:
+\[
+ x(t,\rho)=\frac{\rho}{1-\rho\,u(t,\rho)},\qquad u(-1,\rho)=0,
+ \qquad u'=g+\frac{\rho f}{1-\rho u}.
+\]
+Escrevendo $u=\sum_{k\ge0}u_k\rho^k$ e $S:=(1-\rho u)^{-1}=\sum_{k\ge0}S_k\rho^k$,
+obtemos a recorrência
+\begin{equation}\label{eq:rec}
+ u_0=G,\qquad u_k(t)=\int_{-1}^t f\,S_{k-1},\qquad
+ S_0=1,\qquad S_k=\sum_{i=0}^{k-1}u_iS_{k-1-i},
+\end{equation}
+e o centro equivale a $u_k(1)=0$ para todo $k\ge0$. Os primeiros termos são
+\[
+ S_1=u_0,\quad S_2=u_1+u_0^2,\quad S_3=u_2+2u_0u_1+u_0^3,\quad
+ S_4=u_3+2u_0u_2+u_1^2+3u_0^2u_1+u_0^4,
+\]
+\[
+ S_5=u_4+2u_0u_3+2u_1u_2+3u_0^2u_2+3u_0u_1^2+4u_0^3u_1+u_0^5.
+\]
+Denotemos $H(t)=\int_{-1}^t fG$ e $K_2(t)=\int_{-1}^t fG^2$.
+
+\begin{proposition}[Coeficientes de centro até a ordem 6]\label{prop:ident}
+Suponha $G(1)=0$. Então
+\begin{align*}
+ u_1(1)&=m_0,\qquad u_2(1)=m_1,\qquad u_3(1)=\tfrac12 m_0^2+m_2.
+\end{align*}
+Se, além disso, $m_0=m_1=m_2=0$, então
+\begin{align}
+ u_4(1)&=m_3-\frac12\int_{-1}^1 g\,F^2\,dt, \label{eq:u4}\\
+ u_5(1)&=m_4-2\int_{-1}^1 g\,G\,F^2\,dt, \label{eq:u5}\\
+ u_6(1)&=m_5-\frac12\int_{-1}^1 g\,F^3\,dt-\frac92\int_{-1}^1 g\,G^2F^2\,dt
+ +\int_{-1}^1 f\,G^2H\,dt. \label{eq:u6}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+As três primeiras são imediatas: $u_1=F$, $u_2=H$, $u_3=\tfrac12F^2+K_2$. Nas
+demais usamos $F(\pm1)=H(\pm1)=K_2(\pm1)=G(\pm1)=0$ (em $-1$ por definição; em
+$+1$ por hipótese).
+
+\emph{Ordem 4} (já está na nota de grau 6, com $g=t^{n-1}$):
+$u_4(1)=\int f(H+2GF+G^3)$, e $\int fH=-\int fFG$, $\int fFG=-\frac12\int gF^2$.
+
+\emph{Ordem 5}: $u_5(1)=\int fS_4$ com $u_3=\frac12F^2+K_2$. Temos
+$\int fF^2=\frac13F^3\big|_{-1}^1=0$, $\int fK_2=-\int fFG^2$,
+$2\int fGH=H^2\big|_{-1}^1=0$ e $\int fG^4=m_4$. Logo
+$u_5(1)=m_4+2\int fFG^2=m_4+\int G^2(F^2)'=m_4-2\int gGF^2$.
+
+\emph{Ordem 6}: seja $U_4(t)=u_4(t)$, com $U_4'=f(H+2GF+G^3)$. Integrando por
+partes, $\int fU_4=-\int fFH-2\int fGF^2-\int fG^3F$. Usando $\int fGK_2=-\int fG^2H$,
+$\int fFH=-\frac12\int fGF^2$, $\int fGF^2=-\frac13\int gF^3$ e
+$\int fG^3F=-\frac32\int gG^2F^2$, obtemos \eqref{eq:u6}.
+\end{proof}
+
+\begin{remark}[Verificação]
+As identidades \eqref{eq:u4}--\eqref{eq:u6} foram conferidas simbolicamente
+(polinômios genéricos de grau $7$, $g=t^{n-1}$, $n=2,4,6$) e a recorrência
+\eqref{eq:rec} foi conferida contra a integração numérica de \eqref{eq:abel}
+(script \texttt{codigo/centro\_abel.py}).
+\end{remark}
+
+\begin{corollary}[Extensão do Teorema 1.7]\label{cor:17}
+Se \eqref{eq:abel} tem centro em $[-1,1]$, então
+\[
+ m_0=m_1=m_2=0,\qquad m_3=\frac12\int_{-1}^1gF^2,\qquad m_4=2\int_{-1}^1gGF^2,
+\]
+\[
+ m_5=\frac12\int_{-1}^1 gF^3+\frac92\int_{-1}^1 gG^2F^2-\int_{-1}^1 fG^2H .
+\]
+\end{corollary}
+
+\begin{example}[O exemplo de Giné--Grau--Santallusia]
+O argumento da Proposição~\ref{prop:ident} vale em qualquer intervalo $[a,b]$
+com $G(a)=G(b)=0$, em particular em $[0,2\pi]$ para equações trigonométricas.
+Para o exemplo da Observação~1.8 de \cite{ALA20}, o cálculo numérico (30 dígitos)
+dá
+\[
+ \frac12\int_0^{2\pi} g\,F^2\,d\theta=1{,}5707963267948966192\ldots=\frac\pi2=m_3,
+\]
+exatamente como prevê o Corolário~\ref{cor:17}. Assim, $m_3\neq0$ nesse exemplo
+não é uma anomalia: o quarto coeficiente de centro não é $m_3$, e sim
+$m_3-\frac12\int gF^2$.
+\end{example}
+
+\begin{remark}[Leitura em termos de integrais iteradas]
+$\int gF^2$, $\int gGF^2$, $\int gF^3$ e $\int fG^2H$ são integrais iteradas de
+$f\,dt$ e $g\,dt$ (por exemplo $\int fG^2H=\int_{-1<s<t<1}f(s)G(s)f(t)G(t)^2$).
+A Proposição~\ref{prop:ident} é, portanto, uma instância explícita da expansão
+da aplicação de primeiro retorno em integrais iteradas de Brudnyi \cite{Bru06} e
+dos ``momentos duplos'' de Cima--Gasull--Mañosas \cite{CGM13a} e dos
+coeficientes de Melnikov de segunda ordem de Briskin--Pakovich--Yomdin
+\cite{BPY16}. A novidade aqui é a normalização pela escala $\rho$ (e não por um
+parâmetro $\varepsilon$), que faz o momento $m_{k-1}$ aparecer linearmente em
+$u_k(1)$, com uma correção não linear em $F$.
+\end{remark}
+
+%==================================================================
+\section{O papel da paridade}\label{sec:paridade}
+%==================================================================
+
+Suponha agora que $g$ satisfaz a Condição~I. Trocando $x$ por $-x$ (o que troca
+$g$ por $-g$ e mantém $f$), podemos supor $g>0$ em $(0,1]$. Então $G$ é par,
+$G<0$ em $(-1,1)$, e $G|_{[0,1]}$ é um difeomorfismo crescente de $[0,1]$ sobre
+$[G(0),0]$; seja $\tau$ sua inversa. Defina, como na nota de grau 6,
+\[
+ A(t)=\int_0^t\fe,\qquad C(t)=\int_t^1\fo,\qquad
+ \ip{\varphi}{\psi}_w=\int_0^1 w\,\varphi\,\psi\,dt .
+\]
+
+\begin{lemma}[Decomposição de $F$]\label{lem:par}
+Se $m_0=0$, então, para $t\in[0,1]$,
+\[
+ F(t)=A(t)-C(t),\qquad F(-t)=-A(t)-C(t).
+\]
+Consequentemente, para todo $j\ge0$,
+\[
+ \int_{-1}^1 gG^jF^2=-4\ip{A}{C}_{gG^j},\qquad
+ \int_{-1}^1 gG^jF^3=2\ip{A^3+3AC^2}{1}_{gG^j}.
+\]
+Além disso, $m_k=2\int_0^1\fe\,G^k\,dt$ depende só de $\fe$.
+\end{lemma}
+
+\begin{proof}
+$m_0=0$ e a paridade dão $\int_0^1\fe=0$; as fórmulas para $F(\pm t)$ seguem
+como na nota de grau 6. Como $gG^j$ é ímpar,
+$\int_{-1}^1 gG^j\Phi(F)=\int_0^1 gG^j[\Phi(F(t))-\Phi(F(-t))]$, e
+$(A-C)^2-(A+C)^2=-4AC$, $(A-C)^3+(A+C)^3=2A^3+6AC^2$.
+\end{proof}
+
+Combinando com o Corolário~\ref{cor:17}:
+
+\begin{corollary}[Condições de ordem 4 e 5 sob paridade]\label{cor:paridade}
+Se $g$ satisfaz a Condição~I e \eqref{eq:abel} tem centro, então
+$m_0=m_1=m_2=0$ e
+\[
+ m_3=-2\ip{A}{C}_{g},\qquad m_4=-8\ip{A}{C}_{gG}.
+\]
+Na variável $s=G(t)\in[G(0),0]$, temos $g\,dt=ds$, e as condições ficam
+\[
+ m_3=-2\int_{G(0)}^0(AC)(\tau(s))\,ds,\qquad
+ m_4=-8\int_{G(0)}^0(AC)(\tau(s))\,s\,ds .
+\]
+\end{corollary}
+
+\begin{remark}[Interpretação espectral]
+Para $g=t^{n-1}$, a nota de grau 6 interpreta $\ip{A}{C}_g$ via os polinômios de
+Jacobi $P_k^{(0,n-1)}(2t-1)$, ortogonais em $L^2((0,1),t^{n-1}dt)$. O
+Corolário~\ref{cor:paridade} sugere uma leitura mais intrínseca: na variável
+$s=G(t)$ (para $g=t^{n-1}$, $s=(t^n-1)/n$) os pesos $g$ e $gG$ viram $ds$ e
+$s\,ds$, isto é, os produtos internos são os \emph{momentos de ordem $0$ e $1$
+de $AC$ na variável $G$}, exatamente a mesma variável em que $m_k$ são momentos
+de $\fe$. Isso sugere procurar, em ordem $k$, uma relação do tipo
+``$m_{k-1}=$ momento de ordem $k-4$ de uma expressão em $A,C$'' mais termos de
+ordem superior em $F$; a fórmula \eqref{eq:u6} mostra que, a partir da ordem 6,
+aparecem termos cúbicos ($A^3$, $AC^2$) e momentos duplos.
+\end{remark}
+
+%==================================================================
+\section{A parte \emph{linear}: momentos e mudanças de sinal}\label{sec:momentos}
+%==================================================================
+
+\begin{lemma}[Mudanças de sinal]\label{lem:sinal}
+Seja $\varphi\in L^1(\alpha,\beta)$ com no máximo $N$ mudanças de sinal e
+$\int_\alpha^\beta\varphi(s)s^k\,ds=0$ para $k=0,\dots,N$. Então $\varphi=0$ q.t.p.
+\end{lemma}
+
+\begin{proof}
+Se $\varphi$ muda de sinal nos pontos $s_1<\dots<s_r$, $r\le N$, então
+$\varphi(s)\prod_{i}(s-s_i)$ tem sinal constante e integral nula (pois o produto é
+um polinômio de grau $\le N$). Logo é nula q.t.p., e portanto $\varphi=0$ q.t.p.
+(Este é o argumento clássico de sistemas de Chebyshev; ver \cite{Kar68,PS72}.)
+\end{proof}
+
+\begin{proposition}[Redução a momentos de uma função de uma variável]\label{prop:redu}
+Se $g$ satisfaz a Condição~I e $g>0$ em $(0,1]$, então
+\[
+ m_k=2\int_{G(0)}^0\varphi(s)\,s^k\,ds,\qquad
+ \varphi(s)=\frac{p(\tau(s)^2)}{g(\tau(s))},
+\]
+com $\varphi\in L^1$ e com as mesmas mudanças de sinal de $p$ em $(0,1)$.
+Em particular, se $p$ muda de sinal no máximo $N$ vezes em $(0,1)$ e
+$m_0=\dots=m_N=0$, então $p\equiv0$.
+\end{proposition}
+
+\begin{proof}
+Mude a variável $s=G(t)$ em $m_k=2\int_0^1p(t^2)G(t)^k\,dt$; note que
+$\int|\varphi|\,ds=\int_0^1|p(t^2)|\,dt<\infty$ (a singularidade de $1/g$ em
+$t=0$ é compensada por $ds=g\,dt$). Aplique o Lema~\ref{lem:sinal}.
+\end{proof}
+
+\begin{remark}
+A Proposição~\ref{prop:redu} é exatamente o que \cite{ALA20} obtém via
+\cite[Teo.~4.1]{BFY00a} (a função $\psi$ de \cite[\S3]{ALA20} é $\varphi$ a menos de
+um fator), mas com prova de três linhas. Também substitui o argumento com a
+identidade de Andréief da nota de grau 6: se $Ma=0$ para a matriz de momentos,
+o polinômio $p$ correspondente tem grau $\le N$ em $y=t^2$, logo no máximo $N$
+mudanças de sinal, logo $p=0$.
+\end{remark}
+
+\begin{corollary}[Reformulação da conjectura]\label{cor:reform}
+Se $g$ satisfaz a Condição~I e $f$ é contínua, então $m_k=0$ para todo $k\ge0$
+se, e somente se, $f$ é ímpar. Consequentemente, a conjectura de Lijun--Yun (para
+$g=t^{n-1}$ ou, mais geralmente, para $g$ com a Condição~I) é equivalente a:
+\emph{se \eqref{eq:abel} tem centro, então todos os momentos $m_k$ se anulam}
+(implicação (5)/(6) do diagrama de \cite[\S1.3]{ALA20}).
+\end{corollary}
+
+\begin{proof}
+Se $f$ é ímpar, $fG^k$ é ímpar e $m_k=0$. Reciprocamente, pela
+Proposição~\ref{prop:redu}, todos os momentos de $\varphi\in L^1$ no intervalo
+compacto $[G(0),0]$ se anulam, logo $\varphi=0$ q.t.p.\ (Weierstrass), isto é,
+$\fe\equiv0$. A outra direção da equivalência usa que $f$ ímpar implica centro
+(condição de composição com $W=t^2$).
+\end{proof}
+
+\begin{remark}
+Para $g=t^{n-1}$ isso também segue de Pakovich--Muzychuk \cite{PM09}: os fatores
+de composição à direita de $G=(t^n-1)/n$ são, a menos de transformações afins,
+$t^d$ com $d\mid n$, e a condição $W(-1)=W(1)$ exige $d$ par, o que força $F$
+par. A prova acima é elementar e vale para $f$ apenas contínua (compare com o
+teorema de Müntz: $\{t^{nk}\}_{k\ge0}$ é completo porque $\sum 1/(nk)=\infty$
+\cite{BE95}).
+\end{remark}
+
+Para $g=t^{n-1}$ obtemos uma fórmula fechada para o determinante, generalizando
+o do Teorema~1.12.
+
+\begin{proposition}[Determinante tipo Cauchy]\label{prop:cauchy}
+Seja $n\ge2$ par, $G(t)=(t^n-1)/n$ e
+$M^{(N)}=\bigl(\int_{-1}^1t^{2j}G(t)^k\,dt\bigr)_{k,j=0}^N$. Então
+\[
+ \det M^{(N)}=\frac{2^{N+1}}{n^{N(N+1)/2}}\;
+ \frac{\displaystyle\prod_{0\le i<k\le N}2n\,(k-i)^2}
+ {\displaystyle\prod_{i,j=0}^{N}(ni+2j+1)}>0 .
+\]
+\end{proposition}
+
+\begin{proof}
+Expandindo $(t^n-1)^k$, a linha $k$ de $M^{(N)}$ é $n^{-k}$ vezes a linha $k$ de
+$C=(2/(ni+2j+1))_{i,j}$ mais uma combinação das linhas anteriores (matriz
+triangular unipotente). Logo $\det M^{(N)}=n^{-N(N+1)/2}\det C$, e $C$ é $2$ vezes
+uma matriz de Cauchy $\bigl(1/(x_i+y_j)\bigr)$ com $x_i=ni+1$, $y_j=2j$, cujo
+determinante é $\prod_{i<k}(x_k-x_i)(y_k-y_i)/\prod_{i,j}(x_i+y_j)$.
+\end{proof}
+
+\begin{remark}
+A fórmula foi conferida simbolicamente para $n\in\{2,4,6,8\}$ e $N\le4$. Para
+$N=2$ ela coincide, a menos das mudanças de escala das linhas feitas em
+\cite[eq.~(21)]{ALA20}, com o determinante do Teorema~1.12. A prova também mostra
+que $m_0=\dots=m_N=0$ equivale a $\fe\perp t^{nk}$, $k=0,\dots,N$, em
+$L^2(-1,1)$: um problema de ortogonalidade de \emph{Müntz} \cite{BE95}. Para
+$n=2$ isso significa ortogonalidade a todos os polinômios pares de grau $\le2N$;
+por exemplo, para $\deg\fe\le6$ e $N=2$, $\fe$ é múltiplo do polinômio de
+Legendre $P_6$.
+\end{remark}
+
+%==================================================================
+\section{Teoremas unificados}\label{sec:unificados}
+%==================================================================
+
+\begin{theorem}\label{thm:A}
+Seja $g$ analítica satisfazendo a Condição~I e $f(t)=p(t^2)+tq(t^2)$
+polinomial. Em cada um dos casos abaixo, \eqref{eq:abel} tem centro em $x=0$ se,
+e somente se, $f$ é ímpar:
+\begin{enumerate}[label=(\alph*)]
+\item $p$ muda de sinal no máximo $2$ vezes em $(0,1)$
+ \emph{(Teorema~1.10 de \cite{ALA20}; contém o Teorema~1.12 e o
+ Corolário~\ref{cor:grau4})};
+\item $p$ muda de sinal no máximo $3$ vezes em $(0,1)$ e $\ip{A}{C}_g=0$
+ \emph{(contém o teorema da nota de grau 6, onde $\deg\fe\le6$ e $g=t^{n-1}$)};
+\item $p$ muda de sinal no máximo $4$ vezes em $(0,1)$ e
+ $\ip{A}{C}_g=\ip{A}{C}_{gG}=0$ \emph{(em particular, $\deg\fe\le8$)}.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Necessidade: pelo Corolário~\ref{cor:paridade}, o centro e as hipóteses de
+ortogonalidade dão $m_0=\dots=m_N=0$ com $N=2,3,4$ respectivamente; aplique a
+Proposição~\ref{prop:redu}. Suficiência: condição de composição com $W=t^2$
+\cite{AL87}, como no Corolário~\ref{cor:grau4}.
+\end{proof}
+
+A hipótese de ortogonalidade em (b) é implícita, pois $A$ depende de $\fe$, que é
+justamente o que se quer provar nulo. Ela pode ser trocada por uma condição
+explícita sobre a parte ímpar apenas.
+
+\begin{theorem}[Versão de hiperplano, $\deg\fe\le6$]\label{thm:B}
+Seja $g$ como no Teorema~\ref{thm:A}, com $g>0$ em $(0,1]$. Existe um único (a
+menos de escala) polinômio par $e\neq0$ de grau $\le6$ com
+$\int_{-1}^1eG^k=0$, $k=0,1,2$; além disso,
+$\mu:=\int_{-1}^1eG^3\neq0$. Seja $\nu:=\int_{-1}^1eG^4$ e $A_e(t)=\int_0^te$.
+Se $f$ é polinomial com $\deg\fe\le6$ e \eqref{eq:abel} tem centro, então $f$ é
+ímpar ou $\fe=a\,e$ com $a\ne0$ e
+\begin{equation}\label{eq:hiper}
+ \ip{A_e}{C}_g=-\frac{\mu}{2}
+ \qquad\text{e}\qquad
+ \ip{A_e}{C}_{gG}=-\frac{\nu}{8}.
+\end{equation}
+Em particular, se a parte ímpar de $f$ viola alguma das igualdades em
+\eqref{eq:hiper}, então há centro se, e somente se, $f$ é ímpar.
+\end{theorem}
+
+\begin{proof}
+Pela Proposição~\ref{prop:redu} com $N=3$, a aplicação
+$p\mapsto(m_0,\dots,m_3)$ é injetiva no espaço (de dimensão 4) dos polinômios
+pares de grau $\le6$. Isso dá a existência e unicidade de $e$ e $\mu\ne0$. Se há
+centro, $m_0=m_1=m_2=0$, logo $\fe=ae$ e $A=aA_e$. O Corolário~\ref{cor:paridade}
+dá $a\mu=-2a\ip{A_e}{C}_g$ e $a\nu=-8a\ip{A_e}{C}_{gG}$.
+\end{proof}
+
+\begin{remark}
+Como $C$ depende linearmente de $\fo$, o conjunto excepcional \eqref{eq:hiper} é
+a interseção de dois hiperplanos afins no espaço das partes ímpares. A hipótese
+de ortogonalidade da nota de grau 6 (que equivale a $\ip{A_e}{C}_g=0$ quando
+$a\ne0$) evita o primeiro hiperplano, pois $\mu\ne0$; o Teorema~\ref{thm:B}
+mostra que basta evitar \emph{um} dos dois hiperplanos.
+\end{remark}
+
+\begin{example}[$n=2$ e $n=4$, $\deg f\le7$]\label{ex:hiper}
+Escreva $\fo=b_0t+b_1t^3+b_2t^5+b_3t^7$. Para $g=t$ ($n=2$),
+\[
+ e(t)=231t^6-315t^4+105t^2-5\;(=16P_6(t)),
+\]
+e, com $\fe=a\,e/231$, os coeficientes de centro de ordem 4 e 5 são
+\begin{align*}
+ u_4(1)&=\tfrac{64a}{530675145}\,(255b_1+238b_2+189b_3+765),\\
+ u_5(1)&=\tfrac{256a}{10082827755}\,(4845b_0+969b_1+133b_2-63b_3-3876).
+\end{align*}
+Para $g=t^3$ ($n=4$), $e(t)=385t^6-585t^4+231t^2-15$ e
+\begin{align*}
+ u_4(1)&=-\tfrac{64a}{5601570975}\,(1615b_0-399b_2-462b_3-693),\\
+ u_5(1)&=\tfrac{256a}{128836132425}\,(16169b_0+5313b_1+1817b_2+561b_3-2376).
+\end{align*}
+Em ambos os casos os dois hiperplanos são independentes, e o conjunto
+excepcional é um plano afim de dimensão 2 em $\R^4$.
+\end{example}
+
+%==================================================================
+\section{Evidência computacional para a conjectura de Lijun--Yun}\label{sec:comp}
+%==================================================================
+
+Para ir além do Teorema~\ref{thm:B} é preciso usar $u_6(1),u_7(1),\dots$, que já
+são não lineares (ver \eqref{eq:u6}). Como $f$ e $g$ são polinomiais, a
+recorrência \eqref{eq:rec} produz $u_k(1)$ como polinômios exatos (coeficientes
+racionais) nos coeficientes de $f$. Calculamos esses polinômios e usamos bases de
+Gröbner sobre $\Q$ para decidir se o sistema
+\[
+ u_1(1)=\dots=u_K(1)=0,\qquad a_jz-1=0
+\]
+(onde $a_j$ é um coeficiente de $\fe$ e $z$ uma variável auxiliar) tem solução
+complexa. A base de Gröbner reduzida igual a $\{1\}$ significa que não há
+solução, isto é, $u_1(1)=\dots=u_K(1)=0$ força $a_j=0$.
+
+\begin{proposition}[Assistida por computador]\label{prop:comp}
+Seja $g=t^{n-1}$. Para $n\in\{2,4,6\}$ e todo polinômio $f$ de grau $\le7$, as
+condições $u_1(1)=\dots=u_9(1)=0$ implicam que $f$ é ímpar. Portanto a
+conjectura de Lijun--Yun (e sua versão com $t^{n-1}$) vale para $\deg f\le 7$,
+$n\in\{2,4,6\}$, \emph{sem} hipótese de ortogonalidade. Para $n=2$, as
+condições $u_1(1)=\dots=u_{10}(1)=0$ forçam $f$ ímpar também quando $\deg\fe\le6$ e
+$\deg\fo\le9$; logo a conjectura de Lijun--Yun original vale para $\deg f\le9$
+com $\deg\fe\le6$ (em particular, para todo $f$ de grau $\le7$).
+\end{proposition}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$n$ & $\deg\fe\le$ & $\deg\fo\le$ & $K$ & conclusão ($u_1(1)=\dots=u_K(1)=0\Rightarrow\fe=0$) \\
+\midrule
+2 & 6 & 7 & 8 & não (há soluções complexas com $\fe\ne0$) \\
+2 & 6 & 7 & 9 & sim \\
+4 & 6 & 7 & 8 & não \\
+4 & 6 & 7 & 9 & sim \\
+6 & 6 & 7 & 9 & sim \\
+2 & 6 & 9 & 10 & sim \\
+2 & 4 & 7 & 9 & sim (já garantido pelo Corolário~\ref{cor:grau4}) \\
+\bottomrule
+\end{tabular}
+\caption{Testes exatos (aritmética racional, bases de Gröbner em
+\texttt{sympy}). Script: \texttt{codigo/centro\_abel.py groebner n E R K}, com
+$\deg\fe\le2E$, $\deg\fo\le2R+1$.}
+\label{tab:comp}
+\end{table}
+
+\begin{remark}
+(1) O cálculo é exato e decide a existência de soluções \emph{complexas}; a
+conclusão vale, portanto, a fortiori para coeficientes reais.
+(2) O fato de $K=8$ não bastar mostra que as condições de ordem 6--8 sozinhas
+não excluem o plano excepcional do Exemplo~\ref{ex:hiper}; é a ordem 9 que fecha o
+argumento.
+(3) O método não dá prova para grau arbitrário: aumentar $\deg\fo$ aumenta o
+número de parâmetros livres e, possivelmente, o $K$ necessário.
+\end{remark}
+
+%==================================================================
+\section{Conexões com a literatura atual}\label{sec:lit}
+%==================================================================
+
+\paragraph{Composição e momentos.}
+A condição de composição é suficiente para centro \cite{AL87} e foi conjecturada
+necessária \cite{BFY99,BFY00a,BFY00b,Chr00,Alw09}. Para o problema
+\emph{infinitesimal} (primeira ordem em $\varepsilon$), as condições de centro
+são os momentos $\int fG^k=0$ \cite{BFY00a}; Pakovich mostrou que eles não
+implicam composição em geral \cite{Pak02}, e Pakovich--Muzychuk resolveram
+completamente o problema dos momentos polinomiais: os momentos se anulam se, e
+somente se, $F$ é soma de primitivas que satisfazem composições com $G$
+\cite{PM09}. Para $g$ com a Condição~I, porém, o anulamento de todos os
+momentos já equivale a $f$ ímpar (Corolário~\ref{cor:reform}), o que está por
+trás da ``rigidez'' do caso $g=t^{n-1}$: a conjectura de Lijun--Yun é exatamente a
+afirmação de que o centro força o anulamento de todos os momentos.
+
+\paragraph{Centros paramétricos e no infinito.}
+Briskin--Roytvarf--Yomdin mostraram que as condições de centro ``no infinito''
+se reduzem aos momentos \cite{BRY10}. Pakovich resolveu o problema do centro
+paramétrico: $x'=gx^2+\varepsilon fx^3$ tem centro para todo $\varepsilon$ se, e
+somente se, vale a condição de composição \cite{Pak17}; daí segue a versão
+infinitesimal da conjectura de Lijun--Yun. Centros persistentes/universais são
+tratados em \cite{CGM12,GGL13}. A conjectura com $\varepsilon=1$ fixo é de
+natureza diferente: o Teorema~1.7 e a Proposição~\ref{prop:ident} mostram que,
+nessa normalização, o centro só fornece os momentos $m_0,m_1,m_2$ ``puros''; a
+partir de $m_3$ eles vêm acoplados a termos não lineares.
+
+\paragraph{Contraexemplos.}
+A conjectura da composição é falsa para equações trigonométricas
+\cite{Alw09,GGS14} e, como mostraram Giné--Grau--Santallusia, também para
+equações polinomiais \cite{GGS19}. Isso torna a conjectura de Lijun--Yun um caso
+teste interessante: ela afirma que, para $g=t^{n-1}$, a composição \emph{é}
+necessária. Resultados como o Teorema~\ref{thm:A} e a
+Proposição~\ref{prop:comp} identificam classes nas quais isso pode ser provado.
+
+\paragraph{Segunda ordem, momentos duplos e geometria do conjunto de centros.}
+As integrais da Proposição~\ref{prop:ident} são integrais iteradas no sentido de
+Brudnyi \cite{Bru06}. Cima--Gasull--Mañosas deram uma cota explícita para o
+número de \emph{momentos duplos} cujo anulamento força composição
+\cite{CGM13a,CGM13b}; Briskin--Pakovich--Yomdin estudaram os coeficientes de
+Melnikov de segunda ordem e a geometria algébrica do conjunto de centros
+\cite{BPY16}; Gavrilov descreveu componentes irredutíveis do conjunto de centros
+via teoria de Picard--Lefschetz das funções de Melnikov \cite{Gav20}; e
+Álvarez--Bravo--Christopher--Mardešić provaram a conjectura da composição para o
+problema infinitesimal em ciclos zero \cite{ABCM21}. O cálculo de
+$u_6(1),\dots,u_9(1)$ da Seção~\ref{sec:comp} é uma versão concreta, num caso
+específico, dessa abordagem ``de ordem superior''.
+
+\paragraph{Estado da conjectura.}
+Até onde pudemos verificar, além de \cite{ALA20} (e de sua versão em arXiv,
+1708.01512), não encontramos na literatura avanços posteriores específicos sobre
+a conjectura de Lijun--Yun com $\varepsilon=1$. Esta afirmação deve ser
+reconferida (MathSciNet/zbMATH, citações de \cite{ALA20}) antes de qualquer
+submissão.
+
+%==================================================================
+\section{Problemas em aberto e roteiro}\label{sec:abertos}
+%==================================================================
+
+\begin{problem}[Grau $6$ completo]
+Provar que, para $\deg\fe\le6$ e $\fo$ arbitrário, o plano excepcional
+\eqref{eq:hiper} é excluído pelas condições de ordem $\ge6$. A
+Proposição~\ref{prop:comp} resolve $\deg\fo\le7$ (e $\deg\fo\le9$ para $n=2$);
+nesses testes bastaram $K=9$ ($\deg\fo\le7$) e $K=10$ ($\deg\fo\le9$) condições. Uma prova geral provavelmente exige entender o sinal de
+$u_6(1)$ restrito a \eqref{eq:hiper}, usando a decomposição
+$\int gF^3=2\ip{A^3+3AC^2}{1}_g$ do Lema~\ref{lem:par}.
+\end{problem}
+
+\begin{problem}[Estrutura geral de $u_k(1)$]
+Encontrar uma fórmula fechada para $u_{k+1}(1)$, módulo as condições anteriores,
+da forma $m_k+\mathcal Q_k(F,G)$, com $\mathcal Q_k$ combinação de integrais
+iteradas de grau $\ge2$ em $f$. A Proposição~\ref{prop:ident} dá
+$\mathcal Q_3,\mathcal Q_4,\mathcal Q_5$. Uma fórmula geral daria uma
+generalização natural do Teorema~1.7 para todos os $k$, e, via
+Lema~\ref{lem:par}, condições explícitas em $A$ e $C$.
+\end{problem}
+
+\begin{problem}[Ortogonalidades múltiplas]
+O Teorema~\ref{thm:A} sugere a família: se $p$ muda de sinal no máximo $N$ vezes
+e $\fo$ satisfaz $N-2$ condições de ortogonalidade (nos pesos naturais que
+aparecem em $u_4(1),\dots,u_{N+1}(1)$), então centro $\Leftrightarrow$ $f$ ímpar.
+Para $N\ge5$ é preciso lidar com os termos cúbicos de \eqref{eq:u6}.
+\end{problem}
+
+\begin{problem}[Outros $g$ e o caso trigonométrico]
+Os resultados das Seções~\ref{sec:paridade}--\ref{sec:unificados} valem para
+qualquer $g$ com a Condição~I. Seria natural (i) repetir a
+Proposição~\ref{prop:comp} para $g=t^{n-1}r(t^2)$ com $r>0$; (ii) formular o
+análogo trigonométrico (simetria $\theta\mapsto-\theta$ no lugar de $t\mapsto-t$),
+onde o exemplo de Giné et al.\ mostra que a correção $-\frac12\int gF^2$ é
+essencial.
+\end{problem}
+
+\begin{problem}[Análise de $\deg\fe\le 2N$ via Müntz]
+Pela Proposição~\ref{prop:cauchy}, $m_0=\dots=m_2=0$ significa
+$\fe\perp\{1,t^n,t^{2n}\}$. Descrever explicitamente o núcleo (polinômios de
+Müntz--Legendre \cite{BE95}) pode simplificar as contas de $\mu,\nu$ e dos
+hiperplanos \eqref{eq:hiper} para todo $n$.
+\end{problem}
+
+%==================================================================
+\section*{Apêndice: correspondência com os arquivos de partida}
+%==================================================================
+
+\begin{itemize}[leftmargin=2em]
+\item \texttt{main\_3.tex} (``A Partial Extension of Theorem 1.12''):
+ corresponde ao Corolário~\ref{cor:grau4}. O cálculo do sistema linear e do
+ determinante está correto (conferido simbolicamente); a Proposição
+ \ref{prop:cauchy} dá a versão para qualquer grau.
+\item \texttt{abel\_degree6\_orthogonality\_theorem\_1.tex}: o teorema
+ corresponde ao Teorema~\ref{thm:A}(b) com $g=t^{n-1}$; a identidade
+ \eqref{eq:u4} (Passo 2 da nota) foi conferida simbolicamente. O passo de
+ Andréief pode ser trocado pelo Lema~\ref{lem:sinal}; a hipótese de
+ ortogonalidade pode ser enfraquecida como no Teorema~\ref{thm:B}; e, para
+ $\deg f\le7$, ela é desnecessária (Proposição~\ref{prop:comp}).
+\item O Passo 5 da nota de grau 6 (suficiência) pode ser citado diretamente da
+ Proposição~1.4 de \cite{ALA20} (Alwash--Lloyd), com $\sigma(t)=t^2$.
+\end{itemize}
+
+%==================================================================
+\begin{thebibliography}{99}
+%==================================================================
+
+\bibitem{ABCM21}
+A.~Álvarez, J.~L.~Bravo, C.~Christopher, P.~Mardešić,
+Infinitesimal center problem on zero cycles and the composition conjecture,
+\emph{Funct. Anal. Appl.} \textbf{55} (2021), no.~4, 257--271.
+arXiv:2006.07600.
+
+\bibitem{ALA20}
+A.~M.~Alves, A.~Lemos, A.~L.~A.~de Araujo,
+A partial positive answer to a Lijun--Yun conjecture,
+\emph{Boll. Unione Mat. Ital.} \textbf{13} (2020), 49--59.
+doi:10.1007/s40574-019-00203-x. arXiv:1708.01512.
+
+\bibitem{Alw09}
+M.~A.~M.~Alwash,
+The composition conjecture for Abel equation,
+\emph{Expo. Math.} \textbf{27} (2009), 241--250.
+
+\bibitem{AL87}
+M.~A.~M.~Alwash, N.~G.~Lloyd,
+Non-autonomous equations related to polynomial two-dimensional systems,
+\emph{Proc. Roy. Soc. Edinburgh} \textbf{105A} (1987), 129--152.
+
+\bibitem{BE95}
+P.~Borwein, T.~Erdélyi,
+\emph{Polynomials and Polynomial Inequalities},
+Graduate Texts in Mathematics 161, Springer, 1995.
+
+\bibitem{BFY99}
+M.~Briskin, J.-P.~Françoise, Y.~Yomdin,
+Center conditions, compositions of polynomials and moments on algebraic curves,
+\emph{Ergodic Theory Dynam. Systems} \textbf{19} (1999), 1201--1220.
+
+\bibitem{BFY00a}
+M.~Briskin, J.-P.~Françoise, Y.~Yomdin,
+Center conditions II: parametric and model center problems,
+\emph{Israel J. Math.} \textbf{118} (2000), 61--82.
+
+\bibitem{BFY00b}
+M.~Briskin, J.-P.~Françoise, Y.~Yomdin,
+Center conditions III: parametric and model center problems,
+\emph{Israel J. Math.} \textbf{118} (2000), 83--108.
+
+\bibitem{BPY16}
+M.~Briskin, F.~Pakovich, Y.~Yomdin,
+Algebraic geometry of the center-focus problem for Abel differential equations,
+\emph{Ergodic Theory Dynam. Systems} \textbf{36} (2016), 714--744.
+arXiv:1211.1296.
+
+\bibitem{BRY10}
+M.~Briskin, N.~Roytvarf, Y.~Yomdin,
+Center conditions at infinity for Abel differential equations,
+\emph{Ann. of Math.} \textbf{172} (2010), 437--483.
+
+\bibitem{Bru06}
+A.~Brudnyi,
+On the center problem for ordinary differential equations,
+\emph{Amer. J. Math.} \textbf{128} (2006), 419--451.
+
+\bibitem{Che76}
+L.~A.~Cherkas,
+Number of limit cycles of an autonomous second-order system,
+\emph{Differ. Equ.} \textbf{5} (1976), 666--668.
+
+\bibitem{Chr00}
+C.~Christopher,
+Abel equations: composition conjectures and the model problem,
+\emph{Bull. London Math. Soc.} \textbf{32} (2000), 332--338.
+
+\bibitem{CGM12}
+A.~Cima, A.~Gasull, F.~Mañosas,
+Centers for trigonometric Abel equations,
+\emph{Qual. Theory Dyn. Syst.} \textbf{11} (2012), 19--37.
+
+\bibitem{CGM13a}
+A.~Cima, A.~Gasull, F.~Mañosas,
+An explicit bound of the number of vanishing double moments forcing composition,
+\emph{J. Differential Equations} \textbf{255} (2013), 339--350.
+
+\bibitem{CGM13b}
+A.~Cima, A.~Gasull, F.~Mañosas,
+A simple solution of some composition conjectures for Abel equations,
+\emph{J. Math. Anal. Appl.} \textbf{398} (2013), 477--486.
+
+\bibitem{Gav20}
+L.~Gavrilov,
+On the center-focus problem for the equation
+$\frac{dy}{dx}+\sum_{i=1}^n a_i(x)y^i=0$, $0\le x\le1$, where $a_i$ are polynomials,
+\emph{Ann. Henri Lebesgue} \textbf{3} (2020), 615--648.
+
+\bibitem{GGL13}
+J.~Giné, M.~Grau, J.~Llibre,
+Universal centres and composition conditions,
+\emph{Proc. London Math. Soc.} \textbf{106} (2013), 481--507.
+
+\bibitem{GGS14}
+J.~Giné, M.~Grau, X.~Santallusia,
+Universal centers in the cubic trigonometric Abel equation,
+\emph{Electron. J. Qual. Theory Differ. Equ.} (2014), no.~1, 1--7.
+
+\bibitem{GGS19}
+J.~Giné, M.~Grau, X.~Santallusia,
+A counterexample to the composition condition conjecture for polynomial Abel
+differential equations,
+\emph{Ergodic Theory Dynam. Systems} \textbf{39} (2019).
+doi:10.1017/etds.2018.16.
+
+\bibitem{Kar68}
+S.~Karlin,
+\emph{Total Positivity}, Vol.~I, Stanford University Press, 1968.
+
+\bibitem{LY01}
+Y.~Lijun, T.~Yun,
+Some new results on Abel equations,
+\emph{J. Math. Anal. Appl.} \textbf{261} (2001), 100--112.
+
+\bibitem{Pak02}
+F.~Pakovich,
+A counterexample to the ``composition conjecture'',
+\emph{Proc. Amer. Math. Soc.} \textbf{130} (2002), 3747--3749.
+
+\bibitem{PM09}
+F.~Pakovich, M.~Muzychuk,
+Solution of the polynomial moment problem,
+\emph{Proc. London Math. Soc.} \textbf{99} (2009), 633--657.
+
+\bibitem{Pak17}
+F.~Pakovich,
+Solution of the parametric center problem for the Abel differential equation,
+\emph{J. Eur. Math. Soc.} \textbf{19} (2017), 2343--2369.
+
+\bibitem{PS72}
+G.~Pólya, G.~Szegő,
+\emph{Problems and Theorems in Analysis}, Vol.~II, Springer, 1976.
+
+\end{thebibliography}
+
+\end{document}
