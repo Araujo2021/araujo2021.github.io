@@ -1,0 +1,826 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\numberwithin{equation}{section}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{mainthm}{Theorem}
+\renewcommand{\themainthm}{\Alph{mainthm}}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\fe}{f_{\mathrm e}}
+\newcommand{\fo}{f_{\mathrm o}}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+
+\begin{document}
+
+\title[Higher-order center conditions and the Lijun--Yun conjecture]
+{Higher-order center conditions and the Lijun--Yun conjecture for polynomial Abel equations}
+
+\author{Anderson L. A. de Araujo}
+\address{Departamento de Matem\'atica, CCE, Universidade Federal de Vi\c{c}osa,
+Avenida PH Rolfs, s/n, Vi\c{c}osa, MG, CEP 36570-900, Brazil}
+\email{anderson.araujo@ufv.br}
+
+\subjclass[2020]{Primary 34C07; Secondary 34A34, 34C25, 30E05, 13P10}
+\keywords{Abel equation, center problem, moment conditions, composition condition,
+Lijun--Yun conjecture, Gr\"obner bases}
+
+\begin{abstract}
+We study the center problem for the Abel equation
+$x'=f(t)x^3+g(t)x^2$ on $[-1,1]$, with emphasis on $g(t)=t^{n-1}$, $n$ even.
+Lijun and Yun conjectured that, for $g(t)=2t$ and $f$ polynomial, $x=0$ is a center
+if and only if $f$ is odd; Alves, Lemos and the author proved this for
+$\deg f\le5$ by showing that a center forces the first three moments
+$\int_{-1}^1fG^k\,dt$ ($k=0,1,2$) to vanish. We compute the next three center
+conditions in closed form: a center forces
+$m_3=\tfrac12\int gF^2$, $m_4=2\int gGF^2$ and an explicit identity for $m_5$,
+where $F,G$ are the primitives of $f,g$. This explains why $m_3$ need not vanish at a
+center. For odd $g$ vanishing only at the origin we prove that the vanishing of
+\emph{all} moments is equivalent to $f$ being odd, so the conjecture is
+equivalent to the statement that a center forces all moments to vanish. We give an
+elementary sign-change criterion that unifies and extends the known cases, a closed
+Cauchy-type formula for the relevant moment determinants, and a ``hyperplane''
+theorem for $\deg f_{\mathrm e}\le 6$ showing that the conjecture can only fail if the odd part of $f$
+lies in an explicit affine subspace of codimension at most two. Finally, using
+exact Gr\"obner basis computations over $\Q$,
+we prove the conjecture for $g=t^{n-1}$ when $\deg f\le 7$ and $2\le n\le 20$ (and,
+more generally, when $\deg f_{\mathrm e}\le6$ and $\deg f_{\mathrm o}\le9$), and
+for $g=t$ when $\deg f\le 8$.
+\end{abstract}
+
+\maketitle
+
+%==================================================================
+\section{Introduction}
+%==================================================================
+
+Consider the Abel differential equation
+\begin{equation}\label{eq:abel}
+ x'=f(t)\,x^3+g(t)\,x^2,\qquad t\in[-1,1],
+\end{equation}
+where $f$ and $g$ are real analytic on a neighbourhood of $[-1,1]$. We say that
+\eqref{eq:abel} has a \emph{center} at $x=0$ (on $[-1,1]$) if every solution with
+$|x(-1)|$ small enough satisfies $x(1)=x(-1)$. This center problem goes back to
+the classical Poincar\'e center--focus problem: in polar coordinates, and after
+Cherkas' transformation \cite{Che76}, a planar system
+$\dot x=-y+P_n(x,y)$, $\dot y=x+Q_n(x,y)$ with homogeneous nonlinearities becomes
+a trigonometric Abel equation, and its centers correspond to centers of the
+latter. The polynomial version on an interval was proposed by Briskin,
+Fran\c{c}oise and Yomdin as a model of the classical problem
+\cite{BFY99,BFY00a,BFY00b}; see also \cite{LN80} for the related problem of
+counting solutions with $x(0)=x(1)$.
+
+Throughout we write
+\[
+ F(t)=\int_{-1}^tf,\qquad G(t)=\int_{-1}^tg,\qquad
+ m_k=\int_{-1}^1f(t)G(t)^k\,dt\quad(k\ge0),
+\]
+and $f=\fe+\fo$ for the decomposition into even and odd parts.
+
+\subsection*{Composition and moments}
+The basic sufficient condition is the \emph{composition condition} of Alwash and
+Lloyd \cite{AL87}: if $F=\tilde F\circ W$ and $G=\tilde G\circ W$ for some
+$W$ with $W(-1)=W(1)$, then \eqref{eq:abel} has a center. For small degrees and
+many special classes it is also necessary
+\cite{BFY99,BFY00a,BFY00b,Chr00,Alw09,GGL13}, but not in general: counterexamples
+are known for trigonometric \cite{Alw09,GGS14} and, more recently, for polynomial
+coefficients \cite{GGS19}. If $f$ is replaced by $\varepsilon f$, the first-order
+condition in $\varepsilon$ is the vanishing of all moments $m_k$ \cite{BFY00a};
+the moments do not force composition \cite{Pak02}, the polynomial moment problem
+was solved by Pakovich and Muzychuk \cite{PM09}, and Pakovich proved that
+$x'=gx^2+\varepsilon fx^3$ has a center for all $\varepsilon$ if and only if the
+composition condition holds \cite{Pak17}. Higher-order (``double'') moments,
+iterated integrals and the algebraic geometry of the center set are studied in
+\cite{Bru06,BRY10,CGM13a,CGM13b,BPY16,Gav20,ABCM21}.
+
+\subsection*{The Lijun--Yun conjecture}
+Lijun and Yun \cite[Thm.~5.5]{LY01} proved that $x'=2tx^2+\varepsilon f(t)x^3$
+has a center for all small $\varepsilon$ if and only if the polynomial $f$ is
+odd (this also follows from \cite{Pak17}), and asked whether this remains true
+for a fixed $\varepsilon$:
+
+\begin{conjecture}[{Lijun--Yun \cite[Rem.~5.6]{LY01}}]\label{conj:LY}
+Let $f$ be a polynomial. The equation $x'=2t\,x^2+f(t)\,x^3$, $t\in[-1,1]$, has a
+center at $x=0$ if and only if $f$ is odd.
+\end{conjecture}
+
+Since $x\mapsto\lambda x$ replaces $(f,g)$ by $(\lambda^2f,\lambda g)$, the
+coefficient $2t$ may be replaced by $ct$, $c\ne0$. Following \cite{ALA20}, we
+consider more generally $g(t)=t^{n-1}$ with $n$ even. The ``if'' part is the
+composition condition with $W(t)=t^2$. For the ``only if'' part, Alves, Lemos and
+the author \cite{ALA20} proved that a center of \eqref{eq:abel} forces
+$m_0=m_1=m_2=0$, and deduced the conjecture when $\deg f\le5$, or more generally
+when $g$ is odd, vanishes only at $0$, and the even part of $f$ changes sign at
+most twice on $[0,1]$. They also observed, using an example of Gin\'e, Grau and
+Santallusia \cite{GGS14}, that a center need not satisfy $m_3=0$.
+
+\subsection*{Main results}
+Our first result computes the next center conditions in closed form. Put
+$H(t)=\int_{-1}^t fG$.
+
+\begin{mainthm}[Higher-order center conditions]\label{thm:A}
+Assume $G(1)=0$. If \eqref{eq:abel} has a center at $x=0$, then
+$m_0=m_1=m_2=0$ and
+\begin{align}
+ m_3&=\frac12\int_{-1}^1 g\,F^2\,dt, \label{eq:A3}\\
+ m_4&=2\int_{-1}^1 g\,G\,F^2\,dt, \label{eq:A4}\\
+ m_5&=\frac12\int_{-1}^1 g\,F^3\,dt+\frac92\int_{-1}^1 g\,G^2F^2\,dt
+ -\int_{-1}^1 f\,G^2H\,dt. \label{eq:A5}
+\end{align}
+\end{mainthm}
+
+For the example of \cite{GGS14} (on $[0,2\pi]$), both sides of \eqref{eq:A3} equal
+$\pi/2$, which explains the observation of \cite{ALA20}; see
+Example~\ref{ex:GGS}.
+
+From now on we say that $g$ satisfies \emph{Condition~I} if $g$ is odd and
+vanishes only at $t=0$ \cite{ALA20}; $g(t)=t^{n-1}$, $n$ even, is the model case.
+
+\begin{mainthm}[Reformulation of the conjecture]\label{thm:B}
+Let $g$ satisfy Condition~I and let $f$ be continuous. Then $m_k=0$ for all
+$k\ge0$ if and only if $f$ is odd. Consequently, for such $g$ and polynomial (or
+analytic) $f$, the following are equivalent:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item every center of \eqref{eq:abel} has $f$ odd;
+\item every center of \eqref{eq:abel} has $m_k=0$ for all $k$.
+\end{enumerate}
+\end{mainthm}
+
+Theorem~\ref{thm:B} shows that, for $g=t^{n-1}$, Conjecture~\ref{conj:LY} is
+precisely the statement ``center $\Rightarrow$ moment conditions'' (an implication
+which is open in general; cf.\ the diagram in \cite[\S1.3]{ALA20}). The proof is
+elementary and rests on a sign-change lemma (Lemma~\ref{lem:sign}). The same
+lemma, combined with Theorem~\ref{thm:A}, gives the following criterion. For
+$\varphi,\psi\in L^2(0,1)$ and a weight $w$ put
+$\ip{\varphi}{\psi}_w=\int_0^1w\varphi\psi\,dt$, and set
+\[
+ A(t)=\int_0^t\fe,\qquad C(t)=\int_t^1\fo\qquad(0\le t\le1).
+\]
+
+\begin{mainthm}[Sign-change criterion]\label{thm:C}
+Let $g$ satisfy Condition~I and let $f$ be a polynomial. Write $\fe(t)=p(t^2)$.
+In each of the following cases, \eqref{eq:abel} has a center at $x=0$ if and only
+if $f$ is odd:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $p$ changes sign at most twice in $(0,1)$;
+\item $p$ changes sign at most three times in $(0,1)$ and $\ip{A}{C}_g=0$;
+\item $p$ changes sign at most four times in $(0,1)$ and
+ $\ip{A}{C}_g=\ip{A}{C}_{gG}=0$.
+\end{enumerate}
+\end{mainthm}
+
+Case (a) is \cite[Thm.~1.10]{ALA20}, here with a short self-contained proof; it
+contains \cite[Thm.~1.12]{ALA20} and the case $\deg\fe\le4$ with $\fo$ arbitrary.
+Since $A$ depends on $\fe$, the orthogonality conditions in (b) and (c) are
+implicit. For $\deg\fe\le6$ they can be replaced by explicit conditions on
+$\fo$ only:
+
+\begin{mainthm}[Hyperplane theorem]\label{thm:D}
+Let $g$ satisfy Condition~I with $g>0$ on $(0,1]$. There is a nonzero even
+polynomial $e$ of degree at most $6$, unique up to a constant factor, with
+$\int_{-1}^1eG^k=0$ for $k=0,1,2$; moreover $\mu:=\int_{-1}^1eG^3\ne0$. Let
+$\nu:=\int_{-1}^1eG^4$ and $A_e(t)=\int_0^te$. If $f$ is a polynomial with
+$\deg\fe\le6$ and \eqref{eq:abel} has a center, then either $f$ is odd, or
+$\fe=a\,e$ with $a\ne0$ and
+\begin{equation}\label{eq:hyper}
+ \ip{A_e}{C}_g=-\frac{\mu}{2},\qquad \ip{A_e}{C}_{gG}=-\frac{\nu}{8}.
+\end{equation}
+In particular, if the odd part of $f$ violates either equality in
+\eqref{eq:hyper}, then \eqref{eq:abel} has a center if and only if $f$ is odd.
+\end{mainthm}
+
+Since $C$ depends linearly on $\fo$, \eqref{eq:hyper} defines an affine subspace
+of codimension at most two in the space of odd parts. Finally, the higher center
+conditions can be handled by exact computer algebra:
+
+\begin{mainthm}[Computer-assisted]\label{thm:E}
+Let $g(t)=t^{n-1}$.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item For every even $n$ with $2\le n\le20$ and every polynomial $f$ with
+ $\deg\fe\le6$ and $\deg\fo\le9$, \eqref{eq:abel} has a center if and only if $f$
+ is odd; for $n\in\{2,4,6\}$ the same holds with $\deg\fo\le11$. In particular
+ Conjecture~\ref{conj:LY} (and its version with $t^{n-1}$, $2\le n\le 20$) holds
+ whenever $\deg f\le7$.
+\item For $n=2$, Conjecture~\ref{conj:LY} holds whenever $\deg f\le8$.
+\end{enumerate}
+\end{mainthm}
+
+The proof of Theorem~\ref{thm:E} computes the first $K$ center conditions as
+exact polynomials in the coefficients of $f$ and shows, by Gr\"obner bases over
+$\Q$, that they have no common complex zero with $\fe\ne0$
+(Section~\ref{sec:comp}). Interestingly, the number of conditions needed is
+sharp: for $\deg f\le7$ the first $8$ conditions admit complex common zeros with
+$\fe\ne0$ for every $n$ tested, whereas $9$ conditions exclude them.
+
+The paper is organized as follows. Section~\ref{sec:expansion} sets up the
+expansion of the return map. Theorem~\ref{thm:A} is proved in
+Section~\ref{sec:A}. Section~\ref{sec:parity} contains the parity reduction,
+Section~\ref{sec:moments} the moment lemmas and Theorem~\ref{thm:B}, and
+Section~\ref{sec:CD} the proofs of Theorems~\ref{thm:C} and~\ref{thm:D}.
+Section~\ref{sec:comp} describes the computations behind Theorem~\ref{thm:E}, and
+Section~\ref{sec:final} lists further remarks and open problems.
+
+%==================================================================
+\section{The expansion of the return map}\label{sec:expansion}
+%==================================================================
+
+Let $x(t,\rho)$ be the solution of \eqref{eq:abel} with $x(-1,\rho)=\rho$.
+
+\begin{lemma}\label{lem:u}
+For $|\rho|$ small, the problem
+\begin{equation}\label{eq:u}
+ u'=g(t)+\frac{\rho\,f(t)}{1-\rho u},\qquad u(-1)=0,
+\end{equation}
+has a solution $u(t,\rho)$ on $[-1,1]$, analytic in $\rho$, and
+$x(t,\rho)=\rho/(1-\rho u(t,\rho))$. In particular, \eqref{eq:abel} has a center
+at $x=0$ if and only if $u(1,\rho)\equiv0$, i.e.\ if and only if $u_k(1)=0$ for
+all $k\ge0$, where $u=\sum_{k\ge0}u_k\rho^k$.
+\end{lemma}
+
+\begin{proof}
+For $\rho=0$, \eqref{eq:u} has the solution $u=G$ on $[-1,1]$; the right-hand side
+is analytic in $(u,\rho)$ near $\{(G(t),0)\}$, so by analytic dependence on
+parameters $u(t,\rho)$ exists on $[-1,1]$ and is analytic in $\rho$ for $|\rho|$
+small. The function $y=\rho/(1-\rho u)$ satisfies $y(-1)=\rho$ and
+$y'=\rho^2u'/(1-\rho u)^2=y^2(g+fy)$, so $y=x$ by uniqueness. For $\rho\ne0$,
+$x(1,\rho)=\rho$ is equivalent to $u(1,\rho)=0$.
+\end{proof}
+
+Writing $S:=(1-\rho u)^{-1}=\sum_{k\ge0}S_k\rho^k$, the identity $S=1+\rho uS$ and
+\eqref{eq:u} give the recursion
+\begin{equation}\label{eq:rec}
+ u_0=G,\qquad u_k(t)=\int_{-1}^t f\,S_{k-1}\quad(k\ge1),\qquad
+ S_0=1,\qquad S_k=\sum_{i=0}^{k-1}u_i\,S_{k-1-i}.
+\end{equation}
+Explicitly,
+\begin{align*}
+ S_1&=u_0,\qquad S_2=u_1+u_0^2,\qquad S_3=u_2+2u_0u_1+u_0^3,\\
+ S_4&=u_3+2u_0u_2+u_1^2+3u_0^2u_1+u_0^4,\\
+ S_5&=u_4+2u_0u_3+2u_1u_2+3u_0^2u_2+3u_0u_1^2+4u_0^3u_1+u_0^5.
+\end{align*}
+In particular $u_0(1)=G(1)$, so $G(1)=0$ is necessary for a center. When $f$ and
+$g$ are polynomials, every $u_k$ is a polynomial in $t$ whose coefficients are
+polynomials with rational coefficients in those of $f$ and $g$.
+
+\begin{remark}
+The expansion in powers of $\rho$ of \cite{LY01,ALA20} uses $x=\rho+\sum r_k\rho^k$;
+the variable $u$ is related by $1/x=1/\rho-u$. Its advantage is that
+$u_{k+1}(1)$ contains the moment $m_k$ \emph{linearly}, with corrections that are
+at least quadratic in $f$ (Theorem~\ref{thm:A}).
+\end{remark}
+
+%==================================================================
+\section{Proof of Theorem~\ref{thm:A}}\label{sec:A}
+%==================================================================
+
+Let $K_2(t)=\int_{-1}^tfG^2$. By \eqref{eq:rec},
+\[
+ u_1=F,\qquad u_2=H,\qquad u_3=\tfrac12F^2+K_2,
+\]
+hence $u_1(1)=m_0$, $u_2(1)=m_1$ and $u_3(1)=\frac12m_0^2+m_2$. A center thus
+forces $m_0=m_1=m_2=0$ (this is \cite[Thm.~1.7]{ALA20}). From now on assume
+$G(1)=m_0=m_1=m_2=0$, so that
+\[
+ F(\pm1)=G(\pm1)=H(\pm1)=K_2(\pm1)=0 .
+\]
+All integrals below are over $[-1,1]$, and integrations by parts produce no
+boundary terms.
+
+\emph{Order $4$.} By \eqref{eq:rec}, $u_4(1)=\int f(H+2GF+G^3)$. Since $F'=f$,
+$\int fH=-\int FfG$, and since $(F^2)'=2fF$, $\int fFG=-\frac12\int gF^2$. Hence
+\begin{equation}\label{eq:u4}
+ u_4(1)=m_3+\int fFG=m_3-\frac12\int gF^2.
+\end{equation}
+
+\emph{Order $5$.} $u_5(1)=\int fS_4$. We have $\int fF^2=\frac13F^3\big|_{-1}^1=0$,
+$\int fK_2=-\int FfG^2$, $2\int fGH=2\int HH'=0$ and $\int fG^4=m_4$. Therefore
+\begin{equation}\label{eq:u5}
+ u_5(1)=m_4+2\int fFG^2=m_4+\int G^2(F^2)'=m_4-2\int gGF^2.
+\end{equation}
+
+\emph{Order $6$.} $u_6(1)=\int fS_5$. Integrating by parts,
+$\int fu_4=-\int Ff(H+2GF+G^3)$, so
+\[
+ u_6(1)=m_5+\int fFH+2\int fGF^2+3\int fG^3F+2\int fGK_2+3\int fG^2H .
+\]
+Now $\int fGK_2=\int H'K_2=-\int HfG^2$, $\int fFH=\int F'FH=-\frac12\int fGF^2$,
+$\int fGF^2=\frac13\int G(F^3)'=-\frac13\int gF^3$ and
+$\int fG^3F=\frac12\int G^3(F^2)'=-\frac32\int gG^2F^2$. Collecting terms,
+\begin{equation}\label{eq:u6}
+ u_6(1)=m_5-\frac12\int gF^3-\frac92\int gG^2F^2+\int fG^2H .
+\end{equation}
+By Lemma~\ref{lem:u}, a center gives $u_4(1)=u_5(1)=u_6(1)=0$, which is
+\eqref{eq:A3}--\eqref{eq:A5}. \qed
+
+\begin{remark}
+The proof of \eqref{eq:u4} only uses $m_0=m_1=0$. The identities
+\eqref{eq:u4}--\eqref{eq:u6} hold on any interval $[a,b]$ with $G(a)=G(b)=0$, with
+the obvious changes. We also verified them symbolically for generic polynomials
+of degree $7$ and $g=t^{n-1}$, $n=2,4,6$, and checked the recursion
+\eqref{eq:rec} against high-precision numerical integration of \eqref{eq:abel}.
+\end{remark}
+
+\begin{example}\label{ex:GGS}
+The trigonometric Abel equation
+\[
+ \frac{dx}{d\theta}=(\sin\theta-\sin2\theta+\sin3\theta)x^3+(\cos\theta+2\cos2\theta)x^2,
+ \qquad\theta\in[0,2\pi],
+\]
+has a center \cite{GGS14}, and $m_0=m_1=m_2=0$, $m_3=\pi/2$ \cite[Rem.~1.8]{ALA20}.
+Here $G=\sin\theta+\sin2\theta$ vanishes at $0$ and $2\pi$, and a direct symbolic
+computation gives $\frac12\int_0^{2\pi}gF^2\,d\theta=\pi/2$, in agreement with
+\eqref{eq:A3}. Thus $m_3\ne0$ at this center is not an anomaly: the fourth center
+condition is $m_3=\frac12\int gF^2$, not $m_3=0$.
+\end{example}
+
+\begin{remark}
+The integrals in \eqref{eq:A3}--\eqref{eq:A5} are iterated integrals of $f\,dt$ and
+$g\,dt$; e.g.\ $\int fG^2H=\iint_{-1<s<t<1}f(s)G(s)\,f(t)G(t)^2\,ds\,dt$. Theorem~\ref{thm:A}
+is therefore an explicit instance of Brudnyi's expansion of the first return map in
+iterated integrals \cite{Bru06}, and of the second-order (``double moment'')
+conditions studied in \cite{CGM13a,BPY16}, in a normalization in which the moments
+appear linearly.
+\end{remark}
+
+%==================================================================
+\section{Parity}\label{sec:parity}
+%==================================================================
+
+Assume that $g$ satisfies Condition~I. Replacing $x$ by $-x$ changes $(f,g)$ into
+$(f,-g)$, so we may assume $g>0$ on $(0,1]$. Then $G$ is even, $G(\pm1)=0$,
+$G<0$ on $(-1,1)$, and $G$ restricted to $[0,1]$ is an increasing bijection onto
+$[G(0),0]$; let $\tau:[G(0),0]\to[0,1]$ be its inverse. Since $fG^k$ has the
+same parity as $f$, only $\fe$ contributes to the moments:
+\begin{equation}\label{eq:mkeven}
+ m_k=\int_{-1}^1\fe\,G^k\,dt=2\int_0^1\fe\,G^k\,dt .
+\end{equation}
+
+\begin{lemma}\label{lem:parity}
+Assume $m_0=0$. For $t\in[0,1]$,
+\[
+ F(t)=A(t)-C(t),\qquad F(-t)=-A(t)-C(t).
+\]
+Consequently, for every $j\ge0$,
+\[
+ \int_{-1}^1gG^jF^2\,dt=-4\ip{A}{C}_{gG^j},\qquad
+ \int_{-1}^1gG^jF^3\,dt=2\int_0^1gG^j\bigl(A^3+3AC^2\bigr)\,dt .
+\]
+\end{lemma}
+
+\begin{proof}
+By \eqref{eq:mkeven}, $\int_0^1\fe=0$. For $t\in[0,1]$,
+$\int_{-1}^t\fe=\int_0^t\fe=A(t)$ and $\int_{-1}^t\fo=-\int_t^1\fo=-C(t)$, which
+gives $F(t)$; the formula for $F(-t)$ follows from the parities of $\fe,\fo$.
+Since $gG^j$ is odd,
+$\int_{-1}^1gG^j\Phi(F)=\int_0^1gG^j\bigl[\Phi(F(t))-\Phi(F(-t))\bigr]dt$ for any
+$\Phi$, and $(A-C)^2-(A+C)^2=-4AC$, $(A-C)^3+(A+C)^3=2A^3+6AC^2$.
+\end{proof}
+
+Similarly, if $m_1=0$, then $H(t)=B(t)-D(t)$ and $H(-t)=-B(t)-D(t)$ on $[0,1]$,
+where $B(t)=\int_0^t\fe G$ and $D(t)=\int_t^1\fo G$, and a computation as above
+gives $\int_{-1}^1fG^2H=2\int_0^1G^2(\fo B-\fe D)$. Combining with
+Theorem~\ref{thm:A}:
+
+\begin{corollary}\label{cor:parity}
+Let $g$ satisfy Condition~I. If \eqref{eq:abel} has a center, then
+$m_0=m_1=m_2=0$ and
+\begin{align*}
+ m_3&=-2\ip{A}{C}_g,\qquad m_4=-8\ip{A}{C}_{gG},\\
+ m_5&=\int_0^1g\bigl(A^3+3AC^2\bigr)-18\ip{A}{C}_{gG^2}
+ -2\int_0^1G^2\bigl(\fo B-\fe D\bigr).
+\end{align*}
+\end{corollary}
+
+\begin{remark}
+In the variable $s=G(t)$ one has $g\,dt=ds$, so
+$\ip{A}{C}_{gG^j}=\int_{G(0)}^0(AC)(\tau(s))\,s^j\,ds$: the fourth and fifth center
+conditions say that the $0$-th and $1$-st moments of $AC$ in the variable $G$ are
+determined by $m_3$ and $m_4$, the corresponding moments of $\fe$
+(cf.\ Proposition~\ref{prop:reduction}). For $g=t^{n-1}$ the weight $t^{n-1}$ on
+$(0,1)$ is a shifted Jacobi weight, and $\ip{A}{C}_g$ can be expanded in the
+polynomials $P^{(0,n-1)}_k(2t-1)$; in particular, disjoint Jacobi spectral supports
+of $A$ and $C$ imply $\ip{A}{C}_g=0$.
+\end{remark}
+
+%==================================================================
+\section{Moments and sign changes}\label{sec:moments}
+%==================================================================
+
+We say that $\varphi\in L^1(\alpha,\beta)$ has at most $N$ sign changes if
+there are $\alpha=s_0<s_1<\dots<s_r<s_{r+1}=\beta$, $r\le N$, such that
+$(-1)^i\varphi\ge0$ a.e.\ on $(s_i,s_{i+1})$, or $(-1)^i\varphi\le0$ a.e.\ on all
+of them.
+
+\begin{lemma}\label{lem:sign}
+If $\varphi\in L^1(\alpha,\beta)$ has at most $N$ sign changes and
+$\int_\alpha^\beta\varphi(s)s^k\,ds=0$ for $k=0,\dots,N$, then $\varphi=0$
+a.e.
+\end{lemma}
+
+\begin{proof}
+With $s_1,\dots,s_r$ as above, $\varphi(s)\prod_{i=1}^r(s-s_i)$ has constant sign
+and, being $\varphi$ times a polynomial of degree $r\le N$, has zero integral. Hence
+it vanishes a.e., and so does $\varphi$. (This is the classical Chebyshev-system
+argument; see \cite{Kar68,PS76}.)
+\end{proof}
+
+\begin{proposition}\label{prop:reduction}
+Let $g$ satisfy Condition~I with $g>0$ on $(0,1]$, and let $\fe(t)=p(t^2)$ with
+$p$ continuous on $[0,1]$. Then
+\[
+ m_k=2\int_{G(0)}^0\varphi(s)\,s^k\,ds,\qquad
+ \varphi(s)=\frac{p(\tau(s)^2)}{g(\tau(s))},
+\]
+where $\varphi\in L^1(G(0),0)$ has the same sign changes as $p$ on $(0,1)$. In
+particular, if $p$ has at most $N$ sign changes in $(0,1)$ and
+$m_0=\dots=m_N=0$, then $p\equiv0$.
+\end{proposition}
+
+\begin{proof}
+Substitute $s=G(t)$ in \eqref{eq:mkeven}. Integrability holds because
+$\int|\varphi|\,ds=\int_0^1|p(t^2)|\,dt$; the singularity of $1/g$ at $t=0$ is
+compensated by $ds=g\,dt$. Since $g>0$ and $\tau$ is increasing, $\varphi$ and
+$p\circ\tau^2$ have the same sign changes. Apply Lemma~\ref{lem:sign}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:B}]
+If $f$ is odd, $fG^k$ is odd and $m_k=0$. Conversely, if all $m_k$ vanish, then by
+Proposition~\ref{prop:reduction} all moments of $\varphi\in L^1$ on the compact
+interval $[G(0),0]$ vanish; by the Weierstrass approximation theorem,
+$\varphi=0$ a.e., i.e.\ $\fe\equiv0$. The equivalence of (i) and (ii) follows.
+\end{proof}
+
+\begin{remark}
+For $g=t^{n-1}$ the first part of Theorem~\ref{thm:B} can also be derived from
+\cite{PM09}: up to affine changes of variable, the right compositional factors of
+$G=(t^n-1)/n$ are $t^d$ with $d\mid n$, and $W(-1)=W(1)$ forces $d$ to be even.
+Note also that $\{t^{nk}\}_{k\ge0}$ is complete in $C[0,1]$ by the M\"untz theorem
+\cite{BE95}, since $\sum1/(nk)=\infty$.
+\end{remark}
+
+For $g=t^{n-1}$ the moment matrices have a closed-form determinant, which
+generalizes the $3\times3$ determinant computed in \cite[Thm.~1.12]{ALA20}.
+
+\begin{proposition}\label{prop:cauchy}
+Let $n\ge2$ be even, $G(t)=(t^n-1)/n$ and
+$M^{(N)}=\bigl(\int_{-1}^1t^{2j}G(t)^k\,dt\bigr)_{k,j=0}^N$. Then
+\[
+ \det M^{(N)}
+ =\frac{2^{N+1}}{n^{N(N+1)/2}}\cdot
+ \frac{\prod_{0\le i<k\le N}2n\,(k-i)^2}{\prod_{i,j=0}^N(ni+2j+1)}>0 .
+\]
+\end{proposition}
+
+\begin{proof}
+Expanding $(t^n-1)^k$, row $k$ of $M^{(N)}$ equals $n^{-k}$ times row $k$ of
+$\bigl(2/(ni+2j+1)\bigr)_{i,j}$ plus a combination of the previous rows. Hence
+$\det M^{(N)}=2^{N+1}n^{-N(N+1)/2}\det\bigl(1/(x_i+y_j)\bigr)$ with $x_i=ni+1$,
+$y_j=2j$, and the Cauchy determinant equals
+$\prod_{i<k}(x_k-x_i)(y_k-y_i)/\prod_{i,j}(x_i+y_j)$.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:cauchy} shows that $m_0=\dots=m_N=0$ means
+$\fe\perp t^{nk}$ in $L^2(-1,1)$ for $k=0,\dots,N$, an orthogonality problem of
+M\"untz type \cite{BE95}. For $n=2$ this is orthogonality to all even
+polynomials of degree $\le2N$; e.g.\ for $\deg\fe\le6$ and $N=2$, $\fe$ is a
+multiple of the Legendre polynomial $P_6$.
+\end{remark}
+
+%==================================================================
+\section{Proofs of Theorems~\ref{thm:C} and~\ref{thm:D}}\label{sec:CD}
+%==================================================================
+
+\begin{proof}[Proof of Theorem~\ref{thm:C}]
+If $f$ is odd, write $f(t)=t\hat f(t^2)$, $g(t)=t\hat g(t^2)$; then $F$ and $G$
+are functions of $W(t)=t^2$, with $W(-1)=W(1)$, and the composition condition
+\cite{AL87} gives a center. Conversely, assume a center; we may assume $g>0$ on
+$(0,1]$. By Corollary~\ref{cor:parity}, $m_0=m_1=m_2=0$ and, under the
+orthogonality hypotheses of (b) (resp.\ (c)), also $m_3=0$ (resp.\
+$m_3=m_4=0$). Proposition~\ref{prop:reduction} with $N=2,3,4$ gives $p\equiv0$.
+\end{proof}
+
+In particular, Theorem~\ref{thm:C}(b) contains the statement: if $g=t^{n-1}$,
+$\deg\fe\le6$ and $A,C$ are orthogonal in $L^2((0,1),t^{n-1}dt)$, then a center
+forces $f$ to be odd.
+
+\begin{proof}[Proof of Theorem~\ref{thm:D}]
+Let $V$ be the $4$-dimensional space of even polynomials of degree $\le6$. By
+Proposition~\ref{prop:reduction} with $N=3$ (a polynomial of degree $\le3$ in
+$y=t^2$ has at most three sign changes), the linear map
+$V\to\R^4$, $\fe\mapsto(m_0,\dots,m_3)$, is injective, hence bijective. Therefore
+the kernel of $(m_0,m_1,m_2)$ on $V$ is spanned by a single $e\ne0$, and
+$\mu=m_3(e)\ne0$. If \eqref{eq:abel} has a center and $\deg\fe\le6$, then
+$m_0=m_1=m_2=0$, so $\fe=ae$ and $A=aA_e$. By Corollary~\ref{cor:parity},
+\[
+ a\mu=m_3=-2a\ip{A_e}{C}_g,\qquad a\nu=m_4=-8a\ip{A_e}{C}_{gG}.
+\]
+If $a\ne0$, this is \eqref{eq:hyper}.
+\end{proof}
+
+\begin{remark}
+The orthogonality hypothesis $\ip{A}{C}_g=0$ of Theorem~\ref{thm:C}(b) avoids the
+first hyperplane in \eqref{eq:hyper}, since $\mu\ne0$; Theorem~\ref{thm:D} shows that
+it suffices to avoid either one. On the exceptional set, the sixth center
+condition (Corollary~\ref{cor:parity}) becomes a quadratic equation in $(a,\fo)$
+with a term $a^2\int_0^1gA_e^3$; this is the starting point of the computations
+of Section~\ref{sec:comp}.
+\end{remark}
+
+\begin{example}\label{ex:hyper}
+Let $\fo=b_0t+b_1t^3+b_2t^5+b_3t^7$. For $g=t$ ($n=2$),
+$e(t)=231t^6-315t^4+105t^2-5=16P_6(t)$ and, with $\fe=a\,e/231$,
+\begin{align*}
+ u_4(1)&=\tfrac{64a}{530675145}\,(255b_1+238b_2+189b_3+765),\\
+ u_5(1)&=\tfrac{256a}{10082827755}\,(4845b_0+969b_1+133b_2-63b_3-3876).
+\end{align*}
+For $g=t^3$ ($n=4$), $e(t)=385t^6-585t^4+231t^2-15$ and, with $\fe=a\,e/385$,
+\begin{align*}
+ u_4(1)&=-\tfrac{64a}{5601570975}\,(1615b_0-399b_2-462b_3-693),\\
+ u_5(1)&=\tfrac{256a}{128836132425}\,(16169b_0+5313b_1+1817b_2+561b_3-2376).
+\end{align*}
+In both cases the exceptional set \eqref{eq:hyper} is a $2$-dimensional affine
+plane in $\R^4$.
+\end{example}
+
+%==================================================================
+\section{Computer-assisted proof of Theorem~\ref{thm:E}}\label{sec:comp}
+%==================================================================
+
+Fix $n$ and degrees $2E$, $2R+1$, and write
+\[
+ f(t)=\sum_{j=0}^{E}a_jt^{2j}+\sum_{j=0}^{R}b_jt^{2j+1},\qquad g(t)=t^{n-1}.
+\]
+By \eqref{eq:rec}, each $c_k:=u_k(1)$ is a polynomial in
+$\Q[a_0,\dots,a_E,b_0,\dots,b_R]$, and by Lemma~\ref{lem:u}, a center forces
+$c_1=\dots=c_K=0$ for every $K$. Let $I_K$ be the ideal generated by
+$c_1,\dots,c_K$. If, for each $i$,
+\begin{equation}\label{eq:rab}
+ 1\in I_K+\langle 1-z\,a_i\rangle\subset\Q[z,a,b],
+\end{equation}
+then every common complex zero of $c_1,\dots,c_K$ has $a_i=0$ (Rabinowitsch's
+trick), so a center forces $\fe=0$, and Theorem~\ref{thm:C}'s sufficiency part
+finishes the proof. Condition \eqref{eq:rab} holds if and only if the reduced
+Gr\"obner basis of $I_K+\langle1-za_i\rangle$ is $\{1\}$.
+
+\subsection*{Reduction of variables}
+By Theorem~\ref{thm:A}, $c_1,c_2,c_3$ vanish if and only if $m_0=m_1=m_2=0$, a
+linear system in $a_0,\dots,a_E$ of rank $3$ (Proposition~\ref{prop:cauchy}). We
+therefore parametrize its solution space as $\fe=\sum_{i=1}^{E-2}\gamma_ie_i$, with
+an explicit basis $e_i$ of integer polynomials, check that $c_1,c_2,c_3$ vanish
+identically on this family, and apply \eqref{eq:rab} to $c_4,\dots,c_K$ and the
+variables $\gamma_i$. This is equivalent to the unreduced test, and much faster.
+
+\subsection*{Implementations}
+The polynomials $c_k$ were computed by two independent implementations of
+\eqref{eq:rec}: one in \texttt{SymPy} (exact rational arithmetic) and one written
+directly in \texttt{Singular} \cite{Singular}. We checked that both give identical
+values of $c_1,\dots,c_6$ at random rational parameters, and that the truncated
+series $\rho/(1-\rho\sum_{k\le8}c_k\rho^k)$ agrees with the numerical solution of
+\eqref{eq:abel} up to the expected order $O(\rho^{11})$. Gr\"obner bases were
+computed with \texttt{SymPy}'s \texttt{groebner} and with \texttt{Singular}'s
+\texttt{std} (degree reverse lexicographic order, characteristic $0$). All rows of
+Table~\ref{tab:comp} were obtained with \texttt{Singular}; the rows with
+$\deg\fe\le6$ were also reproduced with \texttt{SymPy} for $n\in\{2,4,6\}$ (and
+$\deg\fo\le7$), and for $n=2$, $\deg\fo\le9$, with identical outcomes. The code is available in the repository
+cited in the Data availability statement.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{@{}ccccl@{}}
+\toprule
+$n$ & $\deg\fe\le$ & $\deg\fo\le$ & $K$ & common zeros of $c_1,\dots,c_K$ with $\fe\ne0$\\
+\midrule
+$2,4,\dots,20$ & 6 & 7 & 8 & exist (over $\C$)\\
+$2,4,\dots,20$ & 6 & 7 & 9 & none\\
+$2,4,\dots,20$ & 6 & 9 & 9 & exist (over $\C$)\\
+$2,4,\dots,20$ & 6 & 9 & 10 & none\\
+$2,4,6$ & 6 & 11 & 10 & exist (over $\C$)\\
+$2,4,6$ & 6 & 11 & 11 & none\\
+$2$ & 8 & 7 & 11 & none\\
+\bottomrule
+\end{tabular}
+\caption{Results of the exact Gr\"obner basis computations.}
+\label{tab:comp}
+\end{table}
+
+\begin{proof}[Proof of Theorem~\ref{thm:E}]
+For (i), use the rows of Table~\ref{tab:comp} marked ``none'' with
+$\deg\fe\le6$. For (ii), use the last row: a polynomial of degree $\le8$ has
+$\deg\fe\le8$ and $\deg\fo\le7$. In both cases a center forces
+$c_1=\dots=c_K=0$, hence $\fe=0$, and conversely odd $f$ gives a center.
+\end{proof}
+
+\begin{remark}
+(1) The computations are exact and decide the absence of \emph{complex}
+solutions; the conclusion therefore holds a fortiori over $\R$.
+(2) The rows with ``exist'' show that, in these degrees, the first $K-1$
+conditions do not suffice. In particular, the sixth to eighth center conditions
+alone do not exclude the exceptional set of Theorem~\ref{thm:D}.
+(3) The computations for $\deg\fe\le6$ take seconds (minutes for
+$\deg\fo\le11$); the case $\deg\fe\le8$ took about one hour of a single core
+with \texttt{std}. A modular computation (\texttt{modStd}) suggests that
+already $K=10$ suffices in that case, but we only claim what was obtained with
+\texttt{std} over $\Q$.
+\end{remark}
+
+%==================================================================
+\section{Further remarks and open problems}\label{sec:final}
+%==================================================================
+
+\begin{problem}
+Prove Conjecture~\ref{conj:LY} for $\deg\fe\le6$ and $\fo$ of arbitrary degree.
+By Theorem~\ref{thm:D}, it suffices to show that the higher center conditions
+exclude the exceptional set \eqref{eq:hyper}. In all cases of Table~\ref{tab:comp} with
+$\deg\fe\le6$ and $\deg\fo=2R+1$, exactly $K=R+6$ conditions are needed
+($K=9,10,11$ for $R=3,4,5$). Is this true for all $R$?
+\end{problem}
+
+\begin{problem}
+Find a closed formula for $u_{k+1}(1)$, modulo the previous conditions, of the form
+$m_k+\mathcal Q_k$, where $\mathcal Q_k$ is a combination of iterated integrals of
+order $\ge2$ in $f$. Theorem~\ref{thm:A} gives $\mathcal Q_3,\mathcal Q_4,\mathcal
+Q_5$; Brudnyi's formalism \cite{Bru06} suggests that a general expression exists.
+Together with Lemma~\ref{lem:parity}, it would extend Theorem~\ref{thm:C} to
+arbitrary numbers of sign changes, under additional orthogonality hypotheses.
+\end{problem}
+
+\begin{problem}
+Extend Theorems~\ref{thm:C}--\ref{thm:E} to trigonometric Abel equations with a
+reflection symmetry $\theta\mapsto-\theta$, where Example~\ref{ex:GGS} shows that the
+nonlinear correction in \eqref{eq:A3} is essential.
+\end{problem}
+
+\section*{Data availability}
+The \texttt{SymPy} and \texttt{Singular} code used for the identities of
+Theorem~\ref{thm:A}, the determinant formula of Proposition~\ref{prop:cauchy},
+Example~\ref{ex:hyper} and Table~\ref{tab:comp} is available at
+\url{https://github.com/Araujo2021/araujo2021.github.io/tree/main/pesquisa/abel-lijun-yun/codigo}.
+
+\section*{Acknowledgements}
+% TODO: funding and acknowledgements.
+
+\begin{thebibliography}{99}
+
+\bibitem{ABCM21}
+A.~\'Alvarez, J.~L.~Bravo, C.~Christopher, P.~Marde\v{s}i\'c,
+\emph{Infinitesimal center problem on zero cycles and the composition conjecture},
+Funct.\ Anal.\ Appl.\ \textbf{55} (2021), no.~4, 257--271.
+
+\bibitem{ALA20}
+A.~M.~Alves, A.~Lemos, A.~L.~A.~de Araujo,
+\emph{A partial positive answer to a Lijun--Yun conjecture},
+Boll.\ Unione Mat.\ Ital.\ \textbf{13} (2020), 49--59.
+
+\bibitem{Alw09}
+M.~A.~M.~Alwash,
+\emph{The composition conjecture for Abel equation},
+Expo.\ Math.\ \textbf{27} (2009), 241--250.
+
+\bibitem{AL87}
+M.~A.~M.~Alwash, N.~G.~Lloyd,
+\emph{Non-autonomous equations related to polynomial two-dimensional systems},
+Proc.\ Roy.\ Soc.\ Edinburgh Sect.\ A \textbf{105} (1987), 129--152.
+
+\bibitem{BE95}
+P.~Borwein, T.~Erd\'elyi,
+\emph{Polynomials and Polynomial Inequalities},
+Graduate Texts in Mathematics \textbf{161}, Springer, New York, 1995.
+
+\bibitem{BFY99}
+M.~Briskin, J.-P.~Fran\c{c}oise, Y.~Yomdin,
+\emph{Center conditions, compositions of polynomials and moments on algebraic curves},
+Ergodic Theory Dynam.\ Systems \textbf{19} (1999), 1201--1220.
+
+\bibitem{BFY00a}
+M.~Briskin, J.-P.~Fran\c{c}oise, Y.~Yomdin,
+\emph{Center conditions II: parametric and model center problems},
+Israel J.\ Math.\ \textbf{118} (2000), 61--82.
+
+\bibitem{BFY00b}
+M.~Briskin, J.-P.~Fran\c{c}oise, Y.~Yomdin,
+\emph{Center conditions III: parametric and model center problems},
+Israel J.\ Math.\ \textbf{118} (2000), 83--108.
+
+\bibitem{BPY16}
+M.~Briskin, F.~Pakovich, Y.~Yomdin,
+\emph{Algebraic geometry of the center-focus problem for Abel differential equations},
+Ergodic Theory Dynam.\ Systems \textbf{36} (2016), 714--744.
+
+\bibitem{BRY10}
+M.~Briskin, N.~Roytvarf, Y.~Yomdin,
+\emph{Center conditions at infinity for Abel differential equations},
+Ann.\ of Math.\ (2) \textbf{172} (2010), 437--483.
+
+\bibitem{Bru06}
+A.~Brudnyi,
+\emph{On the center problem for ordinary differential equations},
+Amer.\ J.\ Math.\ \textbf{128} (2006), 419--451.
+
+\bibitem{Che76}
+L.~A.~Cherkas,
+\emph{Number of limit cycles of an autonomous second-order system},
+Differ.\ Equ.\ \textbf{5} (1976), 666--668.
+
+\bibitem{Chr00}
+C.~Christopher,
+\emph{Abel equations: composition conjectures and the model problem},
+Bull.\ London Math.\ Soc.\ \textbf{32} (2000), 332--338.
+
+\bibitem{CGM13a}
+A.~Cima, A.~Gasull, F.~Ma\~nosas,
+\emph{An explicit bound of the number of vanishing double moments forcing composition},
+J.\ Differential Equations \textbf{255} (2013), 339--350.
+
+\bibitem{CGM13b}
+A.~Cima, A.~Gasull, F.~Ma\~nosas,
+\emph{A simple solution of some composition conjectures for Abel equations},
+J.\ Math.\ Anal.\ Appl.\ \textbf{398} (2013), 477--486.
+
+\bibitem{Singular}
+W.~Decker, G.-M.~Greuel, G.~Pfister, H.~Sch\"onemann,
+\textsc{Singular} 4-3-2 --- A computer algebra system for polynomial computations,
+\url{https://www.singular.uni-kl.de}, 2023.
+
+\bibitem{Gav20}
+L.~Gavrilov,
+\emph{On the center-focus problem for the equation
+$\frac{dy}{dx}+\sum_{i=1}^n a_i(x)y^i=0$, $0\le x\le1$, where $a_i$ are polynomials},
+Ann.\ Henri Lebesgue \textbf{3} (2020), 615--648.
+
+\bibitem{GGL13}
+J.~Gin\'e, M.~Grau, J.~Llibre,
+\emph{Universal centres and composition conditions},
+Proc.\ London Math.\ Soc.\ (3) \textbf{106} (2013), 481--507.
+
+\bibitem{GGS14}
+J.~Gin\'e, M.~Grau, X.~Santallusia,
+\emph{Universal centers in the cubic trigonometric Abel equation},
+Electron.\ J.\ Qual.\ Theory Differ.\ Equ.\ \textbf{2014}, No.~1, 1--7.
+
+\bibitem{GGS19}
+J.~Gin\'e, M.~Grau, X.~Santallusia,
+\emph{A counterexample to the composition condition conjecture for polynomial Abel
+differential equations},
+Ergodic Theory Dynam.\ Systems \textbf{39} (2019), 3347--3352.
+
+\bibitem{Kar68}
+S.~Karlin,
+\emph{Total Positivity}, Vol.~I, Stanford University Press, Stanford, 1968.
+
+\bibitem{LY01}
+Y.~Lijun, T.~Yun,
+\emph{Some new results on Abel equations},
+J.\ Math.\ Anal.\ Appl.\ \textbf{261} (2001), 100--112.
+
+\bibitem{LN80}
+A.~Lins Neto,
+\emph{On the number of solutions of the equation
+$dx/dt=\sum_{j=0}^na_j(t)x^j$, $0\le t\le1$, for which $x(0)=x(1)$},
+Invent.\ Math.\ \textbf{59} (1980), 67--76.
+
+\bibitem{Pak02}
+F.~Pakovich,
+\emph{A counterexample to the ``composition conjecture''},
+Proc.\ Amer.\ Math.\ Soc.\ \textbf{130} (2002), 3747--3749.
+
+\bibitem{PM09}
+F.~Pakovich, M.~Muzychuk,
+\emph{Solution of the polynomial moment problem},
+Proc.\ London Math.\ Soc.\ (3) \textbf{99} (2009), 633--657.
+
+\bibitem{Pak17}
+F.~Pakovich,
+\emph{Solution of the parametric center problem for the Abel differential equation},
+J.\ Eur.\ Math.\ Soc.\ \textbf{19} (2017), 2343--2369.
+
+\bibitem{PS76}
+G.~P\'olya, G.~Szeg\H{o},
+\emph{Problems and Theorems in Analysis}, Vol.~II, Springer, Berlin, 1976.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,41 @@
+// Independent check in Singular of:  u_1(1)=...=u_K(1)=0  ==>  f_e = 0
+// for x' = f(t) x^3 + t^(n-1) x^2 on [-1,1],
+// f = sum_{j<=E} a(j) t^(2j) + sum_{j<=R} b(j) t^(2j+1).
+// Usage:  Singular -q --no-warn -c 'int n=2; int E=3; int R=3; int K=9;' center_check.sing
+// Prints, for each even coefficient a(j), whether 1 is in I + <1 - z*a(j)>
+// (i.e. a(j) lies in the radical of the ideal of the first K center conditions).
+ring r = 0,(z,t,a(0..E),b(0..R)),dp;
+option(redSB);
+proc prim(poly p)
+{
+  // antiderivative in t vanishing at t = -1
+  poly q = 0; int d = deg(p, intvec(0,1,0:(E+1+R+1)));
+  int i; poly c;
+  matrix M = coeffs(p, t);
+  for (i = 0; i <= d; i++) { c = M[i+1,1]; q = q + c*t^(i+1)/(i+1); }
+  return(q - subst(q, t, -1));
+}
+poly f = 0; int j;
+for (j = 0; j <= E; j++) { f = f + a(j)*t^(2*j); }
+for (j = 0; j <= R; j++) { f = f + b(j)*t^(2*j+1); }
+list u; list S;
+u[1] = prim(t^(n-1));        // u_0 (Singular lists are 1-based)
+S[1] = 1;                    // S_0
+int k; int i; poly s;
+ideal I;
+for (k = 1; k <= K; k++)
+{
+  u[k+1] = prim(f*S[k]);     // u_k = int f S_{k-1}
+  s = 0;
+  for (i = 0; i <= k-1; i++) { s = s + u[i+1]*S[k-i]; }   // S_k = sum u_i S_{k-1-i}
+  S[k+1] = s;
+  I = I + subst(u[k+1], t, 1);
+}
+int ok = 1; ideal J;
+for (j = 0; j <= E; j++)
+{
+  J = std(I + ideal(1 - z*a(j)));
+  if (!(size(J) == 1 && J[1] == 1)) { ok = 0; }
+}
+print("n=" + string(n) + " deg fe<=" + string(2*E) + " deg fo<=" + string(2*R+1) + " K=" + string(K) + " : fe=0 forced? " + string(ok));
+quit;
