@@ -1,0 +1,93 @@
+% ============================================================
+\chapter{Do Maxima para o Python}
+\label{ap:maxima}
+% ============================================================
+
+Esta tabela ajuda a adaptar as atividades feitas com o Maxima. Supõe-se que foram executados
+\py{import sympy as sp}, \py{import numpy as np}, \py{import matplotlib.pyplot as plt} e
+\py{x, y, t = sp.symbols('x y t')}.
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.18}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.3cm}>{\raggedright\arraybackslash}p{5.6cm}@{}}
+\toprule
+\textbf{Tarefa} & \textbf{Maxima} & \textbf{Python (SymPy/NumPy)}\\
+\midrule
+\endhead
+\multicolumn{3}{@{}l}{\textbf{\sffamily Básico}}\\
+atribuição & \texttt{a: 5;} & \py{a = 5}\\
+definir função & \texttt{f(x) := x\^{}2 + 1;} & \py{def f(x): return x**2 + 1} ou \py{f = x**2 + 1} (expressão)\\
+avaliar & \texttt{f(2);} \ \texttt{ev(e, x=2);} \ \texttt{subst(2, x, e);} & \py{f(2)} \ ou \ \py{e.subs(x, 2)}\\
+potência & \texttt{x\^{}2} ou \texttt{x**2} & \py{x**2} (\textbf{nunca} \py{x^2})\\
+constantes & \texttt{\%pi}, \texttt{\%e}, \texttt{\%i}, \texttt{inf} & \py{sp.pi}, \py{sp.E}, \py{sp.I}, \py{sp.oo}\\
+valor numérico & \texttt{float(e);} \ \texttt{bfloat(e), fpprec:50;} & \py{e.evalf()} \ \ \py{sp.N(e, 50)}\\
+fração exata & \texttt{1/3} & \py{sp.Rational(1, 3)} (\py{1/3} é \py{float})\\
+último resultado & \texttt{\%} & \py{_} (no Jupyter)\\
+listas & \texttt{L: [1, 2, 3]; L[1];} & \py{L = [1, 2, 3]}; \py{L[0]} (começa em 0)\\
+gerar lista & \texttt{makelist(k\^{}2, k, 1, 10);} & \py{[k**2 for k in range(1, 11)]}\\
+soma de lista & \texttt{apply("+", L);} \ \texttt{lsum(k, k, L);} & \py{sum(L)}\\
+\multicolumn{3}{@{}l}{\textbf{\sffamily Álgebra}}\\
+expandir & \texttt{expand(e);} & \py{sp.expand(e)}\\
+fatorar & \texttt{factor(e);} & \py{sp.factor(e)}\\
+simplificar & \texttt{ratsimp(e);} \ \texttt{fullratsimp(e);} & \py{sp.simplify(e)}, \py{sp.cancel(e)}\\
+trigonometria & \texttt{trigsimp}, \texttt{trigexpand}, \texttt{trigreduce} & \py{sp.trigsimp}, \py{sp.expand_trig}, \py{sp.fu}\\
+frações parciais & \texttt{partfrac(e, x);} & \py{sp.apart(e, x)}\\
+agrupar & \texttt{collectterms(e, x);} & \py{sp.collect(e, x)}\\
+numerador, denominador & \texttt{num(e)}, \texttt{denom(e)} & \py{sp.numer(e)}, \py{sp.denom(e)}\\
+divisão de polinômios & \texttt{divide(p, q, x);} & \py{sp.div(p, q, x)}\\
+hipóteses & \texttt{assume(a > 0);} & \py{a = sp.symbols('a', positive=True)}\\
+\multicolumn{3}{@{}l}{\textbf{\sffamily Equações}}\\
+resolver & \texttt{solve(x\^{}2 = 4, x);} & \py{sp.solve(sp.Eq(x**2, 4), x)} ou \py{sp.solve(x**2 - 4, x)}\\
+sistema & \texttt{solve([eq1, eq2], [x, y]);} & \py{sp.solve([eq1, eq2], [x, y], dict=True)}\\
+sistema linear & \texttt{linsolve([eq1, eq2], [x, y]);} & \py{sp.linsolve([eq1, eq2], [x, y])}\\
+raízes numéricas & \texttt{allroots(p);} \ \texttt{realroots(p);} & \py{sp.Poly(p, x).nroots()}, \py{sp.real_roots(p)}, \py{np.roots(coef)}\\
+raiz numérica & \texttt{find\_root(f, x, a, b);} & \py{sp.nsolve(f, x, chute)}\\
+inequação & \texttt{fourier\_elim} / \texttt{solve\_rat\_ineq} & \py{sp.solveset(x**2 > 4, x, sp.S.Reals)}\\
+lado direito & \texttt{rhs(eq);} & \py{eq.rhs}\\
+\multicolumn{3}{@{}l}{\textbf{\sffamily Cálculo}}\\
+limite & \texttt{limit(f, x, 0);} & \py{sp.limit(f, x, 0, '+-')} (sem \py{'+-'}: pela direita)\\
+limite lateral & \texttt{limit(f, x, 0, plus);} \ \texttt{minus} & \py{sp.limit(f, x, 0, '+')}, \py{'-'}\\
+derivada & \texttt{diff(f, x);} \ \texttt{diff(f, x, 2);} & \py{sp.diff(f, x)}, \py{sp.diff(f, x, 2)}\\
+derivada parcial mista & \texttt{diff(f, x, 1, y, 1);} & \py{sp.diff(f, x, y)}\\
+derivada em ponto & \texttt{at(diff(f,x), x=a);} & \py{sp.diff(f, x).subs(x, a)}\\
+primitiva & \texttt{integrate(f, x);} & \py{sp.integrate(f, x)}\\
+integral definida & \texttt{integrate(f, x, a, b);} & \py{sp.integrate(f, (x, a, b))}\\
+integral numérica & \texttt{quad\_qags(f, x, a, b);} & \py{sp.Integral(f, (x, a, b)).evalf()}\\
+somatório & \texttt{sum(k\^{}2, k, 1, n), simpsum;} & \py{sp.summation(k**2, (k, 1, n))}\\
+Taylor & \texttt{taylor(f, x, 0, 5);} & \py{sp.series(f, x, 0, 6)}\\
+EDO & \texttt{ode2('diff(y,x) = x*y, y, x);} & \py{sp.dsolve(sp.Eq(y(x).diff(x), x*y(x)), y(x))}\\
+condição inicial & \texttt{ic1(sol, x=0, y=1);} \ \texttt{ic2(...)} & \py{sp.dsolve(..., ics={y(0): 1})}\\
+\multicolumn{3}{@{}l}{\textbf{\sffamily Matrizes}}\\
+criar & \texttt{A: matrix([1,2],[3,4]);} & \py{A = sp.Matrix([[1, 2], [3, 4]])} ou \py{np.array(...)}\\
+elemento & \texttt{A[1,2]} & \py{A[0, 1]} (começa em 0)\\
+produto & \texttt{A . B} & \py{A * B} (SymPy), \py{A @ B} (NumPy e SymPy)\\
+transposta, inversa & \texttt{transpose(A)}, \texttt{invert(A)}, \texttt{A\^{}\^{}-1} & \py{A.T}, \py{A.inv()}\\
+determinante & \texttt{determinant(A);} & \py{A.det()} (SymPy), \py{np.linalg.det(A)}\\
+escalonar & \texttt{echelon(A);} & \py{A.rref()}\\
+posto, núcleo & \texttt{rank(A)}, \texttt{nullspace(A)} & \py{A.rank()}, \py{A.nullspace()}\\
+autovalores & \texttt{eigenvalues(A);} \ \texttt{eigenvectors(A);} & \py{A.eigenvals()}, \py{A.eigenvects()}\\
+identidade & \texttt{ident(n)} & \py{sp.eye(n)}, \py{np.eye(n)}\\
+\multicolumn{3}{@{}l}{\textbf{\sffamily Gráficos}}\\
+função & \texttt{plot2d(f, [x, a, b]);} & \py{sp.plot(f, (x, a, b))} ou Matplotlib\\
+várias funções & \texttt{plot2d([f, g], [x, a, b]);} & \py{sp.plot(f, g, (x, a, b))}\\
+paramétrica & \texttt{plot2d([parametric, cos(t), sin(t), [t,0,2*\%pi]]);} & \py{sp.plot_parametric(sp.cos(t), sp.sin(t), (t, 0, 2*sp.pi))}\\
+implícita & \texttt{implicit\_plot(x\^{}2+y\^{}2=1, [x,-2,2], [y,-2,2]);} & \py{sp.plot_implicit(sp.Eq(x**2 + y**2, 1))}\\
+superfície & \texttt{plot3d(f, [x,a,b], [y,c,d]);} & \py{from sympy.plotting import plot3d}; \py{plot3d(f, (x, a, b), (y, c, d))}\\
+pontos & \texttt{plot2d([discrete, xs, ys]);} & \py{plt.plot(xs, ys, "o")}\\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\section*{Diferenças que mais causam erros}
+
+\begin{enumerate}
+  \item \textbf{Índices começam em 0} no Python e em 1 no Maxima.
+  \item \textbf{Símbolos precisam ser declarados} no SymPy: \py{x = sp.symbols('x')}.
+  \item \textbf{Frações}: \py{1/3} é um número decimal. Use \py{sp.Rational(1, 3)} quando quiser exatidão.
+  \item \textbf{Potência}: \py{**}; o \py{^} não é potência.
+  \item \textbf{Integral definida}: os limites vão em uma tupla, \py{(x, a, b)}.
+  \item \textbf{Limite sem direção}: no SymPy é pela direita; use \py{'+-'} para o bilateral.
+  \item \textbf{Prefixos}: \py{sp.sin} (simbólico), \py{np.sin} (vetores numéricos) e \py{math.sin} (um número) são
+  funções diferentes; use cada uma no seu contexto.
+  \item \textbf{Igualdade}: \py{=} atribui, \py{==} compara, \py{sp.Eq(a, b)} escreve a equação $a=b$.
+\end{enumerate}

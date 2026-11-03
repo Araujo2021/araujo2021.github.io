@@ -1,0 +1,100 @@
+\chapter*{Apresentação}
+\addcontentsline{toc}{chapter}{Apresentação}
+\markboth{Apresentação}{Apresentação}
+
+Este material organiza a parte final da disciplina MAT 172 em \textbf{dez aulas de 60 a 90 minutos},
+usando a linguagem Python no \textbf{JupyterLab}. Ele substitui as atividades que antes eram feitas com o
+software Maxima e segue o roteiro abaixo:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}>{\sffamily\bfseries}c >{\raggedright\arraybackslash}p{4.2cm} X @{}}
+\toprule
+\textbf{Aula} & \textbf{Tema} & \textbf{Conteúdo principal}\\
+\midrule
+1 & Revisão de Python I & JupyterLab; \texttt{print}, \texttt{input}, \texttt{int}, \texttt{float}, \texttt{type}; variáveis; operações aritméticas; comparação; \texttt{and}, \texttt{or}, \texttt{not}; \texttt{if}/\texttt{elif}/\texttt{else}; \texttt{for}; \texttt{while}; indentação.\\
+2 & Revisão de Python II & Listas, tuplas (e dicionários); fatiamento; percorrer listas; definição de funções com \texttt{def}, \texttt{return}, parâmetros e \texttt{lambda}.\\
+3 & O módulo \texttt{math} & Importação de módulos; piso e teto; raiz, exponencial, logaritmo; trigonometria; fatorial e combinações; raiz quadrada pelo método babilônico; teste de primalidade; bissecção.\\
+4 & NumPy I: vetores & \texttt{array}, \texttt{arange}, \texttt{linspace}; operações elemento a elemento; funções universais; indexação e máscaras; somas, médias; regra dos trapézios.\\
+5 & NumPy II: matrizes & Matrizes 2D, produto \texttt{@}, transposta, \texttt{det}, \texttt{inv}, \texttt{solve}, autovalores; eliminação de Gauss; polinômios (\texttt{roots}, \texttt{polyval}).\\
+6 & Gráficos (Matplotlib) & \texttt{plot}, estilos, legendas e eixos; vários gráficos; curvas paramétricas e polares; curvas de nível; superfícies 3D; salvar figuras.\\
+7 & SymPy I: álgebra & Símbolos e expressões; \texttt{expand}, \texttt{factor}, \texttt{simplify}; \texttt{subs}, \texttt{evalf}; \texttt{solve}, \texttt{nsolve}, \texttt{linsolve}; gráficos do SymPy.\\
+8 & SymPy II: limites e derivadas & \texttt{limit} (laterais, no infinito); derivada pela definição; \texttt{diff}; reta tangente; máximos e mínimos; série de Taylor.\\
+9 & SymPy III: integrais & \texttt{integrate}: indefinidas, definidas, impróprias; áreas; volumes de revolução; somas de Riemann; integrais duplas.\\
+10 & SymPy IV: matrizes e EDOs & \texttt{Matrix}, determinante, inversa, \texttt{rref}, autovalores; equações diferenciais com \texttt{dsolve}; atividade de encerramento.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+As aulas 1 e 2 seguem o capítulo~3 do livro \emph{Python para Matemáticos} (SBM); a aula~3 segue o capítulo~4;
+as aulas 4 e 5, o capítulo~5; a aula~6, o capítulo~6. As aulas 7 a 10 usam o \emph{Tutorial rápido de Python para
+Matemáticos} de R. M. Martins e reproduzem, com o SymPy, os tipos de cálculo que eram feitos no Maxima.
+O Apêndice~\ref{ap:maxima} traz uma tabela de correspondência entre comandos do Maxima e do SymPy.
+
+\section*{Como ler este material}
+
+Os códigos aparecem como \textbf{células do JupyterLab}. O número entre colchetes à esquerda é a ordem de execução
+dentro da aula, como no Jupyter. Logo abaixo de cada célula, marcada por uma barra vermelha, aparece a \textbf{saída}
+que o Jupyter mostra:
+
+\begin{entrada}
+x = 7
+print("O dobro de x é", 2*x)
+\end{entrada}
+\begin{saida}
+O dobro de x é 14
+\end{saida}
+
+Quando a última linha de uma célula é uma expressão (sem \py{print}), o Jupyter mostra o seu valor automaticamente.
+No caso do SymPy, o resultado aparece formatado como fórmula matemática:
+
+\begin{entrada}
+import sympy as sp
+x = sp.symbols('x')
+sp.expand((x + 1)**3)
+\end{entrada}
+\begin{saidamat}
+$x^{3} + 3 x^{2} + 3 x + 1$
+\end{saidamat}
+
+\noindent Ao longo do texto também aparecem caixas com finalidades específicas:
+
+\begin{itemize}
+  \item \textcolor{azul}{\textbf{Sintaxe}}: a forma geral de um comando;
+  \item \textcolor{verde!70!black}{\textbf{Observação}} e \textcolor{laranja}{\textbf{Dica}}: detalhes e atalhos úteis;
+  \item \textcolor{vermelho}{\textbf{Atenção}}: erros comuns dos estudantes;
+  \item \textcolor{roxo}{\textbf{Para quem vem do Maxima}}: o comando equivalente no Maxima;
+  \item \textbf{Exercício} e \textbf{Desafio}: atividades para a aula ou para casa.
+\end{itemize}
+
+Cada aula começa com os objetivos e um \textbf{roteiro sugerido} com a divisão do tempo. Os tempos somam cerca de
+80 minutos; os exercícios marcados como ``extra'' podem ser usados quando a aula tiver 90 minutos, ou deixados para casa.
+
+\ifprofessor
+\begin{professor}
+Esta é a versão do professor. Ela contém notas como esta (sugestões de condução da aula, erros frequentes,
+perguntas para a turma) e, no Apêndice~\ref{ap:solucoes}, as soluções de todos os exercícios. A versão do
+estudante (\texttt{curso-aluno.pdf}) é idêntica, mas sem as notas e sem as soluções.
+
+Todos os códigos deste material foram executados com Python~3.13, NumPy~2.5, SymPy~1.14 e Matplotlib~3.11; as
+saídas mostradas são as reais. Os notebooks de cada aula, prontos para abrir no JupyterLab, estão na pasta
+\texttt{notebooks/}.
+\end{professor}
+\fi
+
+\section*{Antes da primeira aula}
+
+\begin{itemize}
+  \item Verifique se o JupyterLab abre nas máquinas do laboratório (no terminal: \texttt{jupyter lab}).
+  \item Teste se as bibliotecas estão instaladas, executando em uma célula:
+\end{itemize}
+\begin{codigo}
+import numpy, sympy, matplotlib
+print(numpy.__version__, sympy.__version__, matplotlib.__version__)
+\end{codigo}
+\begin{itemize}
+  \item Se faltar alguma, instale com \texttt{pip install numpy sympy matplotlib jupyterlab} (ou, dentro do próprio
+  notebook, \texttt{\%pip install sympy}).
+  \item Alternativas sem instalação: \url{https://jupyter.org/try-jupyter} (JupyterLite, roda no navegador) ou o
+  Google Colab (\url{https://colab.research.google.com}).
+\end{itemize}

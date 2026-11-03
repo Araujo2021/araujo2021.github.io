@@ -1,0 +1,908 @@
+% ============================================================
+\chapter{Revisão de Python I: comandos básicos, decisões e repetições}
+\label{cap:aula1}
+% ============================================================
+
+\begin{objetivos}
+Ao final desta aula o estudante deve ser capaz de:
+\begin{itemize}
+  \item usar o JupyterLab: criar um notebook, executar células e reiniciar o \emph{kernel};
+  \item usar os comandos \py{print()}, \py{input()}, \py{int()}, \py{float()}, \py{str()} e \py{type()};
+  \item atribuir valores a variáveis e usar as operações aritméticas e os operadores de atribuição;
+  \item escrever condições com operadores de comparação e com \py{and}, \py{or}, \py{not};
+  \item usar \py{if}, \py{elif}, \py{else}, \py{for} e \py{while}, respeitando a indentação.
+\end{itemize}
+\end{objetivos}
+
+\begin{roteiro}
+0--10 min & O JupyterLab: notebook, células, \texttt{Shift+Enter}, células de texto.\\
+10--25 min & \py{print}, comentários, variáveis, tipos de dados e conversões.\\
+25--40 min & Operações aritméticas, precedência, \py{input()} e f-strings.\\
+40--50 min & Comparações e operadores lógicos.\\
+50--65 min & \py{if}/\py{elif}/\py{else} e a indentação.\\
+65--80 min & Repetições com \py{for} e \py{while}. Exercícios.\\
+\end{roteiro}
+
+% ------------------------------------------------------------
+\section{O ambiente JupyterLab}
+% ------------------------------------------------------------
+
+O \textbf{JupyterLab} é um ambiente que roda no navegador e permite misturar, em um mesmo documento
+(o \emph{notebook}, arquivo \texttt{.ipynb}), trechos de código, os resultados desse código, textos e fórmulas.
+Para abri-lo, digite no terminal
+\begin{terminal}
+jupyter lab
+\end{terminal}
+ou procure ``JupyterLab'' no menu do sistema. Na tela inicial (\emph{Launcher}), clique em
+\textbf{Notebook~$\to$~Python~3}. A Figura~\ref{fig:jupyter} mostra as partes principais da janela.
+
+\begin{figure}[ht]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[font=\sffamily\small, x=1cm, y=1cm]
+  % janela
+  \draw[rounded corners=3pt, fill=gray!5, draw=gray!60] (0,0) rectangle (14,8.2);
+  \fill[gray!20, rounded corners=3pt] (0,7.6) rectangle (14,8.2);
+  \fill[red!60] (0.35,7.9) circle (0.09); \fill[orange!70] (0.65,7.9) circle (0.09); \fill[green!60!black] (0.95,7.9) circle (0.09);
+  \node[anchor=west] at (1.3,7.9) {Arquivo \quad Editar \quad Exibir \quad Executar \quad Kernel \quad Abas \quad Ajuda};
+  % barra lateral
+  \fill[gray!12] (0,0) rectangle (2.6,7.6);
+  \node[anchor=north west, align=left, font=\sffamily\scriptsize] at (0.15,7.45) {\textbf{Arquivos}\\[2pt]
+     aula01.ipynb\\ aula02.ipynb\\ dados.csv};
+  % aba
+  \draw[fill=white, draw=gray!50] (2.8,7.0) rectangle (5.6,7.5) node[midway] {aula01.ipynb};
+  % barra de ferramentas
+  \draw[fill=white, draw=gray!40] (2.8,6.4) rectangle (13.8,6.95);
+  \node[anchor=west, font=\sffamily\scriptsize] at (2.9,6.68) {\textbf{+} \ \ \ \ $\blacktriangleright$ \ (executar) \ \ \ $\blacksquare$ (parar) \ \ \ $\circlearrowright$ (reiniciar) \ \ \ Code $\blacktriangledown$};
+  \node[anchor=east, font=\sffamily\scriptsize] at (13.7,6.68) {Python 3 (ipykernel) \ $\circ$};
+  % célula markdown
+  \node[anchor=north west, font=\sffamily\bfseries\large] at (3.9,6.2) {Aula 1 -- Revisão de Python};
+  % célula de código 1
+  \draw[fill=fundocod, draw=bordacod] (3.9,4.6) rectangle (13.6,5.4);
+  \node[anchor=west, text=azul, font=\ttfamily\small] at (2.85,5.15) {[1]:};
+  \node[anchor=north west, font=\ttfamily\small, align=left] at (4.0,5.35) {x = 7\\print("O dobro de x é", 2*x)};
+  \node[anchor=west, font=\ttfamily\small] at (4.0,4.25) {O dobro de x é 14};
+  % célula ativa
+  \fill[azul!70] (3.72,1.9) rectangle (3.82,3.75);
+  \draw[fill=white, draw=azul!60, thick] (3.9,2.95) rectangle (13.6,3.75);
+  \node[anchor=west, text=azul, font=\ttfamily\small] at (2.85,3.5) {[2]:};
+  \node[anchor=north west, font=\ttfamily\small, align=left] at (4.0,3.7) {y = x**2 + 1\\y};
+  \node[anchor=west, text=vermelho, font=\ttfamily\small] at (2.85,2.3) {[2]:};
+  \node[anchor=west, font=\ttfamily\small] at (4.0,2.3) {50};
+  % célula vazia
+  \draw[fill=fundocod, draw=bordacod] (3.9,0.6) rectangle (13.6,1.3);
+  \node[anchor=west, text=azul, font=\ttfamily\small] at (2.85,1.05) {[ ]:};
+  % anotações
+  \draw[-{Stealth}, vermelho, thick] (15.1,6.3) node[right, align=left, text=vermelho] {célula de texto\\(Markdown)} -- (12.3,5.95);
+  \draw[-{Stealth}, vermelho, thick] (15.1,4.9) node[right, align=left, text=vermelho] {célula de código\\e sua saída} -- (13.65,4.95);
+  \draw[-{Stealth}, vermelho, thick] (15.1,3.35) node[right, align=left, text=vermelho] {célula selecionada\\(barra azul)} -- (13.65,3.35);
+  \draw[-{Stealth}, vermelho, thick] (15.1,2.1) node[right, align=left, text=vermelho] {valor da última\\expressão} -- (4.5,2.3);
+  \draw[-{Stealth}, vermelho, thick] (15.1,0.9) node[right, align=left, text=vermelho] {célula ainda\\não executada} -- (13.65,0.95);
+  \draw[-{Stealth}, vermelho, thick] (1.3,-0.5) node[below, text=vermelho] {número = ordem de execução} -- (3.1,0.9);
+\end{tikzpicture}}
+\caption{Esquema da janela do JupyterLab com um notebook aberto.}
+\label{fig:jupyter}
+\end{figure}
+
+\paragraph{Células.} Um notebook é uma sequência de \emph{células}. Há dois tipos principais:
+\begin{itemize}
+  \item \textbf{Code} (código): contém comandos Python. Ao executá-la, o resultado aparece logo abaixo;
+  \item \textbf{Markdown} (texto): contém títulos, explicações e fórmulas em \LaTeX, como \verb|$x^2+1$|.
+\end{itemize}
+
+Para executar a célula selecionada, use \textbf{Shift+Enter} (executa e passa para a próxima) ou
+\textbf{Ctrl+Enter} (executa e permanece na mesma). O número que aparece em \texttt{[ ]:} indica a
+\emph{ordem} em que as células foram executadas; uma célula com \texttt{[*]:} ainda está em execução.
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Atalho} & \textbf{Efeito} \\
+\midrule
+\texttt{Shift+Enter} & executa a célula e seleciona a próxima \\
+\texttt{Ctrl+Enter} & executa a célula e continua nela \\
+\texttt{Esc} / \texttt{Enter} & sai do modo de edição / entra no modo de edição \\
+\texttt{A} / \texttt{B} (fora da edição) & insere célula acima / abaixo \\
+\texttt{D}, \texttt{D} (fora da edição) & apaga a célula \\
+\texttt{M} / \texttt{Y} (fora da edição) & transforma a célula em texto / em código \\
+\texttt{Ctrl+S} & salva o notebook \\
+\texttt{Tab} & completa o nome de um comando ou variável \\
+\texttt{Shift+Tab} & mostra a ajuda do comando onde está o cursor \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{atencao}[Atenção: a ordem de execução importa]
+O Python ``lembra'' tudo o que já foi executado, \emph{na ordem em que foi executado}, e não na ordem em que as
+células aparecem na tela. Se algo estranho acontecer, use \textbf{Kernel~$\to$~Restart Kernel and Run All Cells}
+para recomeçar do zero e executar tudo de cima para baixo.
+\end{atencao}
+
+\begin{maxima}
+No wxMaxima as entradas aparecem como \texttt{(\%i1)} e as saídas como \texttt{(\%o1)}; no Jupyter são
+\texttt{[1]:}. No Maxima cada comando termina com \texttt{;} (ou \texttt{\$} para não mostrar o resultado) e
+se executa com \texttt{Shift+Enter}, como aqui. Em Python \textbf{não} se usa ponto e vírgula no fim da linha.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Primeiros comandos: \texttt{print} e comentários}
+% ------------------------------------------------------------
+
+O comando \py{print()} mostra na tela um ou mais valores, separados por vírgula. Tudo que vem depois do
+símbolo \py{#} é um \textbf{comentário}: o Python ignora, mas serve para explicar o código a quem lê.
+
+\begin{entrada}
+# meu primeiro programa
+print("Olá, MAT 172!")
+print("2 + 3 =", 2 + 3)       # texto e número na mesma linha
+print(1, 2, 3, sep=" < ")     # sep: o que vai entre os valores
+print("sem pular linha", end=" ... ")
+print("continuação")
+\end{entrada}
+\begin{saida}
+Olá, MAT 172!
+2 + 3 = 5
+1 < 2 < 3
+sem pular linha ... continuação
+\end{saida}
+
+\begin{sintaxe}
+print(valor1, valor2, ..., sep=" ", end="\n")
+\end{sintaxe}
+
+Por padrão os valores são separados por um espaço (\py{sep=" "}) e, no final, o \py{print} pula uma linha
+(\py{end="\n"}). Textos (\emph{strings}) ficam entre aspas simples \py{'...'} ou duplas \py{"..."}.
+
+\begin{dica}
+Para ver a ajuda de qualquer comando, use \py{help(print)} ou digite \py{print?} em uma célula.
+\end{dica}
+
+% ------------------------------------------------------------
+\section{Variáveis e atribuição}
+% ------------------------------------------------------------
+
+Uma \textbf{variável} é um nome associado a um valor. A associação é feita com o sinal \py{=}, que em Python
+\textbf{não} significa igualdade matemática, mas sim \emph{atribuição}: ``calcule o lado direito e guarde o
+resultado com o nome do lado esquerdo''.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\small,
+   nome/.style={draw=azul, fill=azul!8, rounded corners=2pt, minimum width=1.6cm, minimum height=0.6cm, font=\ttfamily},
+   val/.style={draw=gray!70, fill=fundocod, minimum width=1.4cm, minimum height=0.6cm, font=\ttfamily}]
+  \node[nome] (a) at (0,0) {raio};   \node[val] (va) at (3,0) {2.5};
+  \node[nome] (b) at (0,-1) {area};  \node[val] (vb) at (3,-1) {19.625};
+  \draw[-{Stealth}, thick] (a) -- (va); \draw[-{Stealth}, thick] (b) -- (vb);
+  \node[anchor=west, font=\ttfamily] at (5,0) {raio = 2.5};
+  \node[anchor=west, font=\ttfamily] at (5,-1) {area = 3.14 * raio**2};
+  \node[anchor=west, text=gray] at (5,-1.7) {(primeiro calcula $3{,}14\cdot 2{,}5^2$, depois guarda em \texttt{area})};
+\end{tikzpicture}
+\caption{Uma variável é um nome (etiqueta) que aponta para um valor guardado na memória.}
+\end{figure}
+
+\begin{entrada}
+raio = 2.5
+area = 3.14 * raio**2
+print("A área do círculo é", area)
+raio = 10          # a variável pode receber outro valor
+print("Novo raio:", raio, "  área antiga:", area)
+\end{entrada}
+\begin{saida}
+A área do círculo é 19.625
+Novo raio: 10   área antiga: 19.625
+\end{saida}
+
+Observe que mudar \py{raio} \emph{não} recalcula \py{area}: a conta foi feita no momento da atribuição.
+
+\paragraph{Regras para nomes.} Os nomes podem ter letras, dígitos e o sublinhado \py{_}, mas
+\textbf{não podem começar com dígito} nem conter espaços ou hífen. Letras maiúsculas e minúsculas são diferentes
+(\py{x} e \py{X} são variáveis distintas). Também não se pode usar as \emph{palavras reservadas}:
+
+\begin{center}\ttfamily\small
+\begin{tabular}{*{9}{l}}
+False & None & True & and & as & assert & break & class & continue\\
+def & del & elif & else & except & finally & for & from & global\\
+if & import & in & is & lambda & nonlocal & not & or & pass\\
+raise & return & try & while & with & yield
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Válidos} & \textbf{Inválidos} \\
+\midrule
+\py{x}, \py{x1}, \py{soma_total}, \py{Area}, \py{_aux} & \py{1x}, \py{soma total}, \py{soma-total}, \py{if}, \py{for}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Atribuição múltipla.} Podemos atribuir vários valores de uma só vez, o que permite, por exemplo,
+\emph{trocar} os valores de duas variáveis sem variável auxiliar:
+
+\begin{entrada}
+a, b = 3, 8
+print("antes:  a =", a, " b =", b)
+a, b = b, a
+print("depois: a =", a, " b =", b)
+\end{entrada}
+\begin{saida}
+antes:  a = 3  b = 8
+depois: a = 8  b = 3
+\end{saida}
+
+\paragraph{Operadores de atribuição.} É muito comum atualizar uma variável a partir do seu próprio valor,
+como em \py{n = n + 1}. Para isso existem atalhos:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Operador} & \textbf{Exemplo} & \textbf{Equivale a} \\
+\midrule
+\py{+=} & \py{n += 2} & \py{n = n + 2}\\
+\py{-=} & \py{n -= 2} & \py{n = n - 2}\\
+\py{*=} & \py{n *= 2} & \py{n = n * 2}\\
+\py{/=} & \py{n /= 2} & \py{n = n / 2}\\
+\py{//=} & \py{n //= 2} & \py{n = n // 2}\\
+\py{%=} & \py{n %= 2} & \py{n = n % 2}\\
+\py{**=} & \py{n **= 2} & \py{n = n ** 2}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{entrada}
+n = 13
+n -= 15;  print(n)
+n **= 4;  print(n)
+n /= 4;   print(n)
+n %= 3;   print(n)
+\end{entrada}
+\begin{saida}
+-2
+16
+4.0
+1.0
+\end{saida}
+
+\begin{observacao}
+O ponto e vírgula \py{;} permite escrever dois comandos na mesma linha. Isso é raro em Python e só foi feito
+aqui para economizar espaço; o normal é um comando por linha.
+\end{observacao}
+
+% ------------------------------------------------------------
+\section{Tipos de dados e conversões}
+% ------------------------------------------------------------
+
+Todo valor em Python tem um \textbf{tipo}, que pode ser consultado com \py{type()}. Os tipos básicos são:
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Tipo} & \textbf{Nome} & \textbf{Exemplos} & \textbf{Em matemática}\\
+\midrule
+\py{int} & inteiro & \py{7}, \py{-3}, \py{0}, \py{10**30} & $\ZZ$ (sem limite de tamanho) \\
+\py{float} & ponto flutuante & \py{2.5}, \py{-0.001}, \py{1.23e8}, \py{7.0} & aproximação de $\RR$ \\
+\py{complex} & complexo & \py{3+2j}, \py{1j} & $\mathbb{C}$ (a unidade imaginária é \py{j})\\
+\py{bool} & lógico & \py{True}, \py{False} & verdadeiro, falso \\
+\py{str} & texto (\emph{string}) & \py{"MAT 172"}, \py{'x'}, \py{"3"} & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{entrada}
+print(type(7), type(7.0), type(3+2j), type(True), type("7"))
+print(1.23e8)        # notação científica: 1,23 x 10^8
+print(2**100)        # inteiros não têm limite de tamanho
+\end{entrada}
+\begin{saida}
+<class 'int'> <class 'float'> <class 'complex'> <class 'bool'> <class 'str'>
+123000000.0
+1267650600228229401496703205376
+\end{saida}
+
+\paragraph{Conversões.} Os comandos \py{int()}, \py{float()}, \py{str()} e \py{complex()} convertem um valor de um
+tipo para outro. Atenção: \py{int()} \emph{corta} a parte decimal (não arredonda); para arredondar use \py{round()}.
+
+\begin{entrada}
+print(int(3.99), int(-3.99), round(3.99), round(3.14159, 2))
+print(float(5), float("2.5"), int("42") + 1)
+print(str(10) + str(20))       # junção de textos, não soma!
+\end{entrada}
+\begin{saida}
+3 -3 4 3.14
+5.0 2.5 43
+1020
+\end{saida}
+
+% erro
+\begin{entrada}
+int("3.5")
+\end{entrada}
+\begin{saida}
+ValueError: invalid literal for int() with base 10: '3.5'
+\end{saida}
+
+\begin{atencao}[Atenção: \texttt{float} é uma aproximação]
+Os números \py{float} são guardados em base 2 com cerca de 16 algarismos significativos. Por isso, alguns
+resultados ``simples'' não são exatos:
+\end{atencao}
+
+\begin{entrada}
+print(0.1 + 0.2)
+print(0.1 + 0.2 == 0.3)
+print(abs((0.1 + 0.2) - 0.3) < 1e-12)   # forma correta de comparar floats
+\end{entrada}
+\begin{saida}
+0.30000000000000004
+False
+True
+\end{saida}
+
+Esse fenômeno será retomado na Aula~7: o SymPy trabalha com frações e raízes \emph{exatas}, como o Maxima.
+
+% ------------------------------------------------------------
+\section{Operações aritméticas}
+% ------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Operação} & \textbf{Símbolo} & \textbf{Exemplo} & \textbf{Resultado}\\
+\midrule
+adição & \py{+} & \py{7 + 2} & \py{9}\\
+subtração & \py{-} & \py{7 - 2} & \py{5}\\
+multiplicação & \py{*} & \py{7 * 2} & \py{14}\\
+divisão & \py{/} & \py{7 / 2} & \py{3.5} (sempre \py{float})\\
+quociente inteiro & \py{//} & \py{7 // 2} & \py{3}\\
+resto da divisão & \py{%} & \py{7 % 2} & \py{1}\\
+potência & \py{**} & \py{7 ** 2} & \py{49}\\
+raiz $n$-ésima & \py{** (1/n)} & \py{8 ** (1/3)} & \py{2.0}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{atencao}
+Em Python a potência é \py{**} e \textbf{não} \py{^}. O símbolo \py{^} existe, mas é outra operação
+(``ou exclusivo'' bit a bit): \py{2^3} dá \py{1}, e não \py{8}.
+\end{atencao}
+
+\paragraph{Precedência.} Vale a convenção da matemática: primeiro parênteses, depois potências, depois
+\py{*}, \py{/}, \py{//}, \py{%} (da esquerda para a direita) e por último \py{+} e \py{-}.
+
+\begin{entrada}
+print(3 + 2 * 4, (3 + 2) * 4)
+print(2 ** 3 ** 2)        # potência associa da direita: 2**(3**2)
+print(-2 ** 2, (-2) ** 2)  # cuidado com o sinal!
+print(1 / 2 * 4)          # (1/2)*4, e não 1/(2*4)
+\end{entrada}
+\begin{saida}
+11 20
+512
+-4 4
+2.0
+\end{saida}
+
+\paragraph{Quociente e resto.} Para inteiros $a$ e $b>0$, o algoritmo da divisão garante
+$a = b\cdot q + r$ com $0\le r<b$. Em Python, $q$ = \py{a // b} e $r$ = \py{a % b}; o comando
+\py{divmod(a, b)} devolve os dois de uma vez. Exemplo (do livro da SBM): converter minutos em horas e minutos.
+
+\begin{entrada}
+minutos = 700
+horas = minutos // 60
+resto = minutos % 60
+print(minutos, "minutos correspondem a", horas, "horas e", resto, "minutos")
+print(divmod(700, 60))
+print(17 % 2, 18 % 2)     # o resto por 2 diz se o número é par
+\end{entrada}
+\begin{saida}
+700 minutos correspondem a 11 horas e 40 minutos
+(11, 40)
+1 0
+\end{saida}
+
+\paragraph{Números complexos.} A unidade imaginária é escrita \py{j} (colada ao número):
+
+\begin{entrada}
+z1 = 3 + 4j
+z2 = 2 - 2j
+print(z1 + z2, z1 * z2, z1 / z2)
+print(z1.real, z1.imag, z1.conjugate(), abs(z1))
+\end{entrada}
+\begin{saida}
+(5+2j) (14+2j) (-0.25+1.75j)
+3.0 4.0 (3-4j) 5.0
+\end{saida}
+
+% ------------------------------------------------------------
+\section{Entrada de dados com \texttt{input} e saída formatada}
+% ------------------------------------------------------------
+
+O comando \py{input("mensagem")} mostra a mensagem, espera o usuário digitar algo e apertar \textbf{Enter}, e devolve
+o que foi digitado \textbf{sempre como texto} (\py{str}). Para fazer contas, é preciso converter:
+
+% entradas: 3 | 4.5
+\begin{entrada}
+n = int(input("Digite um inteiro: "))
+x = float(input("Digite um real: "))
+print("n + x =", n + x)
+\end{entrada}
+\begin{saida}
+Digite um inteiro: 3
+Digite um real: 4.5
+n + x = 7.5
+\end{saida}
+
+\begin{atencao}
+Sem a conversão, \py{input()} devolve texto e o ``\py{+}'' junta textos: se o usuário digitar \py{3} e \py{4},
+\py{input() + input()} dá \py{"34"}. Outro erro comum é digitar vírgula decimal: \py{float("2,5")} gera erro;
+em Python o separador decimal é o \textbf{ponto}.
+\end{atencao}
+
+\paragraph{f-strings.} Para montar mensagens com valores, a forma mais prática é a \emph{f-string}: coloca-se um
+\py{f} antes das aspas e as expressões entre chaves \texttt{\{\,\}}. Depois de dois-pontos, pode-se indicar o formato:
+
+\begin{entrada}
+x = 2 / 3
+print(f"x = {x}")
+print(f"x com 3 casas: {x:.3f}")
+print(f"notação científica: {12345.678:.2e}")
+print(f"{7} ao quadrado é {7**2}")
+\end{entrada}
+\begin{saida}
+x = 0.6666666666666666
+x com 3 casas: 0.667
+notação científica: 1.23e+04
+7 ao quadrado é 49
+\end{saida}
+
+% ------------------------------------------------------------
+\section{Comparações e operadores lógicos}
+% ------------------------------------------------------------
+
+Comparações produzem valores do tipo \py{bool}: \py{True} (verdadeiro) ou \py{False} (falso).
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Matemática} & \textbf{Python} & \textbf{Exemplo} & \textbf{Resultado}\\
+\midrule
+$=$ & \py{==} & \py{3 == 3.0} & \py{True}\\
+$\ne$ & \py{!=} & \py{3 != 4} & \py{True}\\
+$<$, $\le$ & \py{<}, \py{<=} & \py{5 <= 5} & \py{True}\\
+$>$, $\ge$ & \py{>}, \py{>=} & \py{2 > 7} & \py{False}\\
+$0<x<1$ & \py{0 < x < 1} & \py{0 < 0.5 < 1} & \py{True}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{atencao}
+Um sinal de igual (\py{=}) \emph{atribui}; dois sinais (\py{==}) \emph{comparam}.
+\end{atencao}
+
+Condições podem ser combinadas com os \textbf{operadores lógicos}:
+
+\begin{itemize}
+  \item \py{A and B}: verdadeiro só quando \py{A} e \py{B} são ambos verdadeiros (conectivo ``e'', $\wedge$);
+  \item \py{A or B}: verdadeiro quando pelo menos um deles é verdadeiro (``ou'', $\vee$);
+  \item \py{not A}: inverte o valor lógico (negação, $\neg$).
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{@{}cc|ccc@{}}
+\toprule
+\py{A} & \py{B} & \py{A and B} & \py{A or B} & \py{not A}\\
+\midrule
+\py{True} & \py{True} & \py{True} & \py{True} & \py{False}\\
+\py{True} & \py{False} & \py{False} & \py{True} & \py{False}\\
+\py{False} & \py{True} & \py{False} & \py{True} & \py{True}\\
+\py{False} & \py{False} & \py{False} & \py{False} & \py{True}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{entrada}
+x = 7
+print(x > 0 and x % 2 == 0)     # positivo E par?
+print(x > 0 or x % 2 == 0)      # positivo OU par?
+print(not x > 10)
+print(2 <= x < 10)              # x pertence a [2, 10)?
+\end{entrada}
+\begin{saida}
+False
+True
+True
+True
+\end{saida}
+
+A ordem de prioridade é: comparações, depois \py{not}, depois \py{and} e por último \py{or}. Na dúvida, use
+parênteses.
+
+% ------------------------------------------------------------
+\section{Decisões: \texttt{if}, \texttt{elif} e \texttt{else}}
+% ------------------------------------------------------------
+
+\begin{sintaxe}
+if condição_1:
+    comandos executados se a condição_1 for verdadeira
+elif condição_2:
+    comandos executados se a condição_1 for falsa e a condição_2 verdadeira
+else:
+    comandos executados se nenhuma condição anterior for verdadeira
+\end{sintaxe}
+
+As partes \py{elif} (``senão, se'') e \py{else} (``senão'') são opcionais, e pode haver quantos \py{elif} forem
+necessários. Note os \textbf{dois-pontos} no fim de cada linha de \py{if}, \py{elif} e \py{else}.
+
+\paragraph{Indentação.} Em Python, os comandos que pertencem ao \py{if} são identificados pelo
+\textbf{recuo} (indentação) em relação à margem: o padrão são \textbf{4 espaços} (o Jupyter insere
+automaticamente após os dois-pontos). Em muitas linguagens usam-se chaves \texttt{\{ \}}; no Python o recuo
+\emph{faz parte da sintaxe}.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, node distance=0.55cm and 0.9cm,
+  dec/.style={diamond, aspect=2.2, draw=azul, fill=azul!6, inner sep=1pt, align=center},
+  bloco/.style={rectangle, rounded corners=2pt, draw=gray!70, fill=fundocod, minimum width=2.4cm, minimum height=0.7cm, align=center},
+  seta/.style={-{Stealth}, thick}]
+  \node[dec] (c1) {\texttt{delta > 0}?};
+  \node[bloco, right=1.4cm of c1] (b1) {duas raízes\\reais};
+  \node[dec, below=of c1] (c2) {\texttt{delta == 0}?};
+  \node[bloco, right=1.4cm of c2] (b2) {uma raiz\\(dupla)};
+  \node[bloco, below=of c2] (b3) {nenhuma raiz real};
+  \node[bloco, below=0.6cm of b3, minimum width=1.5cm] (fim) {continua};
+  \draw[seta] (0,1.2) -- (c1);
+  \draw[seta] (c1) -- node[above]{sim} (b1);
+  \draw[seta] (c1) -- node[left]{não} (c2);
+  \draw[seta] (c2) -- node[above]{sim} (b2);
+  \draw[seta] (c2) -- node[left]{não} (b3);
+  \draw[seta] (b3) -- (fim);
+  \draw[seta] (b1.east) -- ++(0.5,0) |- (fim.east);
+  \draw[seta] (b2.east) -- ++(0.5,0);
+  % código ao lado
+  \node[anchor=north west, draw=bordacod, fill=fundocod, rounded corners=2pt, align=left, font=\ttfamily\small, inner sep=5pt]
+     at (7.2,1.0) {\textcolor{pykeyword}{\textbf{if}} delta > 0:\\
+     \hspace*{2em}print("duas raízes reais")\\
+     \textcolor{pykeyword}{\textbf{elif}} delta == 0:\\
+     \hspace*{2em}print("uma raiz (dupla)")\\
+     \textcolor{pykeyword}{\textbf{else}}:\\
+     \hspace*{2em}print("nenhuma raiz real")\\
+     print("continua")};
+  \draw[decorate, decoration={brace, amplitude=4pt, mirror}, vermelho] (7.35,0.25) -- (7.35,-0.2)
+     node[midway, left=5pt, text=vermelho, font=\sffamily\scriptsize] {};
+  \node[text=vermelho, font=\sffamily\scriptsize, align=left] at (9.3,-2.6) {4 espaços de recuo:\\o comando pertence ao bloco};
+\end{tikzpicture}
+\caption{Fluxograma de um \texttt{if}/\texttt{elif}/\texttt{else} e o código correspondente.}
+\label{fig:fluxo-if}
+\end{figure}
+
+\paragraph{Exemplo: raízes de uma equação do segundo grau.} Para $ax^2+bx+c=0$ com $a\neq 0$, o número de raízes
+reais depende do sinal de $\Delta=b^2-4ac$ (Figura~\ref{fig:fluxo-if}).
+
+\begin{entrada}
+a, b, c = 1, -5, 6
+delta = b**2 - 4*a*c
+if delta > 0:
+    x1 = (-b + delta**0.5) / (2*a)
+    x2 = (-b - delta**0.5) / (2*a)
+    print(f"Duas raízes reais: {x1} e {x2}")
+elif delta == 0:
+    print("Uma raiz real dupla:", -b / (2*a))
+else:
+    print("Não há raízes reais (delta < 0)")
+print("delta =", delta)
+\end{entrada}
+\begin{saida}
+Duas raízes reais: 3.0 e 2.0
+delta = 1
+\end{saida}
+
+O último \py{print} não está recuado, portanto \textbf{não} faz parte do \py{if}: ele sempre é executado.
+
+\begin{entrada}
+n = 15
+if n % 2 == 0:
+    print(n, "é par")
+else:
+    print(n, "é ímpar")
+
+if n % 3 == 0 and n % 5 == 0:
+    print(n, "é múltiplo de 3 e de 5")
+\end{entrada}
+\begin{saida}
+15 é ímpar
+15 é múltiplo de 3 e de 5
+\end{saida}
+
+\paragraph{Erros de indentação.} Esquecer o recuo (ou os dois-pontos) gera um erro de sintaxe:
+
+% erro
+\begin{entrada}
+exec("""
+if 2 > 1:
+print("dois é maior que um")
+""")
+\end{entrada}
+\begin{saida}
+IndentationError: expected an indented block after 'if' statement on line 2 (<string>, line 3)
+\end{saida}
+
+\begin{observacao}
+No Jupyter, a célula com erro seria simplesmente
+\py{if 2 > 1:} seguido de \py{print(...)} sem recuo; usamos \py{exec} aqui só para poder mostrar a mensagem.
+Leia sempre a \textbf{última linha} da mensagem de erro: ela diz o tipo do erro e onde ocorreu.
+\end{observacao}
+
+\paragraph{Exemplo: classificação de triângulos.} Este exemplo, adaptado do livro da SBM, lê os lados $a,b,c$ e
+verifica primeiro se eles formam um triângulo (desigualdade triangular), corrigindo os problemas apontados no livro.
+
+% entradas: 3 | 4 | 5
+\begin{entrada}
+a = float(input("Lado a: "))
+b = float(input("Lado b: "))
+c = float(input("Lado c: "))
+if a <= 0 or b <= 0 or c <= 0 or a >= b + c or b >= a + c or c >= a + b:
+    print("Esses valores não formam um triângulo.")
+else:
+    if a == b == c:
+        print("Triângulo equilátero")
+    elif a == b or b == c or a == c:
+        print("Triângulo isósceles")
+    else:
+        print("Triângulo escaleno")
+    if a**2 == b**2 + c**2 or b**2 == a**2 + c**2 or c**2 == a**2 + b**2:
+        print("e também é retângulo")
+\end{entrada}
+\begin{saida}
+Lado a: 3
+Lado b: 4
+Lado c: 5
+Triângulo escaleno
+e também é retângulo
+\end{saida}
+
+Repare nos dois níveis de recuo: o segundo \py{if} está \emph{dentro} do \py{else}.
+
+% ------------------------------------------------------------
+\section{Repetições com \texttt{for}}
+% ------------------------------------------------------------
+
+O \py{for} repete um bloco de comandos para cada elemento de uma sequência. A sequência mais usada é
+\py{range}, que gera inteiros:
+
+\begin{sintaxe}
+for variável in range(início, fim, passo):
+    comandos (recuados)
+\end{sintaxe}
+
+\begin{itemize}
+  \item \py{range(n)} gera $0,1,\dots,n-1$ (são $n$ números; o \py{n} \textbf{não} entra);
+  \item \py{range(a, b)} gera $a, a+1, \dots, b-1$;
+  \item \py{range(a, b, p)} gera $a, a+p, a+2p,\dots$ enquanto for menor que $b$ (se $p<0$, enquanto for maior que $b$).
+\end{itemize}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[x=0.85cm, font=\small]
+  \foreach \k in {0,...,11} { \draw (\k,0.1) -- (\k,-0.1) node[below, font=\scriptsize] {\k}; }
+  \draw[-{Stealth}] (-0.5,0) -- (11.8,0);
+  \foreach \k in {2,5,8} { \fill[azul] (\k,0) circle (3.2pt); }
+  \draw[azul, thick] (2,0) to[bend left=40] node[above, font=\scriptsize]{+3} (5,0);
+  \draw[azul, thick] (5,0) to[bend left=40] node[above, font=\scriptsize]{+3} (8,0);
+  \draw[vermelho, thick] (11,0) circle (4pt);
+  \node[vermelho, above, font=\scriptsize] at (11,0.2) {fim (não entra)};
+  \node[anchor=west, font=\ttfamily] at (12.2,0) {range(2, 11, 3)};
+\end{tikzpicture}
+\caption{\texttt{range(2, 11, 3)} gera 2, 5, 8: começa no início, anda de 3 em 3 e para \emph{antes} do fim.}
+\end{figure}
+
+\begin{entrada}
+print(list(range(5)))
+print(list(range(2, 11, 3)))
+print(list(range(10, 0, -2)))
+\end{entrada}
+\begin{saida}
+[0, 1, 2, 3, 4]
+[2, 5, 8]
+[10, 8, 6, 4, 2]
+\end{saida}
+
+(O \py{list()} serve só para mostrar todos os números gerados; no \py{for} ele não é necessário.)
+
+\begin{entrada}
+for i in range(1, 6):
+    print(i, i**2, i**3)
+\end{entrada}
+\begin{saida}
+1 1 1
+2 4 8
+3 9 27
+4 16 64
+5 25 125
+\end{saida}
+
+\paragraph{Acumuladores.} Para calcular uma soma $\sum_{k=1}^{n} a_k$, usa-se uma variável que começa em zero e
+recebe cada parcela. Abaixo, verificamos a fórmula $1^2+2^2+\cdots+n^2=\frac{n(n+1)(2n+1)}{6}$.
+
+\begin{entrada}
+n = 10
+soma = 0                  # acumulador
+for k in range(1, n + 1):
+    soma = soma + k**2    # ou: soma += k**2
+print("soma =", soma, "  fórmula =", n*(n + 1)*(2*n + 1)//6)
+\end{entrada}
+\begin{saida}
+soma = 385   fórmula = 385
+\end{saida}
+
+Para produtos, o acumulador começa em 1. Exemplo: o fatorial $n! = 1\cdot 2\cdots n$.
+
+\begin{entrada}
+n = 6
+fat = 1
+for k in range(2, n + 1):
+    fat *= k
+print(f"{n}! = {fat}")
+\end{entrada}
+\begin{saida}
+6! = 720
+\end{saida}
+
+O \py{for} também percorre os caracteres de um texto (e, na próxima aula, os elementos de uma lista):
+
+\begin{entrada}
+for letra in "MAT":
+    print(letra, end=" ")
+\end{entrada}
+\begin{saida}
+M A T
+\end{saida}
+
+\begin{entrada}
+# repetições encaixadas: tabuada de 1 a 3
+for i in range(1, 4):
+    for j in range(1, 6):
+        print(f"{i*j:3d}", end="")
+    print()   # pula linha ao fim de cada i
+\end{entrada}
+\begin{saida}
+  1  2  3  4  5
+  2  4  6  8 10
+  3  6  9 12 15
+\end{saida}
+
+% ------------------------------------------------------------
+\section{Repetições com \texttt{while}}
+% ------------------------------------------------------------
+
+O \py{while} (``enquanto'') repete um bloco \emph{enquanto} uma condição for verdadeira. Usa-se quando
+não sabemos de antemão quantas repetições serão necessárias.
+
+\begin{sintaxe}
+while condição:
+    comandos (recuados)
+\end{sintaxe}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, node distance=0.6cm,
+  dec/.style={diamond, aspect=2.2, draw=azul, fill=azul!6, inner sep=1pt, align=center},
+  bloco/.style={rectangle, rounded corners=2pt, draw=gray!70, fill=fundocod, minimum width=2.6cm, minimum height=0.7cm, align=center},
+  seta/.style={-{Stealth}, thick}]
+  \node[bloco] (ini) {\texttt{soma = 0; k = 0}};
+  \node[dec, below=of ini] (c) {\texttt{soma <= 100}?};
+  \node[bloco, below=of c] (b) {\texttt{k += 1}\\\texttt{soma += k}};
+  \node[bloco, right=1.6cm of c] (f) {\texttt{print(k, soma)}};
+  \draw[seta] (ini) -- (c);
+  \draw[seta] (c) -- node[left]{sim} (b);
+  \draw[seta] (b.west) -- ++(-0.8,0) |- (c.west);
+  \draw[seta] (c) -- node[above]{não} (f);
+\end{tikzpicture}
+\caption{O \texttt{while} testa a condição antes de cada repetição.}
+\end{figure}
+
+\paragraph{Exemplo.} Qual o menor $k$ tal que $1+2+\cdots+k>100$?
+
+\begin{entrada}
+soma = 0
+k = 0
+while soma <= 100:
+    k += 1
+    soma += k
+print("k =", k, "  soma =", soma)
+\end{entrada}
+\begin{saida}
+k = 14   soma = 105
+\end{saida}
+
+\paragraph{Exemplo: algoritmo de Euclides.} O máximo divisor comum (mdc) satisfaz a relação $\mathrm{mdc}(a,b)=\mathrm{mdc}(b, a \bmod b)$
+e $\mathrm{mdc}(a,0)=a$. Repetimos a troca enquanto $b\neq 0$:
+
+\begin{entrada}
+a, b = 252, 198
+while b != 0:
+    print(f"mdc({a}, {b})")
+    a, b = b, a % b
+print("mdc =", a)
+\end{entrada}
+\begin{saida}
+mdc(252, 198)
+mdc(198, 54)
+mdc(54, 36)
+mdc(36, 18)
+mdc = 18
+\end{saida}
+
+\paragraph{\texttt{break} e \texttt{continue}.} Dentro de \py{for} ou \py{while}, \py{break} interrompe a repetição
+imediatamente e \py{continue} pula para a próxima volta.
+
+\begin{entrada}
+# primeiro múltiplo de 7 maior que 50
+n = 51
+while True:          # repetição "infinita"...
+    if n % 7 == 0:
+        break        # ...interrompida pelo break
+    n += 1
+print(n)
+
+for i in range(1, 11):
+    if i % 3 == 0:
+        continue     # pula os múltiplos de 3
+    print(i, end=" ")
+\end{entrada}
+\begin{saida}
+56
+1 2 4 5 7 8 10
+\end{saida}
+
+\begin{atencao}[Atenção: laço infinito]
+Se a condição do \py{while} nunca ficar falsa, o programa não termina (a célula fica com \texttt{[*]}). Isso
+acontece, por exemplo, quando se esquece de atualizar a variável (\py{k += 1}). Para interromper, use o botão
+$\blacksquare$ ou \textbf{Kernel~$\to$~Interrupt Kernel}.
+\end{atencao}
+
+\begin{professor}
+Erros mais frequentes nesta aula: (i) usar vírgula decimal no \texttt{input}; (ii) esquecer a conversão
+\texttt{int()}/\texttt{float()}; (iii) confundir \texttt{=} com \texttt{==}; (iv) esquecer os dois-pontos;
+(v) misturar tabulação e espaços no recuo (raro no Jupyter); (vi) achar que \texttt{range(1,n)} inclui $n$.
+Vale pedir que a turma ``preveja'' a saída de algumas células antes de executá-las, por exemplo
+\texttt{-2**2}, \texttt{7/2}, \texttt{7//2} e \texttt{list(range(2,11,3))}.
+\end{professor}
+
+% ------------------------------------------------------------
+\section{Exercícios}
+% ------------------------------------------------------------
+
+\begin{exercicio}[conversão de temperatura]{ex:1-temp}
+Leia uma temperatura em graus Celsius com \py{input} e mostre o valor em Fahrenheit, $F = \frac{9}{5}C+32$,
+com uma casa decimal.
+\end{exercicio}
+
+\begin{exercicio}[ano bissexto]{ex:1-bissexto}
+Um ano é bissexto se for divisível por 4 e não por 100, ou se for divisível por 400. Leia um ano e diga se ele é
+bissexto. Teste com 1900, 2000, 2024 e 2025.
+\end{exercicio}
+
+\begin{exercicio}[somatórios]{ex:1-somas}
+Use \py{for} para calcular:
+(a) a soma dos ímpares de 1 a 99; (b) $\displaystyle\sum_{k=1}^{20}\frac{1}{k^2}$ e compare com $\pi^2/6\approx 1{,}6449$;
+(c) $\displaystyle\sum_{k=1}^{n} k^3$ para $n=10$ e verifique que é igual a $\left(\frac{n(n+1)}{2}\right)^2$.
+\end{exercicio}
+
+\begin{exercicio}[livro da SBM]{ex:1-5000}
+Some os números inteiros a partir de 1 até que a soma ultrapasse 5000. Imprima o último número somado e a soma final.
+\end{exercicio}
+
+\begin{exercicio}[progressão aritmética]{ex:1-pa}
+Leia $a_1$, a razão $r$ e $n$, e imprima os $n$ primeiros termos da PA e a sua soma. Confira com
+$S_n = \frac{n(a_1+a_n)}{2}$.
+\end{exercicio}
+
+\begin{exercicio}[extra: sequência de Collatz]{ex:1-collatz}
+Comece com um inteiro $n>0$. Se $n$ for par, troque por $n/2$; se for ímpar, por $3n+1$. Repita até chegar em 1.
+Escreva um programa que mostre a sequência e quantos passos foram necessários. Teste com $n=6$ e $n=27$.
+\end{exercicio}
+
+\begin{exercicio}[extra: divisores]{ex:1-divisores}
+Leia um inteiro $n>1$, imprima todos os seus divisores e diga se ele é primo (um número é primo se tem exatamente
+dois divisores).
+\end{exercicio}

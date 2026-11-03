@@ -1,0 +1,208 @@
+% ============================================================
+%  Preâmbulo do curso "Python para Matemática" (MAT 172)
+% ============================================================
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil,shorthands=off]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.6cm,right=2.4cm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\usepackage{booktabs,array,tabularx,longtable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\usepackage{environ}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=azul,urlcolor=azul!80!black,citecolor=verde}
+
+\graphicspath{{figuras/}}
+\setlist{itemsep=2pt,topsep=4pt}
+\setlength{\parskip}{3pt}
+
+% ---------- cores ----------
+\definecolor{azul}{HTML}{1F4E9A}
+\definecolor{verde}{HTML}{1B7F3B}
+\definecolor{vermelho}{HTML}{B22222}
+\definecolor{laranja}{HTML}{D2691E}
+\definecolor{roxo}{HTML}{6A3D9A}
+\definecolor{fundocod}{HTML}{F7F7F7}
+\definecolor{bordacod}{HTML}{CFCFCF}
+\definecolor{pykeyword}{HTML}{008000}
+\definecolor{pystring}{HTML}{BA2121}
+\definecolor{pycomment}{HTML}{3D7B7B}
+\definecolor{pynumber}{HTML}{666666}
+\definecolor{pybuiltin}{HTML}{1F4E9A}
+
+% ---------- versão professor / aluno ----------
+% \professortrue  -> inclui notas ao professor e soluções
+\newif\ifprofessor
+
+% ---------- estilo Python (listings) ----------
+\lstdefinestyle{py}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{pykeyword}\bfseries,
+  keywordstyle=[2]\color{pybuiltin},
+  stringstyle=\color{pystring},
+  commentstyle=\color{pycomment}\itshape,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  breaklines=true,
+  breakatwhitespace=true,
+  postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  tabsize=4,
+  morekeywords={True,False,None,as,with,lambda,nonlocal,yield,assert},
+  morekeywords=[2]{print,input,int,float,str,bool,complex,type,len,range,list,tuple,dict,set,
+    abs,round,sum,min,max,sorted,enumerate,zip,map,isinstance,help,divmod,pow},
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {à}{{\`a}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1
+    {ã}{{\~a}}1 {õ}{{\~o}}1 {Ã}{{\~A}}1 {Õ}{{\~O}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1 {ü}{{\"u}}1
+    {≤}{{$\le$}}1 {≥}{{$\ge$}}1 {π}{{$\pi$}}1 {√}{{$\surd$}}1 {°}{{$^\circ$}}1
+    {→}{{$\to$}}1 {×}{{$\times$}}1 {⁻}{{$^-$}}1 {¹}{{$^1$}}1 {²}{{$^2$}}1 {³}{{$^3$}}1
+    {─}{{-}}1 {│}{{|}}1 {⋅}{{$\cdot$}}1 {ℯ}{{$e$}}1 {∞}{{$\infty$}}1 {ⅈ}{{$i$}}1
+}
+\lstdefinestyle{txt}{
+  language={},
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,keepspaces=true,showstringspaces=false,
+  breaklines=true,upquote=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {à}{{\`a}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {É}{{\'E}}1
+    {ã}{{\~a}}1 {õ}{{\~o}}1 {ç}{{\c c}}1 {Ç}{{\c C}}1
+    {≤}{{$\le$}}1 {≥}{{$\ge$}}1 {π}{{$\pi$}}1 {°}{{$^\circ$}}1 {ú}{{\'u}}1 {Á}{{\'A}}1
+}
+\lstset{style=py}
+% código em linha:  \py{x = 2}
+% \py{...}: código em linha. Lê o argumento com caracteres especiais "neutralizados"
+% (_ # % ^ & ~ " \ ), de modo que \py{a_b % 2} funciona em parágrafos e tabelas.
+\newcommand{\py}{\begingroup\catcode`\_=12 \catcode`\#=12 \catcode`\%=12 \catcode`\^=12
+  \catcode`\&=12 \catcode`\~=12 \catcode`\"=12 \catcode`\\=12 \catcode`\$=12 \pyaux}
+\newcommand{\pyaux}[1]{\texttt{\color{black!85}\detokenize{#1}}\endgroup}
+\newcommand{\cmd}[1]{\texttt{\color{pybuiltin}#1}}
+
+% ---------- células no estilo JupyterLab ----------
+\newcounter{celula}[chapter]
+\tcbset{
+  jupyter/.style={
+    enhanced, breakable,
+    colback=fundocod, colframe=bordacod, boxrule=0.5pt, arc=1.2mm,
+    left=1.5mm, right=1.5mm, top=0.6mm, bottom=0.6mm,
+    enlarge left by=11mm, width=\linewidth-11mm,
+    before skip=6pt, after skip=3pt,
+  }
+}
+% Obs.: o tcblisting/lstnewenvironment desta instalação falham (caractere #, caixas).
+% Solução robusta: cada bloco é gravado em um arquivo temporário (fancyvrb) e lido de volta
+% com \lstinputlisting dentro de uma tcolorbox.
+\newcommand{\arqcod}{\jobname.cod}
+% célula de entrada: \begin{entrada} ... \end{entrada}
+\newenvironment{entrada}{\VerbatimEnvironment\begin{VerbatimOut}{\arqcod}}{\end{VerbatimOut}%
+  \refstepcounter{celula}%
+  \begin{tcolorbox}[jupyter,
+    overlay unbroken and first={\node[anchor=north east,inner sep=1pt,font=\ttfamily\small,text=azul]
+       at ([xshift=-2mm,yshift=-1.2mm]frame.north west) {[\thecelula]:};}]%
+  \lstinputlisting[style=py,aboveskip=0pt,belowskip=0pt]{\arqcod}\end{tcolorbox}}
+% saída de texto (o que aparece abaixo da célula)
+\tcbset{saidaestilo/.style={enhanced, breakable, frame hidden, colback=white,
+  borderline west={1.2pt}{0pt}{vermelho!45},
+  left=2.5mm, right=1mm, top=0.3mm, bottom=0.3mm,
+  enlarge left by=11mm, width=\linewidth-11mm, before skip=1pt, after skip=8pt}}
+\newenvironment{saida}{\VerbatimEnvironment\begin{VerbatimOut}{\arqcod}}{\end{VerbatimOut}%
+  \begin{tcolorbox}[saidaestilo]\lstinputlisting[style=txt,aboveskip=0pt,belowskip=0pt]{\arqcod}\end{tcolorbox}}
+% saída "bonita" (expressões do SymPy, matrizes etc.), escrita em LaTeX
+\newtcolorbox{saidamatbox}{saidaestilo, top=0.5mm, bottom=0.5mm,
+  overlay unbroken and first={\node[anchor=north east,inner sep=1pt,font=\ttfamily\small,text=vermelho]
+     at ([xshift=-2mm,yshift=-0.6mm]frame.north west) {[\thecelula]:};}}
+% fórmulas largas são reduzidas automaticamente para caber na largura
+\NewEnviron{saidamat}{\begin{saidamatbox}\adjustbox{max width=\linewidth}{\BODY}\end{saidamatbox}}
+% figura produzida pela célula anterior: \saidafig[largura relativa]{arquivo}
+\newcommand{\saidafig}[2][0.6]{\begin{tcolorbox}[saidaestilo,breakable=false]\centering
+  \includegraphics[width=#1\linewidth]{#2}\end{tcolorbox}}
+% código "solto" (arquivo .py, sintaxe geral), sem numeração
+\newenvironment{codigo}{\VerbatimEnvironment\begin{VerbatimOut}{\arqcod}}{\end{VerbatimOut}%
+  \begin{tcolorbox}[enhanced, breakable,
+  colback=fundocod, colframe=bordacod, boxrule=0.5pt, arc=1.2mm,
+  left=1.5mm, right=1.5mm, top=0.6mm, bottom=0.6mm]%
+  \lstinputlisting[style=py,aboveskip=0pt,belowskip=0pt]{\arqcod}\end{tcolorbox}}
+% comandos de terminal
+\newenvironment{terminal}{\VerbatimEnvironment\begin{VerbatimOut}{\arqcod}}{\end{VerbatimOut}%
+  \begin{tcolorbox}[enhanced, colback=black!85, colframe=black!85, arc=1.2mm, left=2mm, top=0.6mm, bottom=0.6mm]%
+  \lstinputlisting[style=txt,basicstyle=\ttfamily\small\color{white},aboveskip=0pt,belowskip=0pt]{\arqcod}\end{tcolorbox}}
+% sintaxe geral de um comando
+\newenvironment{sintaxe}{\VerbatimEnvironment\begin{VerbatimOut}{\arqcod}}{\end{VerbatimOut}%
+  \begin{tcolorbox}[enhanced, colback=azul!4, colframe=azul!50, boxrule=0.5pt, arc=1.2mm,
+  left=2mm, top=2.5mm, bottom=0.6mm,
+  title={\small\sffamily\bfseries Sintaxe}, coltitle=white,
+  colbacktitle=azul!75, attach boxed title to top left={xshift=3mm,yshift=-2mm},
+  boxed title style={arc=0.8mm,boxrule=0pt}]%
+  \lstinputlisting[style=py,aboveskip=0pt,belowskip=0pt]{\arqcod}\end{tcolorbox}}
+
+% ---------- caixas de texto ----------
+\newtcolorbox{objetivos}{enhanced,breakable,colback=azul!5,colframe=azul,boxrule=0.6pt,arc=1.5mm,
+  title={\sffamily\bfseries Objetivos da aula},fonttitle=\color{white}}
+\newtcolorbox{observacao}[1][Observação]{enhanced,breakable,colback=verde!5,colframe=verde!70!black,
+  boxrule=0.5pt,arc=1.5mm,leftrule=3pt,title={\sffamily\bfseries #1},fonttitle=\color{white}}
+\newtcolorbox{atencao}[1][Atenção]{enhanced,breakable,colback=vermelho!4,colframe=vermelho!80!black,
+  boxrule=0.5pt,arc=1.5mm,leftrule=3pt,title={\sffamily\bfseries #1},fonttitle=\color{white}}
+\newtcolorbox{dica}[1][Dica]{enhanced,breakable,colback=laranja!5,colframe=laranja,
+  boxrule=0.5pt,arc=1.5mm,leftrule=3pt,title={\sffamily\bfseries #1},fonttitle=\color{white}}
+\newtcolorbox{maxima}[1][Para quem vem do Maxima]{enhanced,breakable,colback=roxo!4,colframe=roxo,
+  boxrule=0.5pt,arc=1.5mm,leftrule=3pt,title={\sffamily\bfseries #1},fonttitle=\color{white}}
+% \begin{exercicio}[título]{rótulo} ... \end{exercicio}
+\newtcolorbox[auto counter,number within=chapter]{exercicio}[2][]{enhanced,breakable,
+  colback=white,colframe=gray!60,boxrule=0.5pt,arc=1.5mm,
+  title={\sffamily\bfseries Exercício \thetcbcounter\ifx\relax#1\relax\else\ (#1)\fi},
+  fonttitle=\color{black},colbacktitle=gray!15,label={#2}}
+\newtcolorbox{desafio}[1][Desafio]{enhanced,breakable,colback=amarelo!8,colframe=amarelo!70!black,
+  boxrule=0.5pt,arc=1.5mm,title={\sffamily\bfseries #1},fonttitle=\color{white}}
+\definecolor{amarelo}{HTML}{C9A100}
+% Notas ao professor: aparecem só na versão do professor (sem código verbatim dentro)
+\NewEnviron{professor}{\ifprofessor
+  \begin{tcolorbox}[enhanced,breakable,colback=gray!6,colframe=gray!55,boxrule=0.4pt,arc=1.5mm,
+    leftrule=3pt,title={\sffamily\bfseries Nota ao professor},fonttitle=\color{white}]
+  \small\BODY\end{tcolorbox}\fi}
+
+% roteiro da aula (tabela de tempos)
+\newenvironment{roteiro}{\par\smallskip\noindent\textbf{\sffamily Roteiro sugerido}\par\nopagebreak\smallskip
+  \noindent\tabularx{\linewidth}{@{}>{\sffamily\small}p{2.3cm}>{\small}X@{}}\toprule
+  \textbf{Tempo} & \textbf{Atividade}\\\midrule}{\bottomrule\endtabularx\par\medskip}
+
+% ---------- cabeçalho ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\sffamily\leftmark}
+\fancyhead[RO]{\small\sffamily\rightmark}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}}
+
+% títulos de capítulo um pouco mais leves
+\usepackage{titlesec}
+\titleformat{\chapter}[display]{\sffamily\bfseries\color{azul}}
+  {\Large\MakeUppercase{\chaptertitlename}\ \thechapter}{4pt}{\Huge}[\vspace{2pt}{\color{azul}\titlerule[1pt]}]
+\titlespacing*{\chapter}{0pt}{-10pt}{18pt}
+\titleformat{\section}{\sffamily\Large\bfseries\color{azul}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries}{\thesubsection}{0.6em}{}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}

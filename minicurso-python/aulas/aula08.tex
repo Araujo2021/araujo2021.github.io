@@ -1,0 +1,487 @@
+% ============================================================
+\chapter{SymPy II: limites, derivadas e séries de Taylor}
+\label{cap:aula8}
+% ============================================================
+
+\begin{objetivos}
+\begin{itemize}
+  \item calcular limites (em um ponto, laterais e no infinito) com \py{sp.limit};
+  \item calcular derivadas pela definição e com \py{sp.diff}: ordem superior, derivadas parciais, derivação implícita;
+  \item encontrar retas tangentes, pontos críticos, máximos e mínimos, e resolver problemas de otimização;
+  \item obter polinômios de Taylor com \py{sp.series} e visualizar as aproximações.
+\end{itemize}
+\end{objetivos}
+
+\begin{roteiro}
+0--20 min & Limites: \py{sp.limit}, limites laterais, no infinito, limites que não existem.\\
+20--30 min & Derivada pela definição; \py{sp.diff}; ordem superior; derivadas parciais.\\
+30--45 min & Reta tangente (com gráfico); derivação implícita.\\
+45--65 min & Pontos críticos, máximos e mínimos; um problema de otimização.\\
+65--80 min & Polinômios de Taylor e gráficos das aproximações.\\
+80--90 min & Exercícios.\\
+\end{roteiro}
+
+Em todas as células desta aula supomos executado:
+
+\begin{entrada}
+import sympy as sp
+import numpy as np
+import matplotlib.pyplot as plt
+x, h = sp.symbols('x h')
+\end{entrada}
+
+% ------------------------------------------------------------
+\section{Limites}
+% ------------------------------------------------------------
+
+\begin{sintaxe}
+sp.limit(expressão, variável, ponto)          # sem direção: pela direita (ver Atenção)
+sp.limit(expressão, variável, ponto, '+-')    # bilateral
+sp.limit(expressão, variável, ponto, '+')     # pela direita
+sp.limit(expressão, variável, ponto, '-')     # pela esquerda
+sp.limit(expressão, variável, sp.oo)          # x -> infinito
+\end{sintaxe}
+
+\paragraph{Motivação numérica.} Uma tabela de valores sugere que $\frac{\sin x}{x}\to1$ quando $x\to0$, mas não
+prova nada; o SymPy calcula o limite \emph{exato}.
+
+\begin{entrada}
+for xv in [0.1, 0.01, 0.001, 0.0001]:
+    print(xv, np.sin(xv) / xv)
+sp.limit(sp.sin(x)/x, x, 0)
+\end{entrada}
+\begin{saida}
+0.1 0.9983341664682815
+0.01 0.9999833334166665
+0.001 0.9999998333333416
+0.0001 0.9999999983333334
+\end{saida}
+\begin{saidamat}
+$\displaystyle 1$
+\end{saidamat}
+
+\begin{entrada}
+sp.limit((x**2 - 4)/(x - 2), x, 2), sp.limit((1 - sp.cos(x))/x**2, x, 0), sp.limit((sp.exp(x) - 1)/x, x, 0)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( 4, \  \frac{1}{2}, \  1\right)$
+\end{saidamat}
+
+\paragraph{Limites no infinito.} O infinito é \py{sp.oo} (dois ``o'' minúsculos).
+
+\begin{entrada}
+n = sp.symbols('n')
+sp.limit((1 + 1/n)**n, n, sp.oo), sp.limit((3*x**2 + x)/(2*x**2 - 5), x, sp.oo), sp.limit(x*sp.exp(-x), x, sp.oo)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( e, \  \frac{3}{2}, \  0\right)$
+\end{saidamat}
+
+\paragraph{Limites laterais e limites que não existem.}
+
+\begin{entrada}
+sp.limit(1/x, x, 0, '+'), sp.limit(1/x, x, 0, '-'), sp.limit(sp.Abs(x)/x, x, 0, '+'), sp.limit(sp.Abs(x)/x, x, 0, '-')
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \infty, \  -\infty, \  1, \  -1\right)$
+\end{saidamat}
+
+\begin{atencao}
+Sem o quarto argumento, o \py{sp.limit} calcula o limite \textbf{pela direita} (o padrão é \py{'+'}). Para o
+limite bilateral use \py{'+-'}: se os limites laterais forem diferentes, o SymPy avisa com um erro.
+\end{atencao}
+
+\begin{entrada}
+print(sp.limit(1/x, x, 0))          # padrão: pela direita!
+print(sp.limit(x**2, x, 3, '+-'))
+\end{entrada}
+\begin{saida}
+oo
+9
+\end{saida}
+
+% erro
+\begin{entrada}
+sp.limit(sp.Abs(x)/x, x, 0, '+-')
+\end{entrada}
+\begin{saida}
+ValueError: The limit does not exist since left hand limit = -1 and right hand limit = 1
+\end{saida}
+
+\paragraph{Funções definidas por partes e continuidade.} O comando \py{sp.Piecewise} define funções por partes.
+Vamos verificar se
+$g(x)=\begin{cases}x^2+1, & x<1\\ 3x-1, & x\ge1\end{cases}$ é contínua em $x=1$:
+
+\begin{entrada}
+g = sp.Piecewise((x**2 + 1, x < 1), (3*x - 1, True))
+sp.limit(g, x, 1, '-'), sp.limit(g, x, 1, '+'), g.subs(x, 1)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( 2, \  2, \  2\right)$
+\end{saidamat}
+
+Os limites laterais e o valor coincidem: $g$ é contínua em $x=1$.
+
+\paragraph{Escrevendo o limite sem calcular.} \py{sp.Limit} (com L maiúsculo) cria o limite ``por extenso'', útil
+para mostrar a pergunta e a resposta; \py{.doit()} o calcula.
+
+\begin{entrada}
+L = sp.Limit(sp.sin(3*x)/sp.tan(5*x), x, 0)
+sp.Eq(L, L.doit())
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \lim_{x \to 0^+}\left(\frac{\sin{\left(3 x \right)}}{\tan{\left(5 x \right)}}\right) = \frac{3}{5}$
+\end{saidamat}
+
+\begin{maxima}
+\texttt{limit(sin(x)/x, x, 0)}, \texttt{limit(1/x, x, 0, plus)} e \texttt{limit(f, x, inf)} do Maxima
+correspondem a \py{sp.limit(sp.sin(x)/x, x, 0)}, \py{sp.limit(1/x, x, 0, '+')} e \py{sp.limit(f, x, sp.oo)}.
+Atenção: no Maxima, \texttt{limit} sem direção é bilateral; no SymPy, é pela direita.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Derivadas}
+% ------------------------------------------------------------
+
+\subsection{Pela definição}
+
+A derivada é o limite $f'(x)=\displaystyle\lim_{h\to0}\frac{f(x+h)-f(x)}{h}$. Com o SymPy:
+
+\begin{entrada}
+f = x**3
+sp.limit((f.subs(x, x + h) - f)/h, h, 0)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle 3 x^{2}$
+\end{saidamat}
+
+\begin{entrada}
+f = sp.sqrt(x)
+quociente = (f.subs(x, x + h) - f)/h
+print(quociente)
+sp.limit(quociente, h, 0)
+\end{entrada}
+\begin{saida}
+(-sqrt(x) + sqrt(h + x))/h
+\end{saida}
+\begin{saidamat}
+$\displaystyle \frac{1}{2 \sqrt{x}}$
+\end{saidamat}
+
+\subsection{O comando \texttt{diff}}
+
+\begin{sintaxe}
+sp.diff(f, x)          # f'(x)
+sp.diff(f, x, 2)       # f''(x)   (ou sp.diff(f, x, x))
+sp.diff(f, x, y)       # derivada parcial mista: primeiro em x, depois em y
+f.diff(x)              # forma alternativa
+\end{sintaxe}
+
+\begin{entrada}
+sp.diff(x**2 + x, x), sp.diff(sp.exp(x**3 + x) + 1/x, x), sp.diff(sp.atan(x), x)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( 2 x + 1, \  \left(3 x^{2} + 1\right) e^{x^{3} + x} - \frac{1}{x^{2}}, \  \frac{1}{x^{2} + 1}\right)$
+\end{saidamat}
+
+\begin{entrada}
+f = x**2 * sp.sin(x)
+[sp.diff(f, x, k) for k in range(1, 4)]
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left[ x^{2} \cos{\left(x \right)} + 2 x \sin{\left(x \right)}, \  - x^{2} \sin{\left(x \right)} + 4 x \cos{\left(x \right)} + 2 \sin{\left(x \right)}, \  - x^{2} \cos{\left(x \right)} - 6 x \sin{\left(x \right)} + 6 \cos{\left(x \right)}\right]$
+\end{saidamat}
+
+\paragraph{Derivada em um ponto.} Deriva-se primeiro e depois substitui-se o ponto:
+
+\begin{entrada}
+f = x**3 - 2*x
+df = sp.diff(f, x)
+df, df.subs(x, 2)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( 3 x^{2} - 2, \  10\right)$
+\end{saidamat}
+
+\begin{atencao}
+\py{sp.diff(f.subs(x, 2), x)} dá 0: substituindo antes, $f$ vira um número, e a derivada de uma constante é zero.
+\end{atencao}
+
+\paragraph{Simplificando o resultado.} As derivadas costumam vir ``feias''. Para melhorar a
+forma do resultado, use \py{sp.simplify} ou \py{sp.factor}:
+
+\begin{entrada}
+f = (x**2 - 1)/(x**2 + 1)
+d = sp.diff(f, x)
+d, sp.simplify(d)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( - \frac{2 x \left(x^{2} - 1\right)}{\left(x^{2} + 1\right)^{2}} + \frac{2 x}{x^{2} + 1}, \  \frac{4 x}{\left(x^{2} + 1\right)^{2}}\right)$
+\end{saidamat}
+
+\paragraph{Derivadas parciais.}
+
+\begin{entrada}
+y = sp.symbols('y')
+F = sp.cos(x*y) + (3*x + y)/(y**2 + 1)
+sp.diff(F, x), sp.diff(F, x, y)        # F_x e F_xy
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( - y \sin{\left(x y \right)} + \frac{3}{y^{2} + 1}, \  - (x y \cos{\left(x y \right)} + \frac{6 y}{\left(y^{2} + 1\right)^{2}} + \sin{\left(x y \right)})\right)$
+\end{saidamat}
+
+\paragraph{Derivação implícita.} Para uma curva $F(x,y)=0$, o comando \py{sp.idiff(F, y, x)} calcula
+$\frac{dy}{dx}$. Para o círculo $x^2+y^2=25$:
+
+\begin{entrada}
+dydx = sp.idiff(x**2 + y**2 - 25, y, x)
+dydx, dydx.subs({x: 3, y: 4})
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( - \frac{x}{y}, \  - \frac{3}{4}\right)$
+\end{saidamat}
+
+\begin{maxima}
+\texttt{diff(f, x)}, \texttt{diff(f, x, 2)} e \texttt{diff(f, x, 1, y, 1)} correspondem a \py{sp.diff(f, x)},
+\py{sp.diff(f, x, 2)} e \py{sp.diff(f, x, y)}. A derivada em um ponto,
+\texttt{at(diff(f,x), x=2)} ou \texttt{ev(diff(f,x), x=2)}, é \py{sp.diff(f, x).subs(x, 2)}.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Reta tangente}
+% ------------------------------------------------------------
+
+A reta tangente ao gráfico de $f$ em $x=a$ é $y=f(a)+f'(a)(x-a)$. Vamos escrever uma função que a calcula e
+fazer o gráfico com o Matplotlib, convertendo as expressões com \py{sp.lambdify}.
+
+% figura: aula08-tangente
+\begin{entrada}
+def tangente(f, a):
+    return sp.expand(f.subs(x, a) + sp.diff(f, x).subs(x, a)*(x - a))
+
+f = x**3 - 3*x + 1
+T = tangente(f, 2)
+print("reta tangente em x = 2:  y =", T)
+
+xs = np.linspace(-2.5, 3, 300)
+plt.plot(xs, sp.lambdify(x, f)(xs), label=r"$f(x)=x^3-3x+1$")
+plt.plot(xs, sp.lambdify(x, T)(xs), "r--", label="tangente em $x=2$")
+plt.plot(2, f.subs(x, 2), "ko")
+plt.ylim(-5, 12)
+plt.legend()
+plt.grid(True)
+plt.show()
+\end{entrada}
+\begin{saida}
+reta tangente em x = 2:  y = 9*x - 15
+\end{saida}
+\saidafig[0.55]{aula08-tangente}
+
+% ------------------------------------------------------------
+\section{Máximos e mínimos}
+% ------------------------------------------------------------
+
+Os pontos críticos de $f$ são as soluções de $f'(x)=0$. Pelo teste da segunda derivada, se $f''(c)>0$ há um mínimo
+local em $c$, e se $f''(c)<0$, um máximo local.
+
+\begin{entrada}
+f = x**3 - 3*x**2 - 9*x + 5
+df = sp.diff(f, x)
+d2f = sp.diff(f, x, 2)
+criticos = sp.solve(df, x)
+print("f'(x) =", df, "   pontos críticos:", criticos)
+for c in criticos:
+    tipo = "mínimo local" if d2f.subs(x, c) > 0 else "máximo local"
+    print(f"x = {c}: f''(x) = {d2f.subs(x, c)},  f(x) = {f.subs(x, c)}  ->  {tipo}")
+\end{entrada}
+\begin{saida}
+f'(x) = 3*x**2 - 6*x - 9    pontos críticos: [-1, 3]
+x = -1: f''(x) = -12,  f(x) = 10  ->  máximo local
+x = 3: f''(x) = 12,  f(x) = -22  ->  mínimo local
+\end{saida}
+
+% figura: aula08-extremos
+\begin{entrada}
+xs = np.linspace(-3, 5, 300)
+plt.plot(xs, sp.lambdify(x, f)(xs), label="$f$")
+plt.plot(xs, sp.lambdify(x, df)(xs), "--", label="$f'$")
+for c in criticos:
+    plt.plot(c, f.subs(x, c), "ro")
+    plt.axvline(c, color="gray", lw=0.6)
+plt.axhline(0, color="black", lw=0.8)
+plt.legend()
+plt.show()
+\end{entrada}
+\saidafig[0.55]{aula08-extremos}
+
+Observe que $f'$ se anula exatamente nos pontos de máximo e de mínimo de $f$, que $f'>0$ onde $f$ cresce e
+$f'<0$ onde $f$ decresce.
+
+\paragraph{Extremos absolutos em um intervalo fechado.} Em $[a,b]$, compara-se o valor de $f$ nos pontos críticos
+de $(a,b)$ e nos extremos $a$ e $b$:
+
+\begin{entrada}
+a, b = -2, 6
+candidatos = [a, b] + [c for c in criticos if a < c < b]
+valores = {c: f.subs(x, c) for c in candidatos}
+print(valores)
+print("máximo absoluto:", max(valores.values()), "  mínimo absoluto:", min(valores.values()))
+\end{entrada}
+\begin{saida}
+{-2: 3, 6: 59, -1: 10, 3: -22}
+máximo absoluto: 59   mínimo absoluto: -22
+\end{saida}
+
+\paragraph{Problema de otimização.} De uma folha quadrada de papelão de lado 30\,cm, cortam-se quadrados de lado
+$x$ nos cantos e dobram-se as abas para formar uma caixa sem tampa. Qual $x$ dá o maior volume?
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.09, font=\small]
+  \draw[thick] (0,0) rectangle (30,30);
+  \foreach \p in {(0,0),(25,0),(0,25),(25,25)} { \fill[vermelho!25] \p rectangle ++(5,5); \draw[vermelho] \p rectangle ++(5,5); }
+  \draw[dashed] (5,0) -- (5,30); \draw[dashed] (25,0) -- (25,30); \draw[dashed] (0,5) -- (30,5); \draw[dashed] (0,25) -- (30,25);
+  \node[below] at (15,0) {30}; \node at (2.5,27.5) {$x$}; \node at (15,15) {$30-2x$};
+  \begin{scope}[xshift=45cm, yshift=4cm]
+    \draw[thick] (0,0) -- (20,0) -- (20,8) -- (0,8) -- cycle;
+    \draw[thick] (20,0) -- (28,6) -- (28,14) -- (20,8);
+    \draw[thick] (0,8) -- (8,14) -- (28,14);
+    \draw[dashed] (0,0) -- (8,6) -- (28,6); \draw[dashed] (8,6) -- (8,14);
+    \node[below] at (10,0) {$30-2x$}; \node[right] at (28,10) {$x$};
+  \end{scope}
+\end{tikzpicture}
+\end{figure}
+
+O volume é $V(x)=x(30-2x)^2$, com $0<x<15$:
+
+\begin{entrada}
+V = x*(30 - 2*x)**2
+crit = sp.solve(sp.diff(V, x), x)
+print("pontos críticos:", crit)
+print("V''(5) =", sp.diff(V, x, 2).subs(x, 5), "  V(5) =", V.subs(x, 5))
+\end{entrada}
+\begin{saida}
+pontos críticos: [5, 15]
+V''(5) = -120   V(5) = 2000
+\end{saida}
+
+O ponto $x=15$ está fora do domínio (volume nulo); em $x=5$\,cm a segunda derivada é negativa, e o volume máximo é
+$2000\ \text{cm}^3$.
+
+% ------------------------------------------------------------
+\section{Polinômios de Taylor}
+% ------------------------------------------------------------
+
+O polinômio de Taylor de ordem $n$ de $f$ em torno de $x_0$ é
+\[
+P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k .
+\]
+O comando \py{sp.series(f, x, x0, n)} devolve a expansão até a ordem $n-1$ mais o termo de erro
+$O\big((x-x_0)^n\big)$; \py{.removeO()} retira o termo de erro, deixando o polinômio.
+
+\begin{entrada}
+sp.series(sp.exp(x), x, 0, 6)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle 1 + x + \frac{x^{2}}{2} + \frac{x^{3}}{6} + \frac{x^{4}}{24} + \frac{x^{5}}{120} + O\left(x^{6}\right)$
+\end{saidamat}
+
+\begin{entrada}
+sp.series(sp.cos(x), x, 0, 10).removeO()
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \frac{x^{8}}{40320} - \frac{x^{6}}{720} + \frac{x^{4}}{24} - \frac{x^{2}}{2} + 1$
+\end{saidamat}
+
+\begin{entrada}
+sp.series(sp.log(x), x, 1, 5)          # em torno de x0 = 1
+\end{entrada}
+\begin{saidamat}
+$\displaystyle -1 - \frac{\left(x - 1\right)^{2}}{2} + \frac{\left(x - 1\right)^{3}}{3} - \frac{\left(x - 1\right)^{4}}{4} + x + O\left(\left(x - 1\right)^{5}; x\rightarrow 1\right)$
+\end{saidamat}
+
+\paragraph{Aproximando valores.} Como no tutorial do R. Miranda, usamos o polinômio de Taylor de $e^x$ para
+aproximar $e^2$ por um número racional:
+
+\begin{entrada}
+P = sp.series(sp.exp(x), x, 0, 10).removeO()
+aprox = P.subs(x, 2)
+print(aprox, "~", aprox.evalf(10), "   e^2 =", sp.exp(2).evalf(10))
+\end{entrada}
+\begin{saida}
+20947/2835 ~ 7.388712522    e^2 = 7.389056099
+\end{saida}
+
+\paragraph{Visualizando as aproximações.} Quanto maior a ordem, maior o intervalo em que $P_n$ se parece com $f$:
+
+% figura: aula08-taylor
+\begin{entrada}
+xs = np.linspace(-2*np.pi, 2*np.pi, 400)
+plt.plot(xs, np.cos(xs), "k", lw=2.5, label=r"$\cos x$")
+for n in [2, 4, 8, 16]:
+    Pn = sp.series(sp.cos(x), x, 0, n + 1).removeO()
+    plt.plot(xs, sp.lambdify(x, Pn)(xs), label=f"$P_{{{n}}}$")
+plt.ylim(-2, 2)
+plt.legend(loc="lower center", ncol=5)
+plt.title("Polinômios de Taylor de cos(x) em torno de 0")
+plt.show()
+\end{entrada}
+\saidafig[0.65]{aula08-taylor}
+
+\begin{observacao}
+No f-string acima, \py{f"$P_{{{n}}}$"} produz o texto \texttt{\$P\_\{16\}\$}: as chaves duplas \texttt{\{\{} e
+\texttt{\}\}} viram chaves literais, e \py{{n}} é substituído pelo valor de $n$.
+\end{observacao}
+
+\begin{maxima}
+\texttt{taylor(cos(x), x, 0, 8)} do Maxima corresponde a \py{sp.series(sp.cos(x), x, 0, 9)}: no SymPy o último
+argumento é a ordem do termo de erro, uma unidade acima do grau do polinômio.
+\end{maxima}
+
+\begin{professor}
+Um erro comum é reutilizar o nome \texttt{f} ou \texttt{x} para coisas diferentes (por exemplo, \texttt{x} como
+\emph{array} do NumPy e depois como símbolo). Nos códigos desta aula o \emph{array} é sempre \texttt{xs}, e
+\texttt{x} é sempre o símbolo. Vale chamar a atenção para isso. Se sobrar tempo, o método de Newton
+$x_{k+1}=x_k-f(x_k)/f'(x_k)$ é uma boa ponte com a Aula 3 (o método babilônico é o caso $f(x)=x^2-a$).
+\end{professor}
+
+% ------------------------------------------------------------
+\section{Exercícios}
+% ------------------------------------------------------------
+
+\begin{exercicio}[limites]{ex:8-limites}
+Calcule: (a) $\displaystyle\lim_{x\to0}\frac{\tan x - x}{x^3}$; (b) $\displaystyle\lim_{x\to\infty}\left(1+\frac{2}{x}\right)^{x}$;
+(c) $\displaystyle\lim_{x\to 0^+}x\ln x$; (d) $\displaystyle\lim_{x\to\infty}\left(\sqrt{x^2+x}-x\right)$;
+(e) $\displaystyle\lim_{x\to3}\frac{\sqrt{x+1}-2}{x-3}$.
+\end{exercicio}
+
+\begin{exercicio}[continuidade]{ex:8-cont}
+Encontre o valor de $k$ que torna contínua em $x=2$ a função
+$f(x)=\begin{cases}kx^2, & x\le2\\ 2x+k, & x>2\end{cases}$. (Dica: resolva com \py{sp.solve} a equação
+``limite à esquerda = limite à direita''.)
+\end{exercicio}
+
+\begin{exercicio}[derivadas]{ex:8-derivadas}
+Derive e simplifique: (a) $x^x$; (b) $\ln\!\left(\frac{1+x}{1-x}\right)$; (c) $e^{-x^2}\cos(3x)$;
+(d) $\arcsin(\sqrt{x})$. Calcule também a derivada de (c) em $x=0$.
+\end{exercicio}
+
+\begin{exercicio}[tangente e normal]{ex:8-tangente}
+Encontre as retas tangente e normal ao gráfico de $f(x)=\frac{x}{1+x^2}$ em $x=1$ e faça um gráfico com a curva e
+as duas retas (use \py{plt.axis("equal")} para que a normal pareça perpendicular).
+\end{exercicio}
+
+\begin{exercicio}[estudo de função]{ex:8-estudo}
+Para $f(x)=x^4-4x^3+10$: encontre pontos críticos, intervalos de crescimento, extremos locais, pontos de
+inflexão (onde $f''$ muda de sinal) e faça o gráfico de $f$, $f'$ e $f''$.
+\end{exercicio}
+
+\begin{exercicio}[otimização]{ex:8-otim}
+Uma lata cilíndrica deve ter volume de 1 litro (1000\,cm$^3$). Que raio e altura minimizam a área total de
+material $A=2\pi r^2+2\pi r h$? (Use $h=\frac{1000}{\pi r^2}$.)
+\end{exercicio}
+
+\begin{exercicio}[extra: Taylor e erro]{ex:8-taylor}
+Encontre o polinômio de Taylor de ordem 5 de $\sin x$ em torno de 0, use-o para aproximar $\sin(0{,}5)$ e
+compare o erro com a estimativa $\frac{|x|^7}{7!}$.
+\end{exercicio}

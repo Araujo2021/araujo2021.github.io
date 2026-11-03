@@ -1,0 +1,593 @@
+% ============================================================
+\chapter{Revisão de Python II: listas, tuplas e funções}
+\label{cap:aula2}
+% ============================================================
+
+\begin{objetivos}
+\begin{itemize}
+  \item criar e manipular listas: índices, fatiamento, \py{append}, \py{insert}, \py{len}, \py{sum}, \py{sorted};
+  \item entender a diferença entre \emph{copiar} uma lista e dar a ela um \emph{segundo nome};
+  \item percorrer listas com \py{for} e construí-las com \emph{compreensão de listas};
+  \item usar tuplas (sequências imutáveis) e, brevemente, dicionários;
+  \item definir funções com \py{def}, \py{return}, parâmetros com valor padrão e funções \py{lambda}.
+\end{itemize}
+\end{objetivos}
+
+\begin{roteiro}
+0--5 min & Revisão rápida da aula anterior (\py{for} e \py{if}).\\
+5--30 min & Listas: criação, índices, fatiamento, métodos, cópia \emph{versus} referência.\\
+30--40 min & Percorrendo listas; compreensão de listas.\\
+40--50 min & Tuplas e dicionários.\\
+50--75 min & Funções: \py{def}, \py{return}, parâmetros, escopo, \py{lambda}.\\
+75--90 min & Exercícios (primos, sequências, estatística simples).\\
+\end{roteiro}
+
+% ------------------------------------------------------------
+\section{Listas}
+% ------------------------------------------------------------
+
+Uma \textbf{lista} é uma sequência ordenada de valores, escrita entre colchetes e separada por vírgulas. Os
+elementos podem ser de qualquer tipo, inclusive outras listas.
+
+\begin{entrada}
+notas = [9.5, 7.5, 10, 8.0]
+alunos = ["Davi", "Felipe", "Henrique", "Maria"]
+mista = [1, "dois", 3.0, [4, 5]]
+vazia = []
+print(notas)
+print(len(alunos), type(alunos), len(vazia))
+\end{entrada}
+\begin{saida}
+[9.5, 7.5, 10, 8.0]
+4 <class 'list'> 0
+\end{saida}
+
+\subsection{Índices}
+
+Cada elemento ocupa uma posição (\emph{índice}). \textbf{A contagem começa em 0}. Índices negativos contam a
+partir do fim: \py{-1} é o último, \py{-2} o penúltimo etc.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\small, cel/.style={draw=gray!70, fill=fundocod, minimum width=1.9cm, minimum height=0.75cm, font=\ttfamily}]
+  \foreach \v/\i in {"Davi"/0, "Felipe"/1, "Henrique"/2, "Maria"/3} {
+     \node[cel] at (\i*1.9, 0) {\v};
+     \node[text=azul, font=\ttfamily] at (\i*1.9, 0.75) {\i};
+     \pgfmathtruncatemacro{\n}{\i-4}
+     \node[text=vermelho, font=\ttfamily] at (\i*1.9, -0.75) {\n};
+  }
+  \node[anchor=east, text=azul] at (-1.2,0.75) {índice};
+  \node[anchor=east, text=vermelho] at (-1.2,-0.75) {índice negativo};
+  \node[anchor=east] at (-1.2,0) {\texttt{alunos}};
+\end{tikzpicture}
+\caption{Índices positivos e negativos da lista \texttt{alunos}.}
+\label{fig:indices}
+\end{figure}
+
+\begin{entrada}
+print(alunos[0], alunos[2], alunos[-1])
+alunos[1] = "Laura"        # listas podem ser alteradas
+print(alunos)
+\end{entrada}
+\begin{saida}
+Davi Henrique Maria
+['Davi', 'Laura', 'Henrique', 'Maria']
+\end{saida}
+
+% erro
+\begin{entrada}
+alunos[4]
+\end{entrada}
+\begin{saida}
+IndexError: list index out of range
+\end{saida}
+
+Uma lista com 4 elementos tem índices de 0 a 3; pedir o índice 4 é um erro muito comum.
+
+\subsection{Fatiamento}
+
+A expressão \py{lista[i:j]} devolve a \emph{fatia} com os elementos de índice $i, i+1,\dots, j-1$ (como no
+\py{range}, o fim não entra). Também é possível indicar um passo: \py{lista[i:j:p]}. Se \py{i} for omitido, começa
+do início; se \py{j} for omitido, vai até o fim.
+
+\begin{entrada}
+v = [10, 20, 30, 40, 50, 60]
+print(v[1:4])      # índices 1, 2, 3
+print(v[:3])       # os 3 primeiros
+print(v[3:])       # do índice 3 até o fim
+print(v[-2:])      # os 2 últimos
+print(v[::2])      # de 2 em 2
+print(v[::-1])     # invertida
+\end{entrada}
+\begin{saida}
+[20, 30, 40]
+[10, 20, 30]
+[40, 50, 60]
+[50, 60]
+[10, 30, 50]
+[60, 50, 40, 30, 20, 10]
+\end{saida}
+
+\subsection{Operações e métodos}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Comando} & \textbf{O que faz} \\
+\midrule
+\py{len(L)}, \py{sum(L)}, \py{min(L)}, \py{max(L)} & tamanho, soma, menor e maior elemento\\
+\py{x in L} & \py{True} se \py{x} está na lista\\
+\py{L + M}, \py{3 * L} & concatena listas; repete a lista 3 vezes\\
+\py{L.append(x)} & acrescenta \py{x} no \textbf{fim} da lista\\
+\py{L.insert(i, x)} & insere \py{x} na posição \py{i}\\
+\py{L.remove(x)} & remove a primeira ocorrência de \py{x}\\
+\py{L.pop()} / \py{L.pop(i)} & remove e devolve o último elemento / o de índice \py{i}\\
+\py{L.index(x)}, \py{L.count(x)} & posição da primeira ocorrência de \py{x}; quantas vezes aparece\\
+\py{L.sort()} / \py{sorted(L)} & ordena a própria lista / devolve uma \emph{nova} lista ordenada\\
+\py{L.reverse()} & inverte a própria lista\\
+\py{L.copy()} ou \py{L[:]} & cria uma cópia da lista\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{entrada}
+notas = [9.5, 7.5, 10, 8.0]
+notas.append(7.0)
+notas.insert(1, 6.5)
+print(notas)
+print("média:", sum(notas) / len(notas))
+print("maior:", max(notas), " menor:", min(notas))
+print(sorted(notas))        # nova lista ordenada
+print(10 in notas, 5 in notas)
+print([1, 2] + [3], 3 * [0])
+\end{entrada}
+\begin{saida}
+[9.5, 6.5, 7.5, 10, 8.0, 7.0]
+média: 8.083333333333334
+maior: 10  menor: 6.5
+[6.5, 7.0, 7.5, 8.0, 9.5, 10]
+True False
+[1, 2, 3] [0, 0, 0]
+\end{saida}
+
+\subsection{Cópia ou novo nome?}
+
+Este é um ponto que confunde muitos estudantes (e que aparece no livro da SBM, Exemplo~3.6). Ao escrever
+\py{B = A}, \textbf{não} se cria uma nova lista: \py{B} passa a ser apenas outro nome para a \emph{mesma} lista.
+Alterar \py{B} altera \py{A}. Para obter uma lista independente, use \py{A.copy()} ou \py{A[:]}.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\small,
+   nome/.style={draw=azul, fill=azul!8, rounded corners=2pt, minimum width=1.1cm, minimum height=0.6cm, font=\ttfamily},
+   lst/.style={draw=gray!70, fill=fundocod, minimum height=0.6cm, font=\ttfamily}]
+  \node[font=\sffamily\bfseries] at (1.5,1.2) {\texttt{B = A}};
+  \node[nome] (A) at (0,0.4) {A}; \node[nome] (B) at (0,-0.6) {B};
+  \node[lst] (L) at (3,-0.1) {[1, 2, 3, 99]};
+  \draw[-{Stealth}, thick] (A) -- (L); \draw[-{Stealth}, thick] (B) -- (L);
+  \node[text=vermelho, align=center, font=\scriptsize] at (1.5,-1.5) {uma só lista, dois nomes:\\\texttt{B.append(99)} muda \texttt{A}};
+  \begin{scope}[xshift=7.3cm]
+  \node[font=\sffamily\bfseries] at (1.5,1.2) {\texttt{B = A.copy()}};
+  \node[nome] (A2) at (0,0.4) {A}; \node[nome] (B2) at (0,-0.6) {B};
+  \node[lst] (L1) at (3,0.4) {[1, 2, 3]};
+  \node[lst] (L2) at (3,-0.6) {[1, 2, 3, 99]};
+  \draw[-{Stealth}, thick] (A2) -- (L1); \draw[-{Stealth}, thick] (B2) -- (L2);
+  \node[text=verde!70!black, align=center, font=\scriptsize] at (1.5,-1.5) {duas listas independentes};
+  \end{scope}
+\end{tikzpicture}
+\caption{Atribuir uma lista a outro nome não a copia.}
+\end{figure}
+
+\begin{entrada}
+A = [1, 2, 3]
+B = A             # B é outro nome para a MESMA lista
+B.append(99)
+print("A =", A)
+
+A = [1, 2, 3]
+C = A.copy()      # C é uma lista nova, independente
+C.append(99)
+print("A =", A, "  C =", C)
+\end{entrada}
+\begin{saida}
+A = [1, 2, 3, 99]
+A = [1, 2, 3]   C = [1, 2, 3, 99]
+\end{saida}
+
+% ------------------------------------------------------------
+\section{Percorrendo e construindo listas}
+% ------------------------------------------------------------
+
+O \py{for} percorre diretamente os elementos de uma lista. Se também precisarmos do índice, usamos
+\py{enumerate}; para percorrer duas listas lado a lado, \py{zip}.
+
+\begin{entrada}
+alunos = ["Davi", "Felipe", "Henrique", "Maria"]
+notas = [9.5, 7.5, 10, 8.0]
+for nome in alunos:
+    print(nome, end="; ")
+print()
+for i, nome in enumerate(alunos):
+    print(i, nome)
+for nome, nota in zip(alunos, notas):
+    situacao = "aprovado" if nota >= 6 else "reprovado"
+    print(f"{nome:10s} {nota:5.1f}  {situacao}")
+\end{entrada}
+\begin{saida}
+Davi; Felipe; Henrique; Maria;
+0 Davi
+1 Felipe
+2 Henrique
+3 Maria
+Davi         9.5  aprovado
+Felipe       7.5  aprovado
+Henrique    10.0  aprovado
+Maria        8.0  aprovado
+\end{saida}
+
+\begin{observacao}
+A linha \py{situacao = "aprovado" if nota >= 6 else "reprovado"} é um \py{if} ``em uma linha'' (expressão
+condicional): vale o primeiro valor se a condição for verdadeira e o segundo caso contrário.
+\end{observacao}
+
+\paragraph{Construindo uma lista com \texttt{append}.} Começa-se com a lista vazia e acrescenta-se um elemento a
+cada volta. Exemplo: os 10 primeiros termos da sequência de Fibonacci, $F_1=F_2=1$, $F_{n}=F_{n-1}+F_{n-2}$.
+
+\begin{entrada}
+fib = [1, 1]
+for n in range(8):
+    fib.append(fib[-1] + fib[-2])
+print(fib)
+razoes = []
+for k in range(1, len(fib)):
+    razoes.append(fib[k] / fib[k-1])
+print(razoes[-1], (1 + 5**0.5)/2)    # converge para o número de ouro
+\end{entrada}
+\begin{saida}
+[1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+1.6176470588235294 1.618033988749895
+\end{saida}
+
+\paragraph{Compreensão de listas.} É uma forma compacta, muito parecida com a notação de conjuntos da matemática.
+Compare
+\[
+\{k^2 : k\in\{1,\dots,10\}\},\qquad \{k\in\{1,\dots,30\} : k \text{ é múltiplo de } 7\}
+\]
+com
+
+\begin{entrada}
+quadrados = [k**2 for k in range(1, 11)]
+multiplos7 = [k for k in range(1, 31) if k % 7 == 0]
+print(quadrados)
+print(multiplos7)
+print(sum([1/k**2 for k in range(1, 1001)]))    # aproxima pi^2/6
+\end{entrada}
+\begin{saida}
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+[7, 14, 21, 28]
+1.6439345666815597
+\end{saida}
+
+\begin{sintaxe}
+[expressão for variável in sequência]
+[expressão for variável in sequência if condição]
+\end{sintaxe}
+
+\paragraph{Listas de listas.} Uma matriz pode ser representada como uma lista de linhas. O elemento da linha $i$ e
+coluna $j$ é \py{M[i][j]} (lembrando que a contagem começa em 0). Na Aula~5 veremos uma forma muito melhor de
+trabalhar com matrizes (NumPy).
+
+\begin{entrada}
+M = [[1, 2, 3],
+     [4, 5, 6]]
+print(M[1][2], len(M), len(M[0]))
+T = [[M[i][j] for i in range(2)] for j in range(3)]   # transposta
+print(T)
+\end{entrada}
+\begin{saida}
+6 2 3
+[[1, 4], [2, 5], [3, 6]]
+\end{saida}
+
+% ------------------------------------------------------------
+\section{Tuplas e dicionários}
+% ------------------------------------------------------------
+
+Uma \textbf{tupla} é parecida com uma lista, mas escrita com parênteses e \textbf{imutável}: depois de criada,
+não pode ser alterada. É usada para dados que ``andam juntos'', como as coordenadas de um ponto.
+
+\begin{entrada}
+P = (3, 4)
+Q = (0, 1, 2)
+print(P[0], P[1], len(Q), type(P))
+x, y = P                  # desempacotamento
+print("x =", x, " y =", y)
+\end{entrada}
+\begin{saida}
+3 4 3 <class 'tuple'>
+x = 3  y = 4
+\end{saida}
+
+% erro
+\begin{entrada}
+P[0] = 10
+\end{entrada}
+\begin{saida}
+TypeError: 'tuple' object does not support item assignment
+\end{saida}
+
+Para ``alterar'' uma tupla, converte-se em lista com \py{list()} (e de volta com \py{tuple()}, se necessário).
+
+\begin{entrada}
+L = list(P)
+L.append(5)
+print(L, tuple(L))
+\end{entrada}
+\begin{saida}
+[3, 4, 5] (3, 4, 5)
+\end{saida}
+
+Um \textbf{dicionário} associa \emph{chaves} a \emph{valores}, como uma tabela. É escrito com chaves \texttt{\{\}}
+e pares \py{chave: valor}.
+
+\begin{entrada}
+notas = {"Davi": 9.5, "Felipe": 8.5, "Maria": 8.0}
+print(notas["Felipe"])
+notas["Laura"] = 7.0           # nova chave
+for nome, nota in notas.items():
+    print(nome, nota)
+\end{entrada}
+\begin{saida}
+8.5
+Davi 9.5
+Felipe 8.5
+Maria 8.0
+Laura 7.0
+\end{saida}
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+& \textbf{Lista} & \textbf{Tupla} & \textbf{Dicionário}\\
+\midrule
+Delimitador & \texttt{[ ]} & \texttt{( )} & \texttt{\{ \}}\\
+Acesso & por índice \py{L[0]} & por índice \py{T[0]} & por chave \py{D["Davi"]}\\
+Pode ser alterado? & sim & não & sim\\
+Uso típico & coleções que mudam & pontos, pares, retornos & tabelas, cadastros\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{maxima}
+No Maxima, listas também são escritas com colchetes, \texttt{[1, 2, 3]}, mas o primeiro elemento é
+\texttt{L[1]}. Em Python é \py{L[0]}. O \texttt{makelist(k\^{}2, k, 1, 10)} do Maxima corresponde a
+\py{[k**2 for k in range(1, 11)]}.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Funções}
+% ------------------------------------------------------------
+
+Uma função agrupa uma sequência de comandos sob um nome, para que possam ser reutilizados. Em matemática
+escrevemos $f(x)=x^2+1$; em Python:
+
+\begin{entrada}
+def f(x):
+    return x**2 + 1
+
+print(f(2), f(-1.5), f(10))
+\end{entrada}
+\begin{saida}
+5 3.25 101
+\end{saida}
+
+\begin{sintaxe}
+def nome_da_funcao(parametro1, parametro2, ...):
+    """Texto opcional explicando a função (docstring)."""
+    comandos
+    return resultado
+\end{sintaxe}
+
+\begin{itemize}
+  \item a primeira linha começa com \py{def}, tem os parâmetros entre parênteses e termina com dois-pontos;
+  \item o corpo da função é \textbf{recuado};
+  \item \py{return} encerra a função e devolve o resultado para quem a chamou;
+  \item a função só é executada quando é \emph{chamada}, como em \py{f(2)}.
+\end{itemize}
+
+\paragraph{\texttt{return} não é \texttt{print}.} Uma função que apenas \emph{imprime} um valor não o devolve: o
+resultado não pode ser usado em outras contas.
+
+\begin{entrada}
+def dobro_imprime(x):
+    print(2*x)
+
+def dobro(x):
+    return 2*x
+
+a = dobro(5) + 1
+b = dobro_imprime(5)
+print("a =", a, "  b =", b)
+\end{entrada}
+\begin{saida}
+10
+a = 11   b = None
+\end{saida}
+
+(\py{None} é o valor ``nada'', devolvido por funções sem \py{return}.)
+
+\paragraph{Vários parâmetros e vários resultados.} Uma função pode receber vários valores e devolver vários
+resultados (que chegam como uma tupla). Exemplo: área e perímetro de um círculo de raio $r$ e as raízes de
+$ax^2+bx+c=0$.
+
+\begin{entrada}
+import math
+
+def circulo(r):
+    """Devolve a área e o perímetro de um círculo de raio r."""
+    return math.pi * r**2, 2 * math.pi * r
+
+area, perimetro = circulo(3)
+print(f"área = {area:.4f}, perímetro = {perimetro:.4f}")
+
+def raizes(a, b, c):
+    delta = b**2 - 4*a*c
+    if delta < 0:
+        return ()                 # tupla vazia: sem raízes reais
+    r1 = (-b + math.sqrt(delta)) / (2*a)
+    r2 = (-b - math.sqrt(delta)) / (2*a)
+    return r1, r2
+
+print(raizes(1, -5, 6), raizes(1, 0, 1), raizes(2, 4, 2))
+\end{entrada}
+\begin{saida}
+área = 28.2743, perímetro = 18.8496
+(3.0, 2.0) () (-1.0, -1.0)
+\end{saida}
+
+(O módulo \py{math}, que fornece $\pi$ e a raiz quadrada, é o tema da próxima aula.)
+
+\paragraph{Parâmetros com valor padrão.} Um parâmetro pode ter um valor usado quando ele não é informado.
+Os argumentos também podem ser passados pelo nome.
+
+\begin{entrada}
+def soma_pa(a1, r, n=10):
+    """Soma dos n primeiros termos da PA de primeiro termo a1 e razão r."""
+    return sum([a1 + k*r for k in range(n)])
+
+print(soma_pa(1, 1))          # n = 10 (padrão): 1 + 2 + ... + 10
+print(soma_pa(1, 1, 100))     # 1 + 2 + ... + 100
+print(soma_pa(r=2, a1=1, n=5))
+\end{entrada}
+\begin{saida}
+55
+5050
+25
+\end{saida}
+
+\paragraph{Variáveis locais.} Variáveis criadas dentro de uma função só existem dentro dela (são
+\emph{locais}). Isso evita que uma função ``bagunce'' as variáveis do resto do notebook.
+
+\begin{entrada}
+def quadrado(x):
+    resultado = x * x
+    return resultado
+
+print(quadrado(7))
+print("resultado" in dir())    # 'resultado' não existe fora da função
+\end{entrada}
+\begin{saida}
+49
+False
+\end{saida}
+
+\paragraph{Funções que usam funções.} Funções podem chamar outras funções e podem até ser passadas como
+argumento. Abaixo, \py{tabela} recebe uma função \py{g} qualquer e mostra seus valores em pontos igualmente
+espaçados de $[a,b]$.
+
+\begin{entrada}
+def tabela(g, a, b, n):
+    h = (b - a) / n
+    for k in range(n + 1):
+        x = a + k*h
+        print(f"{x:6.2f} {g(x):10.4f}")
+
+tabela(f, 0, 1, 4)
+\end{entrada}
+\begin{saida}
+  0.00     1.0000
+  0.25     1.0625
+  0.50     1.2500
+  0.75     1.5625
+  1.00     2.0000
+\end{saida}
+
+\paragraph{Funções \texttt{lambda}.} Para funções curtas, de uma expressão só, pode-se usar \py{lambda}:
+\py{g = lambda x: x**3 - x} é o mesmo que definir \py{g} com \py{def} e \py{return x**3 - x}.
+
+\begin{entrada}
+g = lambda x: x**3 - x
+print(g(2))
+tabela(lambda t: 1/(1 + t**2), 0, 2, 2)
+\end{entrada}
+\begin{saida}
+6
+  0.00     1.0000
+  1.00     0.5000
+  2.00     0.2000
+\end{saida}
+
+\paragraph{Exemplo completo: números primos.} Um inteiro $n\ge 2$ é primo se não tem divisores entre 2 e $n-1$.
+Na verdade basta testar divisores $d$ com $d^2\le n$: se $n=d\cdot e$ com $d\le e$, então $d^2\le n$.
+
+\begin{entrada}
+def eh_primo(n):
+    if n < 2:
+        return False
+    d = 2
+    while d * d <= n:
+        if n % d == 0:
+            return False      # achou um divisor: não é primo
+        d += 1
+    return True
+
+print([n for n in range(2, 50) if eh_primo(n)])
+print(eh_primo(97), eh_primo(2**31 - 1))
+\end{entrada}
+\begin{saida}
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+True True
+\end{saida}
+
+\begin{atencao}
+\begin{itemize}
+  \item Esquecer os parênteses na chamada: \py{f} é a função; \py{f(2)} é o valor dela em 2.
+  \item Usar a função antes de executar a célula onde ela foi definida gera \py{NameError}.
+  \item Não use como nome de variável ou função nomes já existentes, como \py{sum}, \py{list}, \py{max} ou
+  \py{print}: o comando original deixa de funcionar até reiniciar o kernel.
+\end{itemize}
+\end{atencao}
+
+\begin{professor}
+O exemplo da soma dos quadrados no livro da SBM (Exemplo 3.25) tem um erro de digitação (\texttt{i + i} em vez de
+\texttt{i * i}) e usa \texttt{sum} como nome de variável, o que ``apaga'' a função \texttt{sum} do Python dentro
+da função. São bons pontos para discutir com a turma. A diferença entre \texttt{print} e \texttt{return} costuma
+gerar muitas dúvidas: vale insistir no exemplo \texttt{dobro} \emph{versus} \texttt{dobro\_imprime}.
+\end{professor}
+
+% ------------------------------------------------------------
+\section{Exercícios}
+% ------------------------------------------------------------
+
+\begin{exercicio}[manipulando listas]{ex:2-listas}
+Dada \py{L = [3, 8, -2, 7, 0, 5, -6, 1]}:
+(a) mostre o terceiro elemento e o último;
+(b) crie a lista dos elementos positivos;
+(c) crie a lista dos quadrados dos elementos;
+(d) calcule a média e mostre a lista ordenada em ordem decrescente.
+\end{exercicio}
+
+\begin{exercicio}[soma de quadrados -- livro da SBM]{ex:2-quadrados}
+Escreva uma função \py{soma_quadrados(n)} que devolva $1^2+2^2+\cdots+n^2$. Use-a para verificar a fórmula
+$\frac{n(n+1)(2n+1)}{6}$ para $n=1,\dots,20$.
+\end{exercicio}
+
+\begin{exercicio}[média e desvio padrão]{ex:2-estat}
+Escreva funções \py{media(L)} e \py{desvio(L)} que calculem a média $\bar x$ e o desvio padrão
+$\displaystyle s=\sqrt{\tfrac{1}{n}\sum (x_i-\bar x)^2}$ de uma lista. Teste com as notas \py{[9.5, 7.5, 10, 8.0, 6.5]}.
+\end{exercicio}
+
+\begin{exercicio}[primos gêmeos]{ex:2-gemeos}
+Usando \py{eh_primo}, liste todos os pares de primos gêmeos $(p, p+2)$ com $p<100$.
+\end{exercicio}
+
+\begin{exercicio}[MDC e MMC]{ex:2-mdc}
+Escreva uma função \py{mdc(a, b)} usando o algoritmo de Euclides (Aula 1) e uma função \py{mmc(a, b)} usando
+$\mathrm{mmc}(a,b)=\frac{ab}{\mathrm{mdc}(a,b)}$. Calcule o MMC de $1, 2, \dots, 10$.
+\end{exercicio}
+
+\begin{exercicio}[extra: polinômio como lista]{ex:2-poli}
+Represente o polinômio $p(x)=a_0+a_1x+\cdots+a_nx^n$ pela lista \py{[a0, a1, ..., an]}. Escreva uma função
+\py{avalia(coef, x)} que calcule $p(x)$ e uma função \py{deriva(coef)} que devolva a lista de coeficientes de
+$p'(x)$. Teste com $p(x)=1-3x+2x^3$.
+\end{exercicio}

@@ -1,0 +1,420 @@
+% ============================================================
+\chapter{SymPy IV: matrizes simbólicas e equações diferenciais}
+\label{cap:aula10}
+% ============================================================
+
+\begin{objetivos}
+\begin{itemize}
+  \item trabalhar com matrizes exatas no SymPy: determinante, inversa, escalonamento (\py{rref}), posto, núcleo,
+        autovalores, autovetores e diagonalização;
+  \item discutir sistemas lineares com parâmetros;
+  \item resolver equações diferenciais ordinárias com \py{sp.dsolve}, com e sem condições iniciais;
+  \item visualizar campos de direções e soluções; conhecer a solução numérica de sistemas (\emph{extra}).
+\end{itemize}
+\end{objetivos}
+
+\begin{roteiro}
+0--25 min & \py{sp.Matrix}: operações exatas, \py{det}, \py{inv}, \py{rref}, \py{rank}, \py{nullspace}.\\
+25--40 min & Autovalores, autovetores e diagonalização; sistemas com parâmetros.\\
+40--65 min & EDOs com \py{dsolve}: 1ª e 2ª ordem, condições iniciais, verificação.\\
+65--75 min & Campo de direções; gráfico de soluções.\\
+75--90 min & Atividade de encerramento do curso.\\
+\end{roteiro}
+
+\begin{entrada}
+import sympy as sp
+import numpy as np
+import matplotlib.pyplot as plt
+x, y, z, t = sp.symbols('x y z t')
+\end{entrada}
+
+% ------------------------------------------------------------
+\section{Matrizes no SymPy}
+% ------------------------------------------------------------
+
+Na Aula 5 usamos o NumPy, que faz contas \emph{aproximadas}. O \py{sp.Matrix} faz contas \emph{exatas}, com frações,
+raízes e símbolos, como a função \texttt{matrix} do Maxima.
+
+\begin{entrada}
+A = sp.Matrix([[1, 2], [-3, 1]])
+B = sp.Matrix([[2], [4]])
+C = sp.Matrix([[2, 5], [4, 10]])
+A, B, C
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left[\begin{matrix}1 & 2\\-3 & 1\end{matrix}\right], \  \left[\begin{matrix}2\\4\end{matrix}\right], \  \left[\begin{matrix}2 & 5\\4 & 10\end{matrix}\right]\right)$
+\end{saidamat}
+
+\begin{atencao}
+No SymPy, \py{A * B} é o \textbf{produto de matrizes} (no NumPy era elemento a elemento) e \py{A**n} é a potência
+de matrizes. \py{A @ B} também funciona nos dois.
+\end{atencao}
+
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Matemática} & \textbf{SymPy} & \textbf{Maxima}\\
+\midrule
+$AB$, $A^n$, $A^T$ & \py{A*B}, \py{A**n}, \py{A.T} & \texttt{A.B}, \texttt{A\^{}\^{}n}, \texttt{transpose(A)}\\
+$\det A$, $A^{-1}$ & \py{A.det()}, \py{A.inv()} ou \py{A**-1} & \texttt{determinant(A)}, \texttt{invert(A)}\\
+forma escalonada reduzida & \py{A.rref()} & \texttt{echelon(A)} (escalonada)\\
+posto, núcleo & \py{A.rank()}, \py{A.nullspace()} & \texttt{rank(A)}, \texttt{nullspace(A)}\\
+autovalores, autovetores & \py{A.eigenvals()}, \py{A.eigenvects()} & \texttt{eigenvalues(A)}, \texttt{eigenvectors(A)}\\
+polinômio característico & \py{A.charpoly(x)} & \texttt{charpoly(A, x)}\\
+identidade, nula & \py{sp.eye(n)}, \py{sp.zeros(m, n)} & \texttt{ident(n)}, \texttt{zeromatrix(m,n)}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{entrada}
+A*B, A*C - C*A, A.det(), A.inv()
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left[\begin{matrix}10\\-2\end{matrix}\right], \  \left[\begin{matrix}23 & 16\\24 & -23\end{matrix}\right], \  7, \  \left[\begin{matrix}\frac{1}{7} & - \frac{2}{7}\\\frac{3}{7} & \frac{1}{7}\end{matrix}\right]\right)$
+\end{saidamat}
+
+Compare com a Aula 5: o determinante é exatamente 7 e a inversa tem frações exatas.
+
+\paragraph{Matrizes com símbolos.} Podemos obter fórmulas gerais:
+
+\begin{entrada}
+a, b, c, d = sp.symbols('a b c d')
+M = sp.Matrix([[a, b], [c, d]])
+M.det(), M.inv()
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( a d - b c, \  \left[\begin{matrix}\frac{d}{a d - b c} & - \frac{b}{a d - b c}\\- \frac{c}{a d - b c} & \frac{a}{a d - b c}\end{matrix}\right]\right)$
+\end{saidamat}
+
+\begin{entrada}
+k = sp.symbols('k')
+K = sp.Matrix([[1, 2, 3], [0, k, 1], [2, 4, k]])
+dK = sp.factor(K.det())
+print("det =", dK, "   singular para k =", sp.solve(dK, k))
+\end{entrada}
+\begin{saida}
+det = k*(k - 6)    singular para k = [0, 6]
+\end{saida}
+
+\paragraph{Escalonamento.} O método \py{rref()} devolve a forma escalonada reduzida e as colunas dos pivôs. Aplicado
+à matriz ampliada de um sistema, resolve o sistema ``à mão'', como em Álgebra Linear:
+
+\begin{entrada}
+Ab = sp.Matrix([[1, 1, -2, 1],
+                [1, 1, -1, 3],
+                [3, 1, -1, 3]])       # sistema x+y-2z=1, x+y-z=3, 3x+y-z=3
+Ab.rref()
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left[\begin{matrix}1 & 0 & 0 & 0\\0 & 1 & 0 & 5\\0 & 0 & 1 & 2\end{matrix}\right], \  \left( 0, \  1, \  2\right)\right)$
+\end{saidamat}
+
+A última coluna dá a solução $x=0$, $y=5$, $z=2$ (a mesma das Aulas 5 e 7).
+
+\paragraph{Sistemas com parâmetro.} Para que valores de $k$ o sistema
+$\begin{cases}x+2y+3z=1\\ ky+z=2\\ 2x+4y+kz=3\end{cases}$ tem solução única? Pelo cálculo acima, $\det K=k(k-6)$:
+há solução única para $k\neq0$ e $k\neq6$. Nos casos $k=0$ e $k=6$, comparamos os postos:
+
+\begin{entrada}
+bvec = sp.Matrix([1, 2, 3])
+for kv in [0, 6]:
+    Kk = K.subs(k, kv)
+    ampliada = Kk.row_join(bvec)
+    print(f"k = {kv}: posto(K) = {Kk.rank()}, posto(ampliada) = {ampliada.rank()}")
+sp.simplify(K.LUsolve(bvec))           # solução para k diferente de 0 e 6
+\end{entrada}
+\begin{saida}
+k = 0: posto(K) = 2, posto(ampliada) = 3
+k = 6: posto(K) = 2, posto(ampliada) = 3
+\end{saida}
+\begin{saidamat}
+$\displaystyle \left[\begin{matrix}\frac{k^{2} - 13 k + 26}{k \left(k - 6\right)}\\\frac{2 k - 13}{k \left(k - 6\right)}\\\frac{1}{k - 6}\end{matrix}\right]$
+\end{saidamat}
+
+Para $k=0$ e $k=6$ os postos são diferentes: o sistema é impossível.
+
+\paragraph{Núcleo, imagem e autovetores.}
+
+\begin{entrada}
+C.nullspace(), C.columnspace(), C.rank()
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left[ \left[\begin{matrix}- \frac{5}{2}\\1\end{matrix}\right]\right], \  \left[ \left[\begin{matrix}2\\4\end{matrix}\right]\right], \  1\right)$
+\end{saidamat}
+
+\begin{entrada}
+M = sp.Matrix([[3, 0, 0], [0, 3, 0], [0, 1, 1]])
+print(M.charpoly(x).as_expr(), "  autovalores:", M.eigenvals())
+M.eigenvects()
+\end{entrada}
+\begin{saida}
+x**3 - 7*x**2 + 15*x - 9   autovalores: {3: 2, 1: 1}
+\end{saida}
+\begin{saidamat}
+$\displaystyle \left[ \left( 1, \  1, \  \left[ \left[\begin{matrix}0\\0\\1\end{matrix}\right]\right]\right), \  \left( 3, \  2, \  \left[ \left[\begin{matrix}1\\0\\0\end{matrix}\right], \  \left[\begin{matrix}0\\2\\1\end{matrix}\right]\right]\right)\right]$
+\end{saidamat}
+
+A saída de \py{eigenvals()} é um dicionário \{autovalor: multiplicidade\}; a de \py{eigenvects()} é uma lista de
+triplas (autovalor, multiplicidade, lista de autovetores). Como há 3 autovetores independentes, $M$ é diagonalizável:
+
+\begin{entrada}
+P, D = M.diagonalize()
+P, D, P*D*P.inv() == M
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left[\begin{matrix}0 & 1 & 0\\0 & 0 & 2\\1 & 0 & 1\end{matrix}\right], \  \left[\begin{matrix}1 & 0 & 0\\0 & 3 & 0\\0 & 0 & 3\end{matrix}\right], \  \text{True}\right)$
+\end{saidamat}
+
+\paragraph{Aplicação: reconhecimento de cônicas.} A parte quadrática de $ax^2+bxy+cy^2+dx+ey+f=0$ é
+$\begin{pmatrix}x&y\end{pmatrix}Q\begin{pmatrix}x\\y\end{pmatrix}$ com $Q=\begin{pmatrix}a&b/2\\b/2&c\end{pmatrix}$. Os
+sinais dos autovalores de $Q$ dizem o tipo da cônica (mesmo sinal: elipse; sinais opostos: hipérbole; um nulo:
+parábola, salvo casos degenerados). Para a cônica $x^2+2xy-3y^2+x+2y-4=0$ desenhada na Aula 6:
+
+\begin{entrada}
+Q = sp.Matrix([[1, sp.Rational(2, 2)], [sp.Rational(2, 2), -3]])
+Q.eigenvals()
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left\{ -1 + \sqrt{5} : 1, \  - \sqrt{5} - 1 : 1\right\}$
+\end{saidamat}
+
+Os autovalores $-1\pm\sqrt5$ têm sinais opostos: é uma hipérbole, como no gráfico.
+
+% ------------------------------------------------------------
+\section{Equações diferenciais ordinárias}
+% ------------------------------------------------------------
+
+Uma equação diferencial envolve uma função desconhecida e suas derivadas. No SymPy, a função desconhecida é
+declarada com \py{sp.Function}, a derivada $y'(t)$ é escrita \py{y(t).diff(t)} e a equação é resolvida com
+\py{sp.dsolve}.
+
+\begin{sintaxe}
+y = sp.Function('y')
+edo = sp.Eq(y(t).diff(t), ...)              # ou uma expressão igualada a zero
+sp.dsolve(edo, y(t))                        # solução geral
+sp.dsolve(edo, y(t), ics={y(0): 1})         # problema de valor inicial
+\end{sintaxe}
+
+\subsection{Primeira ordem}
+
+\paragraph{Crescimento exponencial.} $y'=ky$:
+
+\begin{entrada}
+y = sp.Function('y')
+k = sp.symbols('k')
+sp.dsolve(sp.Eq(y(t).diff(t), k*y(t)), y(t))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle y{\left(t \right)} = C_{1} e^{k t}$
+\end{saidamat}
+
+A constante arbitrária aparece como $C_1$. Com uma condição inicial, ela é determinada:
+
+\begin{entrada}
+sol = sp.dsolve(sp.Eq(y(t).diff(t), k*y(t)), y(t), ics={y(0): 100})
+sol
+\end{entrada}
+\begin{saidamat}
+$\displaystyle y{\left(t \right)} = 100 e^{k t}$
+\end{saidamat}
+
+O lado direito da solução, \py{sol.rhs}, é uma expressão comum, que pode ser avaliada, derivada ou desenhada:
+
+\begin{entrada}
+print(sol.rhs.subs({k: sp.log(2)/3, t: 6}))     # se a população dobra a cada 3 horas
+\end{entrada}
+\begin{saida}
+400
+\end{saida}
+
+\paragraph{Equação linear de primeira ordem.} $y'+2y=e^{t}$, $y(0)=1$:
+
+\begin{entrada}
+edo = sp.Eq(y(t).diff(t) + 2*y(t), sp.exp(t))
+sp.dsolve(edo, y(t), ics={y(0): 1})
+\end{entrada}
+\begin{saidamat}
+$\displaystyle y{\left(t \right)} = \frac{e^{t}}{3} + \frac{2 e^{- 2 t}}{3}$
+\end{saidamat}
+
+\paragraph{Equação separável e equação logística.} $y'=t\,y^2$ e $P'=rP\left(1-\frac{P}{K}\right)$:
+
+\begin{entrada}
+sp.dsolve(sp.Eq(y(t).diff(t), t*y(t)**2), y(t))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle y{\left(t \right)} = - \frac{2}{C_{1} + t^{2}}$
+\end{saidamat}
+
+\begin{entrada}
+P = sp.Function('P')
+r, K = sp.symbols('r K', positive=True)
+log_sol = sp.dsolve(sp.Eq(P(t).diff(t), r*P(t)*(1 - P(t)/K)), P(t), ics={P(0): 10})
+sp.simplify(log_sol)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle P{\left(t \right)} = \frac{10 K e^{r t}}{K + 10 e^{r t} - 10}$
+\end{saidamat}
+
+\paragraph{Verificando a solução.} O comando \py{sp.checkodesol} substitui a solução na equação; a resposta
+\py{(True, 0)} confirma que ela está correta.
+
+\begin{entrada}
+sp.checkodesol(edo, sp.dsolve(edo, y(t)))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \text{True}, \  0\right)$
+\end{saidamat}
+
+\subsection{Segunda ordem}
+
+A segunda derivada é \py{y(t).diff(t, 2)}. Equação $g''-2g'+g=0$ (raiz dupla da equação característica):
+
+\begin{entrada}
+g = sp.Function('g')
+sp.dsolve(g(t).diff(t, 2) - 2*g(t).diff(t) + g(t), g(t))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle g{\left(t \right)} = \left(C_{1} + C_{2} t\right) e^{t}$
+\end{saidamat}
+
+\paragraph{Oscilador harmônico.} $x''+\omega^2x=0$ com $x(0)=1$, $x'(0)=0$. A condição sobre a derivada é escrita
+\py{x(t).diff(t).subs(t, 0)}:
+
+\begin{entrada}
+X = sp.Function('X')
+w = sp.symbols('omega', positive=True)
+sp.dsolve(X(t).diff(t, 2) + w**2*X(t), X(t), ics={X(0): 1, X(t).diff(t).subs(t, 0): 0})
+\end{entrada}
+\begin{saidamat}
+$\displaystyle X{\left(t \right)} = \cos{\left(\omega t \right)}$
+\end{saidamat}
+
+\paragraph{Uma equação não homogênea} (tutorial do R. Miranda): $q''-6q'+2q=t\cos t$, com $q(0)=1$, $q'(0)=1$. A
+solução é longa, mas o gráfico é imediato com \py{sp.plot}:
+
+% figura: aula10-naohomog
+\begin{entrada}
+q = sp.Function('q')
+edo2 = q(t).diff(t, 2) - 6*q(t).diff(t) + 2*q(t) - t*sp.cos(t)
+solucao = sp.dsolve(edo2, q(t), ics={q(0): 1, q(t).diff(t).subs(t, 0): 1})
+sp.plot(solucao.rhs, (t, -2, 2), ylim=(-5, 5), ylabel="q(t)")
+\end{entrada}
+\saidafig[0.55]{aula10-naohomog}
+
+\begin{maxima}
+No Maxima: \texttt{ode2('diff(y,t) = k*y, y, t)} e, para condições iniciais, \texttt{ic1} e \texttt{ic2}
+(ou \texttt{desolve} com \texttt{atvalue}). No SymPy tudo é feito com \py{sp.dsolve(..., ics={...})}. Note que no
+Maxima a derivada da incógnita é escrita com apóstrofo, \texttt{'diff(y,t)}; no SymPy é \py{y(t).diff(t)}.
+\end{maxima}
+
+\subsection{Campo de direções}
+
+Para $y'=F(t,y)$, em cada ponto $(t,y)$ desenhamos um pequeno segmento com inclinação $F(t,y)$. As soluções são
+curvas tangentes a esses segmentos. O comando \py{plt.quiver} desenha setas em uma malha. Exemplo:
+$y'=y(1-y)$ (logística com $r=K=1$), com algumas soluções.
+
+% figura: aula10-campo
+\begin{entrada}
+F = lambda T, Y: Y*(1 - Y)
+T, Y = np.meshgrid(np.linspace(0, 6, 22), np.linspace(-0.5, 2, 18))
+U, V = np.ones_like(T), F(T, Y)
+N = np.sqrt(U**2 + V**2)                      # normaliza as setas
+plt.quiver(T, Y, U/N, V/N, angles="xy", color="gray", width=0.003)
+
+ts = np.linspace(0, 6, 200)
+for y0 in [0.05, 0.3, 1.0, 1.5, 2.0]:
+    sol = sp.dsolve(sp.Eq(y(t).diff(t), y(t)*(1 - y(t))), y(t), ics={y(0): y0})
+    plt.plot(ts, sp.lambdify(t, sol.rhs)(ts) * np.ones_like(ts), lw=2, label=f"y(0) = {y0}")
+plt.ylim(-0.5, 2)
+plt.xlabel("t"); plt.ylabel("y")
+plt.legend(loc="lower right", fontsize=8)
+plt.show()
+\end{entrada}
+\saidafig[0.6]{aula10-campo}
+
+As soluções com $y(0)>0$ tendem a $y=1$ (equilíbrio estável); $y=0$ é um equilíbrio instável.
+
+\subsection{Extra: sistemas e soluções numéricas}
+
+O \py{dsolve} encontra soluções \emph{exatas}, que nem sempre existem. Para sistemas não lineares, como o famoso
+sistema de Lorenz
+\[
+\dot x=\sigma(y-x),\qquad \dot y=x(\rho-z)-y,\qquad \dot z=xy-\beta z,
+\]
+usa-se um método numérico, como o \py{solve_ivp} da biblioteca SciPy (tutorial do R. Miranda):
+
+% figura: aula10-lorenz
+\begin{entrada}
+from scipy.integrate import solve_ivp
+
+def lorenz(t, u, sigma=10, rho=28, beta=8/3):
+    x, y, z = u
+    return [sigma*(y - x), x*(rho - z) - y, x*y - beta*z]
+
+sol = solve_ivp(lorenz, (0, 40), [1, 1, 1], max_step=0.01)
+ax = plt.figure(figsize=(6, 5)).add_subplot(projection="3d")
+ax.plot(sol.y[0], sol.y[1], sol.y[2], lw=0.5)
+ax.set_title("Atrator de Lorenz")
+plt.show()
+\end{entrada}
+\saidafig[0.5]{aula10-lorenz}
+
+% ------------------------------------------------------------
+\section{Atividade de encerramento}
+% ------------------------------------------------------------
+
+Sugestão para a parte final da aula (ou como trabalho): em duplas, cada grupo escolhe \textbf{um} dos temas abaixo e
+produz um notebook com texto explicativo (células Markdown), código e pelo menos um gráfico.
+
+\begin{enumerate}
+  \item \textbf{Estudo completo de uma função}: domínio, limites, assíntotas, derivadas, extremos, inflexões e
+  gráfico (Aulas 6 e 8).
+  \item \textbf{Aproximações de $\pi$}: série de Leibniz, Monte Carlo, área do círculo por somas de Riemann e por
+  trapézios; comparar velocidades de convergência (Aulas 3, 4 e 9).
+  \item \textbf{Métodos para equações}: bissecção, método babilônico/Newton e \py{nsolve}; comparar número de
+  passos (Aulas 3 e 7).
+  \item \textbf{Cônicas}: dada $ax^2+bxy+cy^2+dx+ey+f=0$, classificar pelos autovalores e desenhar (Aulas 6 e 10).
+  \item \textbf{Modelos populacionais}: crescimento exponencial e logístico; ajuste de parâmetros a dados reais
+  (por exemplo, população brasileira nos censos) com \py{np.polyfit} e \py{dsolve} (Aulas 5 e 10).
+\end{enumerate}
+
+\begin{professor}
+Esta aula concentra muito conteúdo; se necessário, a parte de matrizes pode ser apenas apresentada (os alunos já
+viram NumPy na Aula 5) e o foco ficar nas EDOs. O exemplo de Lorenz requer a SciPy; se ela não estiver instalada
+nas máquinas, mostre-o projetado. A atividade de encerramento pode substituir uma avaliação ou servir como
+revisão.
+\end{professor}
+
+% ------------------------------------------------------------
+\section{Exercícios}
+% ------------------------------------------------------------
+
+\begin{exercicio}[matrizes]{ex:10-mat}
+Para $A=\begin{pmatrix}2&-1&0\\-1&2&-1\\0&-1&2\end{pmatrix}$, calcule de forma exata: $\det A$, $A^{-1}$, o
+polinômio característico, os autovalores e os autovetores. Verifique que $A$ é diagonalizável.
+\end{exercicio}
+
+\begin{exercicio}[sistema com parâmetro]{ex:10-param}
+Discuta, em função de $a$, o sistema $\begin{cases}x+y+z=1\\x+ay+z=2\\x+y+az=3\end{cases}$: para que valores há
+solução única? Para os demais valores, o sistema é impossível ou indeterminado?
+\end{exercicio}
+
+\begin{exercicio}[EDOs de primeira ordem]{ex:10-edo1}
+Resolva e verifique com \py{checkodesol}: (a) $y'=-2ty$, $y(0)=1$; (b) $y'+y=t$; (c) $y'=\frac{y}{t}+t$.
+\end{exercicio}
+
+\begin{exercicio}[lei do resfriamento]{ex:10-resfriamento}
+Pela lei de Newton, a temperatura de um café satisfaz $T'=-k(T-25)$. Se $T(0)=90$ e $T(5)=70$ (minutos, °C),
+encontre $k$ e o instante em que o café chega a $40$\,°C. Faça o gráfico de $T(t)$.
+\end{exercicio}
+
+\begin{exercicio}[segunda ordem]{ex:10-edo2}
+Resolva $y''+y'+y=0$ com $y(0)=1$, $y'(0)=0$ (oscilador amortecido) e faça o gráfico para $t\in[0,15]$.
+Compare com $y''+y=0$ com as mesmas condições iniciais.
+\end{exercicio}
+
+\begin{exercicio}[extra: campo de direções]{ex:10-campo}
+Desenhe o campo de direções de $y'=t-y$ em $[-2,3]\times[-2,3]$ e algumas soluções obtidas com \py{dsolve}. Que reta
+é solução da equação?
+\end{exercicio}

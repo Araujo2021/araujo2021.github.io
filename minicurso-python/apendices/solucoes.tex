@@ -1,0 +1,970 @@
+% ============================================================
+\chapter{Soluções dos exercícios}
+\label{ap:solucoes}
+% ============================================================
+
+As soluções abaixo são \emph{uma} forma de resolver cada exercício; outras soluções corretas são possíveis e
+devem ser valorizadas. Todas as saídas mostradas foram obtidas executando os códigos.
+
+\begin{entrada}
+import math
+import numpy as np
+import sympy as sp
+import matplotlib.pyplot as plt
+\end{entrada}
+
+% ------------------------------------------------------------
+\section*{Aula 1}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:1-temp}.}
+% entradas: 36.5
+\begin{entrada}
+C = float(input("Temperatura em °C: "))
+F = 9/5*C + 32
+print(f"{C} °C = {F:.1f} °F")
+\end{entrada}
+\begin{saida}
+Temperatura em °C: 36.5
+36.5 °C = 97.7 °F
+\end{saida}
+
+\paragraph{Exercício \ref{ex:1-bissexto}.}
+\begin{entrada}
+for ano in [1900, 2000, 2024, 2025]:
+    bissexto = (ano % 4 == 0 and ano % 100 != 0) or ano % 400 == 0
+    print(ano, "é bissexto" if bissexto else "não é bissexto")
+\end{entrada}
+\begin{saida}
+1900 não é bissexto
+2000 é bissexto
+2024 é bissexto
+2025 não é bissexto
+\end{saida}
+
+\paragraph{Exercício \ref{ex:1-somas}.}
+\begin{entrada}
+s = 0
+for k in range(1, 100, 2):
+    s += k
+print("(a)", s)
+
+s = 0
+for k in range(1, 21):
+    s += 1/k**2
+print("(b)", s, "  pi^2/6 =", math.pi**2/6)
+
+n = 10
+s = 0
+for k in range(1, n + 1):
+    s += k**3
+print("(c)", s, (n*(n + 1)//2)**2)
+\end{entrada}
+\begin{saida}
+(a) 2500
+(b) 1.5961632439130233   pi^2/6 = 1.6449340668482264
+(c) 3025 3025
+\end{saida}
+
+\paragraph{Exercício \ref{ex:1-5000}.}
+\begin{entrada}
+soma, k = 0, 0
+while soma <= 5000:
+    k += 1
+    soma += k
+print("último número somado:", k, "  soma:", soma)
+\end{entrada}
+\begin{saida}
+último número somado: 100   soma: 5050
+\end{saida}
+
+\paragraph{Exercício \ref{ex:1-pa}.}
+% entradas: 2 | 3 | 6
+\begin{entrada}
+a1 = float(input("a1 = "))
+r = float(input("razão = "))
+n = int(input("n = "))
+soma = 0
+for k in range(n):
+    termo = a1 + k*r
+    print(termo, end=" ")
+    soma += termo
+print("\nsoma =", soma, "  fórmula =", n*(a1 + termo)/2)
+\end{entrada}
+\begin{saida}
+a1 = 2
+razão = 3
+n = 6
+2.0 5.0 8.0 11.0 14.0 17.0
+soma = 57.0   fórmula = 57.0
+\end{saida}
+
+\paragraph{Exercício \ref{ex:1-collatz}.}
+\begin{entrada}
+for n in [6, 27]:
+    passos = 0
+    seq = [n]
+    while n != 1:
+        n = n // 2 if n % 2 == 0 else 3*n + 1
+        seq.append(n)
+        passos += 1
+    print(passos, "passos; maior valor:", max(seq), "; início:", seq[:8])
+\end{entrada}
+\begin{saida}
+8 passos; maior valor: 16 ; início: [6, 3, 10, 5, 16, 8, 4, 2]
+111 passos; maior valor: 9232 ; início: [27, 82, 41, 124, 62, 31, 94, 47]
+\end{saida}
+
+\paragraph{Exercício \ref{ex:1-divisores}.}
+% entradas: 28
+\begin{entrada}
+n = int(input("n = "))
+qtd = 0
+for d in range(1, n + 1):
+    if n % d == 0:
+        print(d, end=" ")
+        qtd += 1
+print()
+print(n, "é primo" if qtd == 2 else "não é primo")
+\end{entrada}
+\begin{saida}
+n = 28
+1 2 4 7 14 28
+28 não é primo
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 2}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:2-listas}.}
+\begin{entrada}
+L = [3, 8, -2, 7, 0, 5, -6, 1]
+print(L[2], L[-1])
+print([v for v in L if v > 0])
+print([v**2 for v in L])
+print(sum(L)/len(L), sorted(L, reverse=True))
+\end{entrada}
+\begin{saida}
+-2 1
+[3, 8, 7, 5, 1]
+[9, 64, 4, 49, 0, 25, 36, 1]
+2.0 [8, 7, 5, 3, 1, 0, -2, -6]
+\end{saida}
+
+\paragraph{Exercício \ref{ex:2-quadrados}.}
+\begin{entrada}
+def soma_quadrados(n):
+    return sum([k**2 for k in range(1, n + 1)])
+
+print(all(soma_quadrados(n) == n*(n + 1)*(2*n + 1)//6 for n in range(1, 21)))
+\end{entrada}
+\begin{saida}
+True
+\end{saida}
+
+\paragraph{Exercício \ref{ex:2-estat}.}
+\begin{entrada}
+def media(L):
+    return sum(L) / len(L)
+
+def desvio(L):
+    m = media(L)
+    return math.sqrt(sum([(v - m)**2 for v in L]) / len(L))
+
+notas = [9.5, 7.5, 10, 8.0, 6.5]
+print(media(notas), desvio(notas))
+\end{entrada}
+\begin{saida}
+8.3 1.2884098726725126
+\end{saida}
+
+\paragraph{Exercício \ref{ex:2-gemeos}.}
+\begin{entrada}
+def eh_primo(n):
+    if n < 2:
+        return False
+    d = 2
+    while d*d <= n:
+        if n % d == 0:
+            return False
+        d += 1
+    return True
+
+print([(p, p + 2) for p in range(2, 100) if eh_primo(p) and eh_primo(p + 2)])
+\end{entrada}
+\begin{saida}
+[(3, 5), (5, 7), (11, 13), (17, 19), (29, 31), (41, 43), (59, 61), (71, 73)]
+\end{saida}
+
+\paragraph{Exercício \ref{ex:2-mdc}.}
+\begin{entrada}
+def mdc(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def mmc(a, b):
+    return a*b // mdc(a, b)
+
+m = 1
+for k in range(2, 11):
+    m = mmc(m, k)
+print(mdc(252, 198), mmc(4, 6), m)
+\end{entrada}
+\begin{saida}
+18 12 2520
+\end{saida}
+
+\paragraph{Exercício \ref{ex:2-poli}.}
+\begin{entrada}
+def avalia(coef, x):
+    return sum([a * x**k for k, a in enumerate(coef)])
+
+def deriva(coef):
+    return [k * coef[k] for k in range(1, len(coef))]
+
+p = [1, -3, 0, 2]          # 1 - 3x + 2x^3
+print(avalia(p, 2), deriva(p), avalia(deriva(p), 2))
+\end{entrada}
+\begin{saida}
+11 [-3, 0, 6] 21
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 3}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:3-dist}.}
+\begin{entrada}
+def distancia(P, Q):
+    return math.hypot(Q[0] - P[0], Q[1] - P[1])
+
+A, B, C = (0, 0), (4, 0), (1, 3)
+print(distancia(A, B) + distancia(B, C) + distancia(C, A))
+\end{entrada}
+\begin{saida}
+11.404918347287664
+\end{saida}
+
+\paragraph{Exercício \ref{ex:3-relogio}.}
+\begin{entrada}
+def angulo(h, m):
+    dif = abs((30*h + 0.5*m) - 6*m) % 360
+    return min(dif, 360 - dif)
+
+print(angulo(3, 0), angulo(9, 45), angulo(12, 30))
+\end{entrada}
+\begin{saida}
+90.0 22.5 165.0
+\end{saida}
+
+\paragraph{Exercício \ref{ex:3-series}.}
+\begin{entrada}
+for n in [5, 10, 15]:
+    s = sum([1/math.factorial(k) for k in range(n + 1)])
+    print(n, s, abs(s - math.e))
+for n in [10, 1000, 100000]:
+    s = 4*sum([(-1)**k/(2*k + 1) for k in range(n + 1)])
+    print(n, s, abs(s - math.pi))
+\end{entrada}
+\begin{saida}
+5 2.716666666666667 0.0016151617923783057
+10 2.7182818011463845 2.7312660577649694e-08
+15 2.7182818284589945 5.062616992290714e-14
+10 3.232315809405593 0.09072315581579993
+1000 3.1425916543395434 0.000999000749750234
+100000 3.141602653489794 9.999900000945416e-06
+\end{saida}
+
+A série de $e$ converge muito mais rápido: o erro cai como $\frac{1}{(n+1)!}$, enquanto na de Leibniz cai como
+$\frac1n$.
+
+\paragraph{Exercício \ref{ex:3-seno}.}
+\begin{entrada}
+def seno(x, n):
+    return sum([(-1)**k * x**(2*k + 1) / math.factorial(2*k + 1) for k in range(n + 1)])
+
+for x in [1, 10]:
+    print(x, seno(x, 5), seno(x, 20), math.sin(x))
+\end{entrada}
+\begin{saida}
+1 0.841470984648068 0.8414709848078965 0.8414709848078965
+10 -1056.9392336059002 -0.5440211107317661 -0.5440211108893698
+\end{saida}
+
+\paragraph{Exercício \ref{ex:3-cubica}.}
+\begin{entrada}
+def raiz_cubica(x, tol=1e-12):
+    y = x if abs(x) > 1 else 1.0
+    while True:
+        novo = (2*y + x/y**2) / 3
+        if abs(novo - y) < tol:
+            return novo
+        y = novo
+
+print(raiz_cubica(27), raiz_cubica(2), math.cbrt(2), raiz_cubica(-8))
+\end{entrada}
+\begin{saida}
+3.0 1.2599210498948732 1.2599210498948734 -2.0
+\end{saida}
+
+\paragraph{Exercício \ref{ex:3-bissec}.}
+\begin{entrada}
+def bisseccao(f, a, b, tol=1e-10):
+    while (b - a)/2 > tol:
+        m = (a + b)/2
+        if f(a)*f(m) <= 0:
+            b = m
+        else:
+            a = m
+    return (a + b)/2
+
+print(bisseccao(lambda x: x**2 - 2, 1, 2), math.sqrt(2))
+print(bisseccao(lambda x: math.exp(-x) - x, 0, 1))
+print(bisseccao(lambda x: x**7 + x - 1, 0, 1))
+\end{entrada}
+\begin{saida}
+1.4142135623260401 1.4142135623730951
+0.5671432903618552
+0.7965443541179411
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 4}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:4-criar}.}
+\begin{entrada}
+print(np.arange(1, 40, 2))
+print(np.linspace(-1, 1, 11))
+print(2**np.arange(11))
+print(1/np.arange(1, 11))
+\end{entrada}
+\begin{saida}
+[ 1  3  5  7  9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39]
+[-1.  -0.8 -0.6 -0.4 -0.2  0.   0.2  0.4  0.6  0.8  1. ]
+[   1    2    4    8   16   32   64  128  256  512 1024]
+[1.         0.5        0.33333333 0.25       0.2        0.16666667
+ 0.14285714 0.125      0.11111111 0.1       ]
+\end{saida}
+
+\paragraph{Exercício \ref{ex:4-tabela}.}
+\begin{entrada}
+x = np.linspace(0, np.pi, 7)
+for xi, s, c in zip(x, np.sin(x), np.cos(x)):
+    print(f"{xi:6.3f} {s:8.4f} {c:8.4f} {s**2 + c**2:6.2f}")
+\end{entrada}
+\begin{saida}
+ 0.000   0.0000   1.0000   1.00
+ 0.524   0.5000   0.8660   1.00
+ 1.047   0.8660   0.5000   1.00
+ 1.571   1.0000   0.0000   1.00
+ 2.094   0.8660  -0.5000   1.00
+ 2.618   0.5000  -0.8660   1.00
+ 3.142   0.0000  -1.0000   1.00
+\end{saida}
+
+\paragraph{Exercício \ref{ex:4-estat}.}
+\begin{entrada}
+h = np.array([1.72, 1.65, 1.80, 1.58, 1.75, 1.69, 1.83, 1.61])
+print(h.mean(), h.std(), np.sum(h > 1.70), h[h > 1.70].mean())
+\end{entrada}
+\begin{saida}
+1.70375 0.08275528684017716 4 1.775
+\end{saida}
+
+\paragraph{Exercício \ref{ex:4-harmonica}.}
+\begin{entrada}
+k = np.arange(1, 100001)
+H = np.cumsum(1/k)
+n = np.argmax(H > 10) + 1          # primeiro índice em que passa de 10
+print(n, H[n-1])
+N = 10**6
+print(np.sum(1/np.arange(1, N + 1)) - np.log(N))
+\end{entrada}
+\begin{saida}
+12367 10.000043008275778
+0.5772161649014524
+\end{saida}
+
+\paragraph{Exercício \ref{ex:4-simpson}.}
+\begin{entrada}
+def simpson(f, a, b, n):
+    x = np.linspace(a, b, n + 1)
+    y = f(x)
+    h = (b - a)/n
+    return h/3 * (y[0] + 4*np.sum(y[1:-1:2]) + 2*np.sum(y[2:-1:2]) + y[-1])
+
+def trapezios(f, a, b, n):
+    x = np.linspace(a, b, n + 1)
+    y = f(x)
+    return (b - a)/n * (np.sum(y) - (y[0] + y[-1])/2)
+
+g = lambda x: 4/(1 + x**2)
+for n in [10, 20, 40]:
+    print(n, abs(trapezios(g, 0, 1, n) - np.pi), abs(simpson(g, 0, 1, n) - np.pi))
+\end{entrada}
+\begin{saida}
+10 0.0016666646826344333 3.9650577932093256e-08
+20 0.00041666663566441997 6.200080449048073e-10
+40 0.00010416666618251469 9.688250202088966e-12
+\end{saida}
+
+\paragraph{Exercício \ref{ex:4-mc}.}
+\begin{entrada}
+rng = np.random.default_rng(0)
+u = rng.random(100000)
+print(np.mean(np.exp(-u**2)), trapezios(lambda x: np.exp(-x**2), 0, 1, 100))
+\end{entrada}
+\begin{saida}
+0.7471060128813966 0.7468180014679697
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 5}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:5-ops}.}
+\begin{entrada}
+A = np.array([[1, 2, 0], [0, 1, 3], [4, 0, 1]])
+B = np.array([[2, 0, 1], [1, 1, 0], [0, 3, 1]])
+print(A + B)
+print(A @ B)
+print(B @ A)
+print(A.T @ B)
+print(np.linalg.det(A @ B), np.linalg.det(A) * np.linalg.det(B))
+print(np.array_equal((A @ B).T, B.T @ A.T))
+\end{entrada}
+\begin{saida}
+[[3 2 1]
+ [1 2 3]
+ [4 3 2]]
+[[ 4  2  1]
+ [ 1 10  3]
+ [ 8  3  5]]
+[[ 6  4  1]
+ [ 1  3  3]
+ [ 4  3 10]]
+[[ 2 12  5]
+ [ 5  1  2]
+ [ 3  6  1]]
+125.00000000000004 124.99999999999996
+True
+\end{saida}
+
+\paragraph{Exercício \ref{ex:5-sistema}.} (Usa a função \py{gauss} da Aula 5.)
+\begin{entrada}
+def gauss(A, b):
+    M = np.column_stack([A, b]).astype(float)
+    n = len(b)
+    for i in range(n - 1):
+        p = i + np.argmax(np.abs(M[i:, i]))
+        M[[i, p]] = M[[p, i]]
+        for j in range(i + 1, n):
+            M[j] = M[j] - M[j, i]/M[i, i] * M[i]
+    x = np.zeros(n)
+    for i in range(n - 1, -1, -1):
+        x[i] = (M[i, -1] - M[i, i+1:n] @ x[i+1:]) / M[i, i]
+    return x
+
+A = np.array([[2, 1, -1], [-3, -1, 2], [-2, 1, 2]])
+b = np.array([8, -11, -3])
+print(np.linalg.solve(A, b), gauss(A, b))
+\end{entrada}
+\begin{saida}
+[ 2.  3. -1.] [ 2.  3. -1.]
+\end{saida}
+
+\paragraph{Exercício \ref{ex:5-hilbert}.}
+\begin{entrada}
+for n in [4, 8, 12]:
+    i = np.arange(1, n + 1).reshape(n, 1)
+    H = 1/(i + i.T - 1)
+    x = np.ones(n)
+    y = np.linalg.solve(H, H @ x)
+    print(n, f"erro máximo = {np.max(np.abs(y - x)):.1e}", f"cond = {np.linalg.cond(H):.1e}")
+\end{entrada}
+\begin{saida}
+4 erro máximo = 5.4e-14 cond = 1.6e+04
+8 erro máximo = 1.3e-07 cond = 1.5e+10
+12 erro máximo = 2.8e-01 cond = 1.6e+16
+\end{saida}
+
+A matriz de Hilbert é mal condicionada: pequenos erros de arredondamento são ampliados por um fator da ordem do
+número de condição, e para $n=12$ a solução perde quase todos os algarismos corretos.
+
+\paragraph{Exercício \ref{ex:5-autov}.}
+\begin{entrada}
+A = np.array([[4, 1], [2, 3]])
+lam, V = np.linalg.eig(A)
+lam = lam.real
+V = V.real
+for k in range(2):
+    print(lam[k], np.allclose(A @ V[:, k], lam[k] * V[:, k]))
+print(lam.sum(), np.trace(A), lam.prod(), np.linalg.det(A))
+\end{entrada}
+\begin{saida}
+5.0 True
+2.0 True
+7.0 7 10.0 10.000000000000002
+\end{saida}
+
+\paragraph{Exercício \ref{ex:5-poli}.}
+\begin{entrada}
+for p in [[1, 0, -5, 0, 4], [1, 0, -2, -5]]:
+    r = np.roots(p)
+    print(r, np.round(np.abs(np.polyval(p, r)), 10))
+\end{entrada}
+\begin{saida}
+[-2.  2. -1.  1.] [0. 0. 0. 0.]
+[ 2.09455148+0.j         -1.04727574+1.13593989j -1.04727574-1.13593989j] [0. 0. 0.]
+\end{saida}
+
+\paragraph{Exercício \ref{ex:5-ajuste}.}
+\begin{entrada}
+t = np.array([0, 0.5, 1, 1.5, 2, 2.5])
+h = np.array([1.0, 7.9, 12.4, 14.6, 14.3, 11.7])
+a, b, c = np.polyfit(t, h, 2)
+print(f"h(t) = {a:.3f} t^2 + {b:.3f} t + {c:.3f}")
+print(f"g ~ {-2*a:.2f} m/s^2,  altura máxima em t = {-b/(2*a):.2f} s")
+\end{entrada}
+\begin{saida}
+h(t) = -4.764 t^2 + 16.191 t + 0.996
+g ~ 9.53 m/s^2,  altura máxima em t = 1.70 s
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 6}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:6-derivada}.}
+% figura: sol-6-1
+\begin{entrada}
+x = np.linspace(-2.5, 2.5, 300)
+plt.plot(x, x**3 - 3*x, label="$f(x)=x^3-3x$")
+plt.plot(x, 3*x**2 - 3, "--", label="$f'(x)=3x^2-3$")
+plt.plot([-1, 1], [2, -2], "ro", label="pontos críticos")
+plt.axhline(0, color="k", lw=0.8); plt.axvline(0, color="k", lw=0.8)
+plt.grid(True); plt.legend()
+plt.show()
+\end{entrada}
+\saidafig[0.5]{sol-6-1}
+
+\paragraph{Exercício \ref{ex:6-explog}.}
+\begin{entrada}
+fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+x = np.linspace(-2, 2, 200)
+for base, nome in [(2, "$2^x$"), (np.e, "$e^x$"), (10, "$10^x$")]:
+    ax[0].plot(x, base**x, label=nome)
+ax[0].set_ylim(0, 8); ax[0].legend()
+x = np.linspace(0.05, 10, 300)
+ax[1].plot(x, np.log2(x), label=r"$\log_2 x$")
+ax[1].plot(x, np.log(x), label=r"$\ln x$")
+ax[1].plot(x, np.log10(x), label=r"$\log_{10} x$")
+ax[1].legend()
+plt.show()
+\end{entrada}
+
+\paragraph{Exercício \ref{ex:6-parabolas}.} O vértice de $y=x^2+bx+1$ é $\left(-\frac b2, 1-\frac{b^2}{4}\right)$;
+escrevendo $x_v=-\frac b2$, temos $y_v=1-x_v^2$: os vértices estão sobre a parábola $y=1-x^2$.
+\begin{entrada}
+x = np.linspace(-4, 4, 300)
+for b in range(-3, 4):
+    plt.plot(x, x**2 + b*x + 1, lw=1)
+    plt.plot(-b/2, 1 - b**2/4, "ko")
+plt.plot(x, 1 - x**2, "r--", label="$y = 1 - x^2$")
+plt.ylim(-3, 6); plt.legend()
+plt.show()
+\end{entrada}
+
+\paragraph{Exercício \ref{ex:6-param}.}
+% figura: sol-6-4
+\begin{entrada}
+t = np.linspace(0, 2*np.pi, 400)
+fig = plt.figure(figsize=(11, 3.5))
+ax1 = fig.add_subplot(1, 3, 1)
+ax1.plot(np.cos(t)**3, np.sin(t)**3); ax1.set_aspect("equal"); ax1.set_title("astroide")
+ax2 = fig.add_subplot(1, 3, 2)
+X, Y = np.meshgrid(np.linspace(-1.2, 1.2, 400), np.linspace(-0.6, 0.6, 300))
+ax2.contour(X, Y, (X**2 + Y**2)**2 - (X**2 - Y**2), levels=[0])
+ax2.set_aspect("equal"); ax2.set_title("lemniscata")
+ax3 = fig.add_subplot(1, 3, 3, projection="polar")
+ax3.plot(t, np.sin(4*t)); ax3.set_title(r"$r = \sin 4\theta$")
+plt.show()
+\end{entrada}
+\saidafig[0.95]{sol-6-4}
+
+\paragraph{Exercício \ref{ex:6-sup}.} O máximo fica perto de $\left(\frac{1}{\sqrt2},0\right)$ e o mínimo perto de
+$\left(-\frac{1}{\sqrt2},0\right)$ (confirme na Aula 8 igualando as derivadas parciais a zero).
+\begin{entrada}
+x = np.linspace(-2, 2, 100)
+X, Y = np.meshgrid(x, x)
+Z = X*np.exp(-X**2 - Y**2)
+fig = plt.figure(figsize=(10, 4))
+ax1 = fig.add_subplot(1, 2, 1, projection="3d")
+ax1.plot_surface(X, Y, Z, cmap="coolwarm")
+ax2 = fig.add_subplot(1, 2, 2)
+c = ax2.contour(X, Y, Z, levels=15, cmap="coolwarm")
+ax2.clabel(c, fontsize=7); ax2.set_aspect("equal")
+plt.show()
+\end{entrada}
+
+\paragraph{Exercício \ref{ex:6-secantes}.}
+\begin{entrada}
+f = np.sqrt
+x = np.linspace(0, 4, 200)
+plt.plot(x, f(x), "k", lw=2, label=r"$\sqrt{x}$")
+for hh in [2, 1, 0.5, 0.1]:
+    m = (f(1 + hh) - f(1)) / hh
+    plt.plot(x, f(1) + m*(x - 1), lw=1, label=f"secante h = {hh}")
+plt.plot(x, 1 + (x - 1)/2, "r--", lw=2, label="tangente")
+plt.ylim(0, 2.5); plt.legend(fontsize=8)
+plt.show()
+\end{entrada}
+
+% ------------------------------------------------------------
+\section*{Aula 7}
+% ------------------------------------------------------------
+
+\begin{entrada}
+x, y, a, b, c = sp.symbols('x y a b c')
+\end{entrada}
+
+\paragraph{Exercício \ref{ex:7-exato}.}
+\begin{entrada}
+for e in [sp.sqrt(12) + sp.sqrt(27), sp.Rational(1, 3) + sp.Rational(2, 7), sp.exp(sp.pi*sp.sqrt(163))]:
+    print(e, "=", sp.N(e, 30))
+\end{entrada}
+\begin{saida}
+5*sqrt(3) = 8.66025403784438646763723170753
+13/21 = 0.619047619047619047619047619048
+exp(sqrt(163)*pi) = 262537412640768743.999999999999
+\end{saida}
+
+\paragraph{Exercício \ref{ex:7-manip}.}
+\begin{entrada}
+print(sp.expand((x - 2*y)**6))
+print(sp.factor(x**6 - 1), "  |  ", sp.factor(x**4 - 5*x**2 + 4))
+print(sp.cancel((x**3 - 8)/(x**2 - 4)))     # simplify não reduz esta fração; cancel sim
+print(sp.apart((x + 1)/(x**2*(x - 1))))
+\end{entrada}
+\begin{saida}
+x**6 - 12*x**5*y + 60*x**4*y**2 - 160*x**3*y**3 + 240*x**2*y**4 - 192*x*y**5 + 64*y**6
+(x - 1)*(x + 1)*(x**2 - x + 1)*(x**2 + x + 1)   |   (x - 2)*(x - 1)*(x + 1)*(x + 2)
+(x**2 + 2*x + 4)/(x + 2)
+2/(x - 1) - 2/x - 1/x**2
+\end{saida}
+
+\paragraph{Exercício \ref{ex:7-eqs}.} Em (c), elevar ao quadrado dá $x^2-7x+6=0$, com raízes 1 e 6; mas $x=1$ não
+satisfaz a equação original (é uma raiz ``estranha''). O \py{solve} já descarta essa raiz.
+\begin{entrada}
+print(sp.solve(x**3 - 6*x**2 + 11*x - 6, x))
+print(sp.solve(2**x - 32, x))
+print(sp.solve(sp.Eq(sp.sqrt(x + 3), x - 3), x))
+print(sp.solveset(x**4 + x**2 - 12, x, sp.S.Reals), sp.solveset(x**4 + x**2 - 12, x, sp.S.Complexes))
+print(sp.solveset(sp.Abs(2*x - 1) < 3, x, sp.S.Reals))
+\end{entrada}
+\begin{saida}
+[1, 2, 3]
+[5]
+[6]
+{-sqrt(3), sqrt(3)} {-sqrt(3), sqrt(3), -2*I, 2*I}
+Interval.open(-1, 2)
+\end{saida}
+
+\paragraph{Exercício \ref{ex:7-sist}.}
+\begin{entrada}
+z = sp.symbols('z')
+print(sp.linsolve([x + 2*y - z - 4, 2*x - y + z - 1, x + y + z - 6], [x, y, z]))
+print(sp.solve([x**2 + y**2 - 25, x - y - 1], [x, y], dict=True))
+p = a*x**2 + b*x + c
+print(sp.solve([p.subs(x, 1) - 2, p.subs(x, 2) - 3, p.subs(x, 3) - 6], [a, b, c]))
+\end{entrada}
+\begin{saida}
+{(5/7, 20/7, 17/7)}
+[{x: -3, y: -4}, {x: 4, y: 3}]
+{a: 1, b: -2, c: 3}
+\end{saida}
+
+\paragraph{Exercício \ref{ex:7-nsolve}.} O gráfico (\py{sp.plot(sp.exp(-x) - x**2 + 2, (x, -3, 3))}) mostra duas
+raízes, perto de $-1$ e de $1{,}5$.
+\begin{entrada}
+f = sp.exp(-x) - x**2 + 2
+print(sp.nsolve(f, x, -1), sp.nsolve(f, x, 1.5))
+\end{entrada}
+\begin{saida}
+1.49164419466824 1.49164419466824
+\end{saida}
+
+\paragraph{Exercício \ref{ex:7-somas}.}
+\begin{entrada}
+k, n = sp.symbols('k n', integer=True, positive=True)
+print(sp.factor(sp.summation(2*k - 1, (k, 1, n))), "|", sp.factor(sp.summation(k*(k + 1), (k, 1, n))),
+      "|", sp.summation(2**k, (k, 0, n)))
+print(sp.summation(1/(k*(k + 1)), (k, 1, sp.oo)), sp.summation(1/sp.factorial(k), (k, 0, sp.oo)))
+\end{entrada}
+\begin{saida}
+n**2 | n*(n + 1)*(n + 2)/3 | 2**(n + 1) - 1
+1 E
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 8}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:8-limites}.}
+\begin{entrada}
+print(sp.limit((sp.tan(x) - x)/x**3, x, 0, '+-'),
+      sp.limit((1 + 2/x)**x, x, sp.oo),
+      sp.limit(x*sp.log(x), x, 0, '+'),
+      sp.limit(sp.sqrt(x**2 + x) - x, x, sp.oo),
+      sp.limit((sp.sqrt(x + 1) - 2)/(x - 3), x, 3, '+-'))
+\end{entrada}
+\begin{saida}
+1/3 exp(2) 0 1/2 1/4
+\end{saida}
+
+\paragraph{Exercício \ref{ex:8-cont}.}
+\begin{entrada}
+kk = sp.symbols('k')
+esq = sp.limit(kk*x**2, x, 2, '-')
+dir_ = sp.limit(2*x + kk, x, 2, '+')
+print(esq, dir_, sp.solve(sp.Eq(esq, dir_), kk))
+\end{entrada}
+\begin{saida}
+4*k k + 4 [4/3]
+\end{saida}
+
+\paragraph{Exercício \ref{ex:8-derivadas}.}
+\begin{entrada}
+for f in [x**x, sp.log((1 + x)/(1 - x)), sp.exp(-x**2)*sp.cos(3*x), sp.asin(sp.sqrt(x))]:
+    print(sp.simplify(sp.diff(f, x)))
+print(sp.diff(sp.exp(-x**2)*sp.cos(3*x), x).subs(x, 0))
+\end{entrada}
+\begin{saida}
+x**x*(log(x) + 1)
+-2/(x**2 - 1)
+-(2*x*cos(3*x) + 3*sin(3*x))*exp(-x**2)
+1/(2*sqrt(x)*sqrt(1 - x))
+0
+\end{saida}
+
+\paragraph{Exercício \ref{ex:8-tangente}.}
+\begin{entrada}
+f = x/(1 + x**2)
+m = sp.diff(f, x).subs(x, 1)
+y0 = f.subs(x, 1)
+print("m =", m, "  tangente: y =", y0 + m*(x - 1), "  normal: x = 1" if m == 0 else "")
+\end{entrada}
+\begin{saida}
+m = 0   tangente: y = 1/2   normal: x = 1
+\end{saida}
+
+Como $f'(1)=0$, a tangente é horizontal, $y=\frac12$, e a normal é a reta vertical $x=1$.
+
+\paragraph{Exercício \ref{ex:8-estudo}.}
+\begin{entrada}
+f = x**4 - 4*x**3 + 10
+df, d2f = sp.diff(f, x), sp.diff(f, x, 2)
+print("críticos:", sp.solve(df, x), "  inflexão (candidatos):", sp.solve(d2f, x))
+for c in sp.solve(df, x):
+    print(c, f.subs(x, c), d2f.subs(x, c))
+print(sp.solveset(df > 0, x, sp.S.Reals))
+\end{entrada}
+\begin{saida}
+críticos: [0, 3]   inflexão (candidatos): [0, 2]
+0 10 0
+3 -17 36
+Interval.open(3, oo)
+\end{saida}
+
+$f$ decresce em $(-\infty,3)$ e cresce em $(3,\infty)$; mínimo em $x=3$ ($f=-17$); em $x=0$ há ponto crítico sem
+extremo (é ponto de inflexão com tangente horizontal); as inflexões estão em $x=0$ e $x=2$.
+
+\paragraph{Exercício \ref{ex:8-otim}.}
+\begin{entrada}
+r = sp.symbols('r', positive=True)
+A = 2*sp.pi*r**2 + 2*sp.pi*r*1000/(sp.pi*r**2)
+rc = sp.solve(sp.diff(A, r), r)[0]
+h = 1000/(sp.pi*rc**2)
+print(rc, "~", rc.evalf(4), "cm;  h ~", h.evalf(4), "cm;  h/r =", sp.simplify(h/rc))
+\end{entrada}
+\begin{saida}
+5*2**(2/3)/pi**(1/3) ~ 5.419 cm;  h ~ 10.84 cm;  h/r = 2
+\end{saida}
+
+A lata ótima tem altura igual ao diâmetro ($h=2r$).
+
+\paragraph{Exercício \ref{ex:8-taylor}.}
+\begin{entrada}
+P5 = sp.series(sp.sin(x), x, 0, 6).removeO()
+aprox = P5.subs(x, sp.Rational(1, 2))
+erro = abs(sp.sin(sp.Rational(1, 2)) - aprox).evalf()
+print(P5, "|", aprox.evalf(12), "| erro:", erro, "| estimativa:", (sp.Rational(1, 2)**7/sp.factorial(7)).evalf())
+\end{entrada}
+\begin{saida}
+x**5/120 - x**3/6 + x | 0.479427083333 | erro: 1.54472913033306e-6 | estimativa: 1.55009920634921e-6
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 9}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:9-primitivas}.}
+\begin{entrada}
+for f in [x**2*sp.exp(-x), (x + 3)/(x**2 + x - 2), sp.sec(x)**2, x*sp.log(x), 1/(1 + 4*x**2)]:
+    F = sp.integrate(f, x)
+    print(F, "   ok" if sp.simplify(sp.diff(F, x) - f) == 0 else "   conferir")
+\end{entrada}
+\begin{saida}
+(-x**2 - 2*x - 2)*exp(-x)    ok
+4*log(x - 1)/3 - log(x + 2)/3    ok
+sin(x)/cos(x)    ok
+x**2*log(x)/2 - x**2/4    ok
+atan(2*x)/2    ok
+\end{saida}
+
+\paragraph{Exercício \ref{ex:9-definidas}.}
+\begin{entrada}
+print(sp.integrate(sp.sin(x)**2, (x, 0, sp.pi/2)), sp.integrate(sp.log(x)/x, (x, 1, sp.E)),
+      sp.integrate(x*sp.exp(-x), (x, 0, sp.oo)), sp.integrate(1/sp.sqrt(x), (x, 0, 1)),
+      sp.integrate(1/x, (x, 0, 1)))
+\end{entrada}
+\begin{saida}
+pi/4 1/2 1 2 oo
+\end{saida}
+
+\paragraph{Exercício \ref{ex:9-area}.} As curvas se cruzam em $x=-2,0,2$; por simetria, a área é o dobro da área
+em $[0,2]$.
+\begin{entrada}
+f, g = 3*x, x**3 - x
+print(sp.solve(f - g, x))
+area = sp.integrate(g - f, (x, -2, 0)) + sp.integrate(f - g, (x, 0, 2))
+print(area, sp.integrate(sp.Abs(f - g), (x, -2, 2)))
+\end{entrada}
+\begin{saida}
+[-2, 0, 2]
+8 8
+\end{saida}
+
+\paragraph{Exercício \ref{ex:9-riemann}.}
+\begin{entrada}
+for N in [10, 100, 1000]:
+    dx = 4/N
+    xe = np.linspace(0, 4 - dx, N)
+    somas = [np.sum(np.sqrt(xi))*dx for xi in (xe, xe + dx/2, xe + dx)]
+    print(N, ["%.6f" % abs(s - 16/3) for s in somas])
+\end{entrada}
+\begin{saida}
+10 ['0.449259', '0.013737', '0.350741']
+100 ['0.041630', '0.000470', '0.038370']
+1000 ['0.004052', '0.000015', '0.003948']
+\end{saida}
+
+O ponto médio tem o menor erro.
+
+\paragraph{Exercício \ref{ex:9-volume}.}
+\begin{entrada}
+R, hh = sp.symbols('R h', positive=True)
+print(sp.pi*sp.integrate(sp.exp(-x)**2, (x, 0, sp.oo)), sp.pi*sp.integrate((R/hh*x)**2, (x, 0, hh)))
+\end{entrada}
+\begin{saida}
+pi/2 pi*R**2*h/3
+\end{saida}
+
+\paragraph{Exercício \ref{ex:9-extra}.}
+\begin{entrada}
+print(sp.integrate(sp.sin(x), (x, 0, sp.pi))/sp.pi, sp.integrate(x*y, (y, 0, x), (x, 0, 1)))
+\end{entrada}
+\begin{saida}
+2/pi 1/8
+\end{saida}
+
+% ------------------------------------------------------------
+\section*{Aula 10}
+% ------------------------------------------------------------
+
+\paragraph{Exercício \ref{ex:10-mat}.}
+\begin{entrada}
+A = sp.Matrix([[2, -1, 0], [-1, 2, -1], [0, -1, 2]])
+print(A.det(), A.inv())
+print(sp.factor(A.charpoly(x).as_expr()), A.eigenvals())
+print(A.is_diagonalizable())
+\end{entrada}
+\begin{saida}
+4 Matrix([[3/4, 1/2, 1/4], [1/2, 1, 1/2], [1/4, 1/2, 3/4]])
+(x - 2)*(x**2 - 4*x + 2) {2: 1, 2 - sqrt(2): 1, sqrt(2) + 2: 1}
+True
+\end{saida}
+
+\paragraph{Exercício \ref{ex:10-param}.}
+\begin{entrada}
+a = sp.symbols('a')
+M = sp.Matrix([[1, 1, 1], [1, a, 1], [1, 1, a]])
+bv = sp.Matrix([1, 2, 3])
+print(sp.factor(M.det()))
+print(M.subs(a, 1).rank(), M.subs(a, 1).row_join(bv).rank())
+print(sp.simplify(M.LUsolve(bv)).T)
+\end{entrada}
+\begin{saida}
+(a - 1)**2
+1 2
+Matrix([[(a - 4)/(a - 1), 1/(a - 1), 2/(a - 1)]])
+\end{saida}
+
+Solução única para $a\neq1$; para $a=1$ os postos são 1 e 2: sistema impossível.
+
+\paragraph{Exercício \ref{ex:10-edo1}.}
+\begin{entrada}
+t = sp.symbols('t')
+yf = sp.Function('y')
+edos = [(sp.Eq(yf(t).diff(t), -2*t*yf(t)), {yf(0): 1}),
+        (sp.Eq(yf(t).diff(t) + yf(t), t), None),
+        (sp.Eq(yf(t).diff(t), yf(t)/t + t), None)]
+for edo, ci in edos:
+    sol = sp.dsolve(edo, yf(t), ics=ci)
+    print(sol, sp.checkodesol(edo, sol))
+\end{entrada}
+\begin{saida}
+Eq(y(t), exp(-t**2)) (True, 0)
+Eq(y(t), C1*exp(-t) + t - 1) (True, 0)
+Eq(y(t), t*(C1 + t)) (True, 0)
+\end{saida}
+
+\paragraph{Exercício \ref{ex:10-resfriamento}.}
+\begin{entrada}
+T = sp.Function('T')
+k = sp.symbols('k', positive=True)
+sol = sp.dsolve(sp.Eq(T(t).diff(t), -k*(T(t) - 25)), T(t), ics={T(0): 90}).rhs
+kv = sp.solve(sp.Eq(sol.subs(t, 5), 70), k)[0]
+t40 = sp.solve(sp.Eq(sol.subs(k, kv), 40), t)[0]
+print(sol, "|  k =", kv, "~", kv.evalf(4), "|  t =", t40.evalf(4), "min")
+\end{entrada}
+\begin{saida}
+25 + 65*exp(-k*t) |  k = log(13**(1/5)*3**(3/5)/3) ~ 0.07355 |  t = 19.94 min
+\end{saida}
+
+\paragraph{Exercício \ref{ex:10-edo2}.}
+\begin{entrada}
+amort = sp.dsolve(yf(t).diff(t, 2) + yf(t).diff(t) + yf(t), yf(t), ics={yf(0): 1, yf(t).diff(t).subs(t, 0): 0})
+livre = sp.dsolve(yf(t).diff(t, 2) + yf(t), yf(t), ics={yf(0): 1, yf(t).diff(t).subs(t, 0): 0})
+print(amort)
+print(livre)
+\end{entrada}
+\begin{saida}
+Eq(y(t), (sqrt(3)*sin(sqrt(3)*t/2)/3 + cos(sqrt(3)*t/2))*exp(-t/2))
+Eq(y(t), cos(t))
+\end{saida}
+
+O gráfico pode ser feito com \py{sp.plot(amort.rhs, livre.rhs, (t, 0, 15))}: a solução amortecida oscila com
+amplitude decrescente, a outra mantém amplitude 1.
+
+\paragraph{Exercício \ref{ex:10-campo}.} A reta $y=t-1$ é solução: $y'=1$ e $t-y=1$.
+\begin{entrada}
+sol = sp.dsolve(sp.Eq(yf(t).diff(t), t - yf(t)), yf(t))
+print(sol)
+\end{entrada}
+\begin{saida}
+Eq(y(t), C1*exp(-t) + t - 1)
+\end{saida}

@@ -1,0 +1,70 @@
+% ============================================================
+%  Corpo do curso. Compile curso-professor.tex ou curso-aluno.tex
+% ============================================================
+\input{preambulo}
+
+\title{\sffamily\bfseries\color{azul} Python para Matemática\\[6pt]
+  \Large\mdseries Material de apoio para 10 aulas -- MAT 172\\[4pt]
+  \large Revisão de Python, módulo \texttt{math}, NumPy, Matplotlib e SymPy}
+\author{}
+\date{}
+
+\begin{document}
+\frontmatter
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\sffamily\bfseries\color{azul}\fontsize{34}{40}\selectfont Python para Matemática\par}
+  \vspace{0.6cm}
+  {\sffamily\Large Material de apoio para 10 aulas\par}
+  \vspace{0.3cm}
+  {\sffamily\large MAT 172 -- Atividades computacionais com JupyterLab\par}
+  \vspace{1.5cm}
+  \begin{tikzpicture}
+    \foreach \t/\c [count=\i] in {print/azul, math/verde, numpy/laranja, matplotlib/roxo, sympy/vermelho}{
+      \node[draw=\c, fill=\c!8, rounded corners=3pt, minimum width=2.4cm, minimum height=0.9cm,
+            font=\ttfamily\large, text=\c!80!black] at (\i*2.75, 0) {\t};
+    }
+    \foreach \i in {1,...,4}{ \draw[-{Stealth[length=2.5mm]}, gray] (\i*2.75+1.25,0) -- (\i*2.75+1.5,0); }
+  \end{tikzpicture}
+  \vspace{1.5cm}
+
+  {\large Baseado no roteiro das aulas da disciplina, no livro\\
+  \emph{Python para Matemáticos} (A. L. L. Souza, SBM, 2023, cap.~3 a 6)\\
+  e no \emph{Tutorial rápido de Python para Matemáticos} (R. M. Martins, 2022).\par}
+  \vfill
+  \ifprofessor
+    {\sffamily\bfseries\color{vermelho} Versão do professor\par}
+    {\small (contém notas ao professor e soluções dos exercícios)\par}
+  \else
+    {\sffamily\bfseries\color{azul} Versão do estudante\par}
+  \fi
+  \vspace{0.5cm}
+  {\large \today\par}
+\end{titlepage}
+
+\input{apresentacao}
+\tableofcontents
+
+\mainmatter
+\input{aulas/aula01}
+\input{aulas/aula02}
+\input{aulas/aula03}
+\input{aulas/aula04}
+\input{aulas/aula05}
+\input{aulas/aula06}
+\input{aulas/aula07}
+\input{aulas/aula08}
+\input{aulas/aula09}
+\input{aulas/aula10}
+
+\appendix
+\input{apendices/maxima-sympy}
+\input{apendices/referencia-rapida}
+\ifprofessor
+  \input{apendices/solucoes}
+\fi
+
+\backmatter
+\input{apendices/referencias}
+\end{document}

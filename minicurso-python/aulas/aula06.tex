@@ -1,0 +1,462 @@
+% ============================================================
+\chapter{Gráficos com Matplotlib}
+\label{cap:aula6}
+% ============================================================
+
+\begin{objetivos}
+\begin{itemize}
+  \item entender como o computador desenha o gráfico de uma função (pontos ligados por segmentos);
+  \item fazer gráficos com \py{plt.plot} e personalizar cores, estilos, legendas, títulos e eixos;
+  \item colocar vários gráficos em uma mesma figura (\py{plt.subplots});
+  \item desenhar curvas paramétricas, curvas em coordenadas polares e curvas de nível;
+  \item desenhar superfícies e curvas no espaço; salvar figuras em arquivo.
+\end{itemize}
+\end{objetivos}
+
+\begin{roteiro}
+0--15 min & Primeiro gráfico; discretização com \py{linspace}; poucos \emph{versus} muitos pontos.\\
+15--30 min & Personalização: cores, estilos, legenda, título, eixos, grade; vários gráficos.\\
+30--40 min & \py{subplots}; gráficos de dados (\py{scatter}) e reta ajustada.\\
+40--55 min & Curvas paramétricas e polares; descontinuidades.\\
+55--70 min & \py{meshgrid}, curvas de nível e curvas implícitas.\\
+70--85 min & Superfícies e curvas em 3D. Salvando figuras.\\
+85--90 min & Exercícios para casa.\\
+\end{roteiro}
+
+% ------------------------------------------------------------
+\section{O primeiro gráfico}
+% ------------------------------------------------------------
+
+O Matplotlib é a biblioteca de gráficos mais usada em Python. Usamos seu submódulo \py{pyplot}, importado com o
+apelido \py{plt}, junto com o NumPy:
+
+\begin{codigo}
+import numpy as np
+import matplotlib.pyplot as plt
+\end{codigo}
+
+Para o computador, o gráfico de $y=f(x)$ é um conjunto de pontos $(x_i, f(x_i))$ ligados por segmentos de reta.
+Os passos são sempre os mesmos:
+\begin{enumerate}
+  \item \textbf{discretizar} o intervalo: \py{x = np.linspace(a, b, n)};
+  \item calcular \py{y = f(x)} (com funções do NumPy);
+  \item desenhar com \py{plt.plot(x, y)} e mostrar com \py{plt.show()}.
+\end{enumerate}
+
+% figura: aula06-primeiro
+\begin{entrada}
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(-3, 3, 50)     # 50 pontos entre -3 e 3
+y = x**2 + 1
+plt.plot(x, y)
+plt.show()
+\end{entrada}
+\saidafig[0.5]{aula06-primeiro}
+
+Com poucos pontos, o ``gráfico'' vira uma poligonal. É por isso que um esboço com 4 pontos não é um bom gráfico:
+
+% figura: aula06-poucos
+\begin{entrada}
+x = np.linspace(-3, 3, 4)
+plt.plot(x, x**2 + 1, "o-")    # "o-": bolinhas ligadas por linhas
+plt.show()
+\end{entrada}
+\saidafig[0.5]{aula06-poucos}
+
+\begin{dica}
+No JupyterLab o gráfico aparece logo abaixo da célula. O \py{plt.show()} no fim evita que apareçam linhas de
+texto como \py{[<matplotlib.lines.Line2D at 0x...>]} antes da figura.
+\end{dica}
+
+% ------------------------------------------------------------
+\section{Personalizando o gráfico}
+% ------------------------------------------------------------
+
+O terceiro argumento de \py{plt.plot} é uma \emph{string de formato} que combina cor, marcador e tipo de linha:
+
+\begin{center}
+\begin{tabular}{@{}llllll@{}}
+\toprule
+\multicolumn{2}{c}{\textbf{Cores}} & \multicolumn{2}{c}{\textbf{Linhas}} & \multicolumn{2}{c}{\textbf{Marcadores}}\\
+\cmidrule(r){1-2}\cmidrule(lr){3-4}\cmidrule(l){5-6}
+\py{"b"} & azul & \py{"-"} & contínua & \py{"o"} & círculo\\
+\py{"r"} & vermelho & \py{"--"} & tracejada & \py{"s"} & quadrado\\
+\py{"g"} & verde & \py{":"} & pontilhada & \py{"^"} & triângulo\\
+\py{"k"} & preto & \py{"-."} & traço-ponto & \py{"*"} & estrela\\
+\py{"m"}, \py{"c"}, \py{"y"} & magenta, ciano, amarelo & & & \py{"."} & ponto\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Exemplos: \py{"r--"} (vermelho tracejado), \py{"bo"} (só bolinhas azuis), \py{"k-o"} (linha preta com bolinhas).
+Também se pode usar os parâmetros \py{color="purple"}, \py{linestyle="--"}, \py{linewidth=2}, \py{marker="o"}.
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Comando} & \textbf{Efeito}\\
+\midrule
+\py{plt.plot(x, y, label="f")}, \py{plt.legend()} & legenda\\
+\py{plt.title("...")}, \py{plt.xlabel("x")}, \py{plt.ylabel("y")} & título e eixos\\
+\py{plt.xlim(a, b)}, \py{plt.ylim(c, d)} & janela de visualização\\
+\py{plt.grid(True)} & grade\\
+\py{plt.axhline(0)}, \py{plt.axvline(0)} & retas $y=0$ e $x=0$\\
+\py{plt.axis("equal")} & mesma escala nos dois eixos\\
+\py{plt.figure(figsize=(8, 4))} & tamanho da figura (em polegadas)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Textos entre \verb|$...$| são escritos como fórmulas do \LaTeX: \py{label=r"$\sin(x)$"} (o \py{r} antes das aspas
+evita problemas com a barra invertida).
+
+% figura: aula06-personalizado
+\begin{entrada}
+x = np.linspace(-2*np.pi, 2*np.pi, 400)
+plt.figure(figsize=(8, 4))
+plt.plot(x, np.sin(x), "b-", label=r"$\sin x$")
+plt.plot(x, np.cos(x), "r--", label=r"$\cos x$")
+plt.plot(x, np.sin(x)**2, color="green", linewidth=2.5, label=r"$\sin^2 x$")
+plt.axhline(0, color="black", linewidth=0.8)
+plt.axvline(0, color="black", linewidth=0.8)
+plt.title("Funções trigonométricas")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.ylim(-1.5, 1.5)
+plt.grid(True)
+plt.legend()
+plt.show()
+\end{entrada}
+\saidafig[0.85]{aula06-personalizado}
+
+\paragraph{Dados \emph{versus} posição.} Se \py{plt.plot} receber apenas um \emph{array}, os valores são colocados
+no eixo $y$ e o eixo $x$ é a posição $0,1,2,\dots$ (exemplo do livro da SBM):
+
+% figura: aula06-sbm
+\begin{entrada}
+a = np.array([2, 1, 5, 7, 4, 6, 8, 14, 10, 9, 18, 20, 22])
+b = np.sort(a)
+plt.plot(a, "o-", label="dados")
+plt.plot(b, color="red", label="dados ordenados")
+plt.legend()
+plt.show()
+\end{entrada}
+\saidafig[0.5]{aula06-sbm}
+
+\begin{maxima}
+No Maxima: \texttt{plot2d([sin(x), cos(x)], [x, -2*\%pi, 2*\%pi], [y, -1.5, 1.5])}. No Matplotlib não se passa a
+\emph{fórmula}, e sim os \emph{pontos}; por isso é preciso criar o \py{x} com \py{linspace}. Na Aula 7 veremos o
+\py{sp.plot} do SymPy, que funciona como o \texttt{plot2d}.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Vários gráficos em uma figura}
+% ------------------------------------------------------------
+
+Para colocar gráficos lado a lado, usamos \py{fig, ax = plt.subplots(linhas, colunas)}. A variável \py{ax} passa
+a ser uma tabela de ``eixos'', e cada gráfico é desenhado com \py{ax[i, j].plot(...)}. Com os eixos os comandos de
+personalização têm o prefixo \py{set_}: \py{ax.set_title}, \py{ax.set_xlabel}, \py{ax.set_ylim}...
+
+% figura: aula06-subplots
+\begin{entrada}
+x = np.linspace(-2, 2, 200)
+fig, ax = plt.subplots(2, 2, figsize=(8, 6))
+ax[0, 0].plot(x, x**3 - x)
+ax[0, 0].set_title(r"$x^3 - x$")
+ax[0, 1].plot(x, np.exp(x), "r")
+ax[0, 1].set_title(r"$e^x$")
+ax[1, 0].plot(x, np.abs(x), "g")
+ax[1, 0].set_title(r"$|x|$")
+ax[1, 1].plot(x, np.floor(x), "m.")
+ax[1, 1].set_title(r"$\lfloor x \rfloor$")
+for eixo in ax.flat:          # aplica a todos os quatro
+    eixo.grid(True)
+plt.tight_layout()            # evita sobreposição dos títulos
+plt.show()
+\end{entrada}
+\saidafig[0.75]{aula06-subplots}
+
+\paragraph{Famílias de curvas.} Um \py{for} desenha várias curvas de uma vez, por exemplo $y=x^n$ para vários $n$:
+
+% figura: aula06-familia
+\begin{entrada}
+x = np.linspace(0, 1.5, 200)
+for n in [1, 2, 3, 4]:
+    plt.plot(x, x**n, label=f"$x^{n}$")
+plt.ylim(0, 3)
+plt.legend()
+plt.grid(True)
+plt.show()
+\end{entrada}
+\saidafig[0.5]{aula06-familia}
+
+\paragraph{Dados experimentais e reta ajustada.} Pontos isolados são desenhados com \py{plt.scatter} (ou com
+\py{"o"}). Retomando os dados da Aula 5:
+
+% figura: aula06-ajuste
+\begin{entrada}
+xd = np.array([0, 1, 2, 3, 4, 5])
+yd = np.array([1.1, 2.9, 5.2, 7.1, 8.8, 11.2])
+a, b = np.polyfit(xd, yd, 1)
+xs = np.linspace(0, 5, 2)
+plt.scatter(xd, yd, color="red", label="dados")
+plt.plot(xs, a*xs + b, label=f"y = {a:.2f}x + {b:.2f}")
+plt.legend()
+plt.show()
+\end{entrada}
+\saidafig[0.5]{aula06-ajuste}
+
+% ------------------------------------------------------------
+\section{Descontinuidades e assíntotas}
+% ------------------------------------------------------------
+
+O Matplotlib liga \emph{todos} os pontos consecutivos. Em uma assíntota vertical, isso produz uma reta ``falsa''
+ligando $+\infty$ a $-\infty$. Uma solução é limitar o eixo $y$ e trocar por \py{np.nan} (``não é número'') os
+valores muito grandes: pontos \py{nan} não são ligados.
+
+% figura: aula06-tangente
+\begin{entrada}
+x = np.linspace(-np.pi, np.pi, 1000)
+y = np.tan(x)
+fig, ax = plt.subplots(1, 2, figsize=(9, 3.5))
+ax[0].plot(x, y)
+ax[0].set_ylim(-10, 10)
+ax[0].set_title("sem tratamento")
+y[np.abs(y) > 10] = np.nan          # remove os valores enormes
+ax[1].plot(x, y)
+ax[1].set_ylim(-10, 10)
+ax[1].set_title("com np.nan")
+plt.show()
+\end{entrada}
+\saidafig[0.85]{aula06-tangente}
+
+% ------------------------------------------------------------
+\section{Curvas paramétricas e polares}
+% ------------------------------------------------------------
+
+Uma curva parametrizada $\gamma(t)=(x(t),y(t))$, $t\in[a,b]$, é desenhada da mesma forma: discretiza-se o
+\emph{parâmetro} $t$ e liga-se os pontos $(x(t_i), y(t_i))$. Use \py{plt.axis("equal")} para não deformar a figura.
+
+% figura: aula06-parametricas
+\begin{entrada}
+t = np.linspace(0, 2*np.pi, 400)
+fig, ax = plt.subplots(1, 3, figsize=(10, 3.4))
+ax[0].plot(np.cos(t), np.sin(t))                       # círculo
+ax[0].set_title("círculo")
+ax[1].plot(np.cos(t), np.sin(2*t), "r")                 # Lissajous
+ax[1].set_title(r"$(\cos t, \sin 2t)$")
+s = np.linspace(0, 4*np.pi, 400)
+ax[2].plot(s - np.sin(s), 1 - np.cos(s), "g")          # cicloide
+ax[2].set_title("cicloide")
+for eixo in ax:
+    eixo.set_aspect("equal")
+plt.tight_layout()
+plt.show()
+\end{entrada}
+\saidafig[0.95]{aula06-parametricas}
+
+\paragraph{Coordenadas polares.} Uma curva $r=r(\theta)$ é a curva paramétrica
+$x=r(\theta)\cos\theta$, $y=r(\theta)\sin\theta$. Também é possível usar eixos polares com
+\py{subplot_kw={"projection": "polar"}}.
+
+% figura: aula06-polares
+\begin{entrada}
+th = np.linspace(0, 2*np.pi, 500)
+fig, ax = plt.subplots(1, 3, figsize=(10, 3.4), subplot_kw={"projection": "polar"})
+ax[0].plot(th, np.cos(3*th))
+ax[0].set_title(r"rosácea $r=\cos 3\theta$")
+ax[1].plot(th, 1 + np.cos(th), "r")
+ax[1].set_title(r"cardioide $r=1+\cos\theta$")
+th2 = np.linspace(0, 6*np.pi, 800)
+ax[2].plot(th2, th2, "g")
+ax[2].set_title(r"espiral $r=\theta$")
+plt.tight_layout()
+plt.show()
+\end{entrada}
+\saidafig[0.95]{aula06-polares}
+
+% ------------------------------------------------------------
+\section{Funções de duas variáveis: curvas de nível}
+% ------------------------------------------------------------
+
+Para $z=f(x,y)$ precisamos de uma \emph{malha} de pontos $(x_i, y_j)$. O comando \py{np.meshgrid} faz o ``produto
+cartesiano'' de dois vetores, devolvendo as matrizes \py{X} e \py{Y} com as coordenadas de cada ponto da malha:
+
+\begin{entrada}
+x = np.array([0, 1, 2])
+y = np.array([10, 20])
+X, Y = np.meshgrid(x, y)
+print(X)
+print(Y)
+print(X + Y)        # f(x, y) = x + y calculada em todos os pontos da malha
+\end{entrada}
+\begin{saida}
+[[0 1 2]
+ [0 1 2]]
+[[10 10 10]
+ [20 20 20]]
+[[10 11 12]
+ [20 21 22]]
+\end{saida}
+
+Com a malha, \texttt{plt.contour(X, Y, Z, níveis)} desenha as \textbf{curvas de nível} $f(x,y)=c$ e
+\py{plt.contourf} pinta as regiões entre elas.
+
+% figura: aula06-nivel
+\begin{entrada}
+x = np.linspace(-2, 2, 200)
+y = np.linspace(-2, 2, 200)
+X, Y = np.meshgrid(x, y)
+Z = X**2 - Y**2                    # sela
+
+fig, ax = plt.subplots(1, 2, figsize=(9, 4))
+curvas = ax[0].contour(X, Y, Z, levels=[-3, -2, -1, 0, 1, 2, 3])
+ax[0].clabel(curvas)                # escreve os valores nas curvas
+ax[0].set_title(r"curvas de nível de $x^2-y^2$")
+preench = ax[1].contourf(X, Y, Z, levels=20, cmap="viridis")
+fig.colorbar(preench, ax=ax[1])
+ax[1].set_title("contourf")
+for eixo in ax:
+    eixo.set_aspect("equal")
+plt.show()
+\end{entrada}
+\saidafig[0.9]{aula06-nivel}
+
+\paragraph{Curvas implícitas.} Para desenhar uma curva dada por uma equação $F(x,y)=0$ (como uma cônica), basta
+desenhar a curva de nível 0 de $F$. Exemplo (tutorial do R. Miranda): $x^2+2xy-3y^2+x+2y-4=0$.
+
+% figura: aula06-conica
+\begin{entrada}
+x = np.linspace(-6, 6, 400)
+X, Y = np.meshgrid(x, x)
+F = X**2 + 2*X*Y - 3*Y**2 + X + 2*Y - 4
+plt.contour(X, Y, F, levels=[0], colors="red")
+plt.contour(X, Y, X**2 + Y**2 - 4, levels=[0], colors="blue")   # círculo x² + y² = 4
+plt.axhline(0, color="gray", lw=0.6)
+plt.axvline(0, color="gray", lw=0.6)
+plt.axis("equal")
+plt.title("hipérbole (vermelho) e círculo (azul)")
+plt.show()
+\end{entrada}
+\saidafig[0.5]{aula06-conica}
+
+% ------------------------------------------------------------
+\section{Gráficos em três dimensões}
+% ------------------------------------------------------------
+
+Para gráficos 3D, cria-se um eixo com \py{projection="3d"}. O gráfico de $z=f(x,y)$ é feito com
+\py{ax.plot_surface(X, Y, Z)} (superfície colorida) ou \py{ax.plot_wireframe(X, Y, Z)} (malha). Exemplo do livro
+da SBM, $z=\cos\sqrt{x^2+y^2}$, e um paraboloide:
+
+% figura: aula06-superficies
+\begin{entrada}
+x = np.linspace(-5, 5, 80)
+X, Y = np.meshgrid(x, x)
+Z = np.cos(np.sqrt(X**2 + Y**2))
+
+fig = plt.figure(figsize=(10, 4.5))
+ax1 = fig.add_subplot(1, 2, 1, projection="3d")
+ax1.plot_surface(X, Y, Z, cmap="viridis")
+ax1.set_title(r"$z=\cos\sqrt{x^2+y^2}$")
+
+ax2 = fig.add_subplot(1, 2, 2, projection="3d")
+x = np.linspace(-2, 2, 25)
+X, Y = np.meshgrid(x, x)
+ax2.plot_wireframe(X, Y, X**2 + Y**2, color="purple")
+ax2.set_xlabel("x"); ax2.set_ylabel("y"); ax2.set_zlabel("z")
+ax2.set_title(r"$z=x^2+y^2$")
+plt.show()
+\end{entrada}
+\saidafig[0.95]{aula06-superficies}
+
+\begin{dica}
+Para girar o gráfico 3D com o mouse no JupyterLab, execute \py{%matplotlib widget} no início do notebook (requer
+o pacote \texttt{ipympl}). Sem ele, pode-se escolher o ponto de vista com \py{ax.view_init(elev=30, azim=45)}.
+\end{dica}
+
+\paragraph{Superfícies e curvas parametrizadas.} Uma superfície parametrizada $(x(u,v), y(u,v), z(u,v))$ é feita
+com uma malha nos parâmetros $(u,v)$. Abaixo, o toro (tutorial do R. Miranda) e a hélice $(\cos t, \sin t, t/5)$:
+
+% figura: aula06-toro
+\begin{entrada}
+u = np.linspace(0, 2*np.pi, 40)
+U, V = np.meshgrid(u, u)
+r, R = 0.35, 1
+X = (R + r*np.cos(V)) * np.cos(U)
+Y = (R + r*np.cos(V)) * np.sin(U)
+Z = r * np.sin(V)
+
+fig = plt.figure(figsize=(10, 4.5))
+ax1 = fig.add_subplot(1, 2, 1, projection="3d")
+ax1.plot_surface(X, Y, Z, cmap="plasma", edgecolor="k", linewidth=0.2)
+ax1.set_zlim(-1, 1)
+ax1.set_title("toro")
+
+ax2 = fig.add_subplot(1, 2, 2, projection="3d")
+t = np.linspace(0, 6*np.pi, 500)
+ax2.plot(np.cos(t), np.sin(t), t/5, "r")
+ax2.set_title("hélice")
+plt.show()
+\end{entrada}
+\saidafig[0.95]{aula06-toro}
+
+% ------------------------------------------------------------
+\section{Salvando figuras}
+% ------------------------------------------------------------
+
+Para salvar a figura em um arquivo (para um relatório ou trabalho), use \py{plt.savefig} \textbf{antes} do
+\py{plt.show()}. O formato é escolhido pela extensão: \texttt{.png} (imagem), \texttt{.pdf} ou \texttt{.svg}
+(vetoriais, ideais para documentos \LaTeX).
+
+\begin{codigo}
+x = np.linspace(0, 2*np.pi, 200)
+plt.plot(x, np.sin(x))
+plt.savefig("seno.png", dpi=200)     # dpi: resolução
+plt.savefig("seno.pdf")
+plt.show()
+\end{codigo}
+
+O arquivo é gravado na mesma pasta do notebook e aparece no painel de arquivos do JupyterLab.
+
+\begin{professor}
+Esta aula é a mais ``visual'' e costuma render bem se os alunos alterarem os exemplos: trocar a função, o
+intervalo, o número de pontos. Uma sugestão de dinâmica: projetar a Figura do exemplo dos 4 pontos e perguntar o
+que está errado. Os exemplos 3D podem ser lentos em máquinas antigas; se necessário, reduza o número de pontos da
+malha.
+\end{professor}
+
+% ------------------------------------------------------------
+\section{Exercícios}
+% ------------------------------------------------------------
+
+\begin{exercicio}[função e derivada]{ex:6-derivada}
+Em um mesmo gráfico, desenhe $f(x)=x^3-3x$ e $f'(x)=3x^2-3$ em $[-2{,}5;\ 2{,}5]$, com cores e legendas diferentes,
+eixos e grade. Marque com bolinhas vermelhas os pontos críticos de $f$.
+\end{exercicio}
+
+\begin{exercicio}[exponenciais e logaritmos]{ex:6-explog}
+Desenhe, em uma figura com 1 linha e 2 colunas: (a) $2^x$, $e^x$ e $10^x$ em $[-2,2]$; (b) $\log_2 x$, $\ln x$ e
+$\log_{10}x$ em $(0, 10]$. Use \py{plt.axis("equal")} em um deles e compare com $y=x$ para ver a simetria entre
+$e^x$ e $\ln x$.
+\end{exercicio}
+
+\begin{exercicio}[família de parábolas]{ex:6-parabolas}
+Desenhe $y=x^2+bx+1$ para $b=-3,-2,\dots,3$ e marque o vértice de cada parábola. Que curva os vértices descrevem?
+\end{exercicio}
+
+\begin{exercicio}[curvas paramétricas e polares]{ex:6-param}
+Desenhe: (a) a astroide $(\cos^3t, \sin^3t)$; (b) a lemniscata $r^2=\cos 2\theta$ (use a curva de nível 0 de
+$(x^2+y^2)^2-(x^2-y^2)$); (c) a rosácea $r=\sin 4\theta$.
+\end{exercicio}
+
+\begin{exercicio}[superfície e curvas de nível]{ex:6-sup}
+Para $f(x,y)=x\,e^{-x^2-y^2}$, faça o gráfico 3D e o mapa de curvas de nível lado a lado. Pelo mapa, estime onde
+ficam o máximo e o mínimo de $f$.
+\end{exercicio}
+
+\begin{exercicio}[extra: tangente e secantes]{ex:6-secantes}
+Para $f(x)=\sqrt{x}$ e $a=1$, desenhe o gráfico de $f$ e as retas secantes por $(1, f(1))$ e $(1+h, f(1+h))$ para
+$h=2, 1, 0{,}5, 0{,}1$. Desenhe também a reta tangente $y=1+\frac{1}{2}(x-1)$. (Essa figura antecipa a Aula 8.)
+\end{exercicio}

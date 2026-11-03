@@ -1,0 +1,544 @@
+% ============================================================
+\chapter{SymPy I: cálculo simbólico, álgebra e equações}
+\label{cap:aula7}
+% ============================================================
+
+\begin{objetivos}
+\begin{itemize}
+  \item entender a diferença entre cálculo numérico (\py{math}, NumPy) e simbólico (SymPy);
+  \item criar símbolos e expressões; obter valores exatos e aproximados (\py{evalf}, \py{N});
+  \item manipular expressões: \py{expand}, \py{factor}, \py{simplify}, \py{collect}, \py{apart}, \py{subs};
+  \item resolver equações, sistemas e inequações com \py{solve}, \py{solveset}, \py{linsolve} e \py{nsolve};
+  \item calcular somatórios simbólicos e fazer gráficos com o próprio SymPy.
+\end{itemize}
+\end{objetivos}
+
+\begin{roteiro}
+0--15 min & Simbólico \emph{versus} numérico; \py{symbols}; valores exatos e \py{evalf}.\\
+15--35 min & Manipulação de expressões: expandir, fatorar, simplificar, frações parciais, substituir.\\
+35--60 min & Equações: \py{solve}, \py{Eq}, \py{solveset}, sistemas, \py{nsolve}; inequações.\\
+60--70 min & Somatórios e números inteiros (primos, fatoração).\\
+70--80 min & Gráficos com \py{sp.plot} e \py{sp.plot_implicit}.\\
+80--90 min & Exercícios.\\
+\end{roteiro}
+
+% ------------------------------------------------------------
+\section{Cálculo simbólico}
+% ------------------------------------------------------------
+
+Até aqui, todas as contas foram \textbf{numéricas}: $\sqrt{2}$ era \py{1.4142135623730951}, um número aproximado.
+O \textbf{SymPy} faz cálculo \textbf{simbólico}, como o Maxima: trabalha com $\sqrt2$, $\pi$, frações e variáveis
+de forma exata.
+
+\begin{entrada}
+import math
+import sympy as sp
+
+print(math.sqrt(8), sp.sqrt(8))
+print(1/3 + 1/6, sp.Rational(1, 3) + sp.Rational(1, 6))
+print(sp.sqrt(2)**2, math.sqrt(2)**2)
+\end{entrada}
+\begin{saida}
+2.8284271247461903 2*sqrt(2)
+0.5 1/2
+2 2.0000000000000004
+\end{saida}
+
+Quando a última linha da célula é uma expressão do SymPy, o Jupyter a mostra formatada como fórmula
+matemática:
+
+\begin{entrada}
+sp.sqrt(8) + sp.pi/2 + sp.Rational(3, 4)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \frac{3}{4} + \frac{\pi}{2} + 2 \sqrt{2}$
+\end{saidamat}
+
+\begin{atencao}
+\py{1/3} é calculado pelo Python \emph{antes} de chegar ao SymPy, e vira o \py{float} \py{0.333...}. Para frações
+exatas use \py{sp.Rational(1, 3)} ou \py{sp.S(1)/3}. O mesmo vale para \py{x**(1/2)}: prefira
+\py{sp.sqrt(x)} ou \py{x**sp.Rational(1, 2)}.
+\end{atencao}
+
+\paragraph{Valores aproximados.} O método \py{.evalf(n)} (ou a função \py{sp.N(expr, n)}) calcula o valor
+numérico com $n$ algarismos significativos, quantos quisermos:
+
+\begin{entrada}
+print(sp.pi.evalf())
+print(sp.N(sp.pi, 50))
+print(sp.N(sp.E, 30), sp.sqrt(2).evalf(20))
+\end{entrada}
+\begin{saida}
+3.14159265358979
+3.1415926535897932384626433832795028841971693993751
+2.71828182845904523536028747135 1.4142135623730950488
+\end{saida}
+
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Matemática} & \textbf{SymPy} & \textbf{Maxima}\\
+\midrule
+$\pi$, $e$, $i$, $\infty$ & \py{sp.pi}, \py{sp.E}, \py{sp.I}, \py{sp.oo} & \texttt{\%pi}, \texttt{\%e}, \texttt{\%i}, \texttt{inf}\\
+$\sqrt{x}$, $e^x$, $\ln x$ & \py{sp.sqrt(x)}, \py{sp.exp(x)}, \py{sp.log(x)} & \texttt{sqrt(x)}, \texttt{exp(x)}, \texttt{log(x)}\\
+$\sin x$, $\arctan x$ & \py{sp.sin(x)}, \py{sp.atan(x)} & \texttt{sin(x)}, \texttt{atan(x)}\\
+$|x|$, $n!$, $\binom nk$ & \py{sp.Abs(x)}, \py{sp.factorial(n)}, & \texttt{abs(x)}, \texttt{n!},\\
+ & \py{sp.binomial(n, k)} & \texttt{binomial(n,k)}\\
+valor numérico & \py{expr.evalf()}, \py{sp.N(expr, 30)} & \texttt{float(expr)}, \texttt{bfloat(expr)}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ------------------------------------------------------------
+\section{Símbolos e expressões}
+% ------------------------------------------------------------
+
+O Python não sabe o que é $x$. Antes de usar uma letra como variável matemática, é preciso declará-la como
+\textbf{símbolo}:
+
+\begin{entrada}
+x, y, z = sp.symbols('x y z')
+expr = (x + 2*y)**2 - x
+expr
+\end{entrada}
+\begin{saidamat}
+$\displaystyle - x + \left(x + 2 y\right)^{2}$
+\end{saidamat}
+
+% erro
+\begin{entrada}
+w + 1          # w não foi declarado
+\end{entrada}
+\begin{saida}
+NameError: name 'w' is not defined
+\end{saida}
+
+Símbolos podem ter \emph{hipóteses}, que ajudam nas simplificações: \py{positive=True}, \py{real=True},
+\py{integer=True}.
+
+\begin{entrada}
+a = sp.symbols('a')
+b = sp.symbols('b', positive=True)
+print(sp.sqrt(a**2), sp.sqrt(b**2))
+\end{entrada}
+\begin{saida}
+sqrt(a**2) b
+\end{saida}
+
+Como $a$ pode ser negativo, $\sqrt{a^2}=|a|$ e o SymPy não pode simplificar para $a$; já para $b>0$ vale
+$\sqrt{b^2}=b$.
+
+\begin{maxima}
+No Maxima as letras já são símbolos e não precisam ser declaradas. Hipóteses são feitas com
+\texttt{assume(t > 0)}. No SymPy, com \py{sp.symbols('t', positive=True)}.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Manipulando expressões}
+% ------------------------------------------------------------
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}Xl@{}}
+\toprule
+\textbf{SymPy} & \textbf{O que faz} & \textbf{Maxima}\\
+\midrule
+\py{sp.expand(e)} & expande produtos e potências & \texttt{expand}\\
+\py{sp.factor(e)} & fatora & \texttt{factor}\\
+\py{sp.simplify(e)} & tenta simplificar (escolhe a forma ``mais simples'') & \texttt{ratsimp}\\
+\py{sp.collect(e, x)} & agrupa os termos por potências de $x$ & \texttt{collectterms}\\
+\py{sp.cancel(e)} & cancela fatores comuns de uma fração & \texttt{ratsimp}\\
+\py{sp.apart(e, x)} & decompõe em frações parciais & \texttt{partfrac}\\
+\py{sp.together(e)} & junta em uma só fração & \texttt{ratsimp}\\
+\py{sp.trigsimp(e)} & simplifica expressões trigonométricas & \texttt{trigsimp}\\
+\py{sp.expand_trig(e)} & expande expressões trigonométricas & \texttt{trigexpand}\\
+\py{e.subs(x, valor)} & substitui $x$ por um valor ou expressão & \texttt{subst}, \texttt{ev}\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{entrada}
+sp.expand((x + 1)**5)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle x^{5} + 5 x^{4} + 10 x^{3} + 10 x^{2} + 5 x + 1$
+\end{saidamat}
+
+\begin{entrada}
+sp.factor(x**3 - 6*x**2 + 11*x - 6)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left(x - 3\right) \left(x - 2\right) \left(x - 1\right)$
+\end{saidamat}
+
+\begin{entrada}
+sp.factor(x**4 - y**4), sp.factor(x**4 + 4)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left(x - y\right) \left(x + y\right) \left(x^{2} + y^{2}\right), \  \left(x^{2} - 2 x + 2\right) \left(x^{2} + 2 x + 2\right)\right)$
+\end{saidamat}
+
+\begin{entrada}
+f = (x**2 - 1) / (x**2 + 2*x + 1)
+sp.simplify(f)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \frac{x - 1}{x + 1}$
+\end{saidamat}
+
+\begin{entrada}
+g = (4*x**2 + 3) / (x**3 - x)
+sp.apart(g)                     # frações parciais
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \frac{7}{2 \left(x + 1\right)} + \frac{7}{2 \left(x - 1\right)} - \frac{3}{x}$
+\end{saidamat}
+
+\begin{entrada}
+sp.together(1/x + 1/(x + 1))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \frac{2 x + 1}{x \left(x + 1\right)}$
+\end{saidamat}
+
+\begin{entrada}
+p = sp.expand((x + y + 1)**2)
+print(p)
+sp.collect(p, x)                # agrupa por potências de x
+\end{entrada}
+\begin{saida}
+x**2 + 2*x*y + 2*x + y**2 + 2*y + 1
+\end{saida}
+\begin{saidamat}
+$\displaystyle x^{2} + x \left(2 y + 2\right) + y^{2} + 2 y + 1$
+\end{saidamat}
+
+\begin{entrada}
+sp.simplify(sp.sin(x)**2 + sp.cos(x)**2), sp.expand_trig(sp.sin(2*x)), sp.trigsimp(2*sp.sin(x)*sp.cos(x))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( 1, \  2 \sin{\left(x \right)} \cos{\left(x \right)}, \  \sin{\left(2 x \right)}\right)$
+\end{saidamat}
+
+\paragraph{Substituição.} O método \py{subs} troca um símbolo por um número ou por outra expressão. Para várias
+substituições, passa-se um dicionário.
+
+\begin{entrada}
+F = x**2 + y**3 - 2
+print(F.subs(x, 1))
+print(F.subs({x: 1, y: 2}))
+print(F.subs(x, sp.sqrt(y)))
+print(F.subs(x, sp.pi).evalf(5))
+\end{entrada}
+\begin{saida}
+y**3 - 1
+7
+y**3 + y - 2
+y**3 + 7.8696
+\end{saida}
+
+\paragraph{Funções.} Uma função matemática pode ser guardada como expressão e avaliada com \py{subs}, ou definida
+com \py{def}/\py{lambda}. Para fazer gráficos com o Matplotlib ou calcular muitos valores rapidamente,
+\py{sp.lambdify} converte a expressão em uma função do NumPy.
+
+\begin{entrada}
+f = x**3 - 2*x + 1
+print(f.subs(x, 2))
+def g(t):
+    return t**3 - 2*t + 1
+print(g(sp.Rational(1, 2)), g(x + 1))
+import numpy as np
+f_num = sp.lambdify(x, f, "numpy")
+print(f_num(np.array([0, 1, 2, 3])))
+\end{entrada}
+\begin{saida}
+5
+1/8 -2*x + (x + 1)**3 - 1
+[ 1  0  5 22]
+\end{saida}
+
+\begin{maxima}
+\texttt{f(x) := x\^{}3 - 2*x + 1;} e \texttt{f(2);} no Maxima correspondem a \py{def f(x): return x**3 - 2*x + 1} e
+\py{f(2)}. A substituição \texttt{ev(expr, x=2)} ou \texttt{subst(2, x, expr)} é \py{expr.subs(x, 2)}.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Equações}
+% ------------------------------------------------------------
+
+\subsection{\texttt{solve}}
+
+O comando \py{sp.solve(expr, x)} resolve a equação $\text{expr}=0$ na variável $x$ e devolve a \textbf{lista}
+de soluções. Para equações da forma ``lado esquerdo = lado direito'', use \py{sp.Eq(esquerdo, direito)}.
+
+\begin{entrada}
+sp.solve(x**2 - 5*x + 6, x)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left[ 2, \  3\right]$
+\end{saidamat}
+
+\begin{entrada}
+sp.solve(sp.Eq(x**2, 2*x + 1), x)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left[ 1 - \sqrt{2}, \  1 + \sqrt{2}\right]$
+\end{saidamat}
+
+\begin{entrada}
+sp.solve(x**2 + 1, x), sp.solve(x**3 - 1, x)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left[ - i, \  i\right], \  \left[ 1, \  - \frac{1}{2} - \frac{\sqrt{3} i}{2}, \  - \frac{1}{2} + \frac{\sqrt{3} i}{2}\right]\right)$
+\end{saidamat}
+
+\paragraph{Equações com parâmetros.} Resolvendo $ax^2+bx+c=0$ ``em geral'', reencontramos a fórmula de Bhaskara:
+
+\begin{entrada}
+a, b, c = sp.symbols('a b c')
+sp.solve(a*x**2 + b*x + c, x)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left[ \frac{- b - \sqrt{- 4 a c + b^{2}}}{2 a}, \  \frac{- b + \sqrt{- 4 a c + b^{2}}}{2 a}\right]$
+\end{saidamat}
+
+Também podemos isolar uma variável em uma fórmula. Por exemplo, isolar $r$ em $V=\frac43\pi r^3$:
+
+\begin{entrada}
+V, r = sp.symbols('V r', positive=True)
+sp.solve(sp.Eq(V, sp.Rational(4, 3)*sp.pi*r**3), r)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left[ \frac{\sqrt[3]{6} \sqrt[3]{V}}{2 \sqrt[3]{\pi}}\right]$
+\end{saidamat}
+
+\paragraph{Usando as soluções.} Como \py{solve} devolve uma lista, cada solução é acessada por índice:
+
+\begin{entrada}
+sol = sp.solve(x**2 - 3*x - 1, x)
+for s in sol:
+    print(s, "~", s.evalf(6), "  verificação:", sp.simplify((x**2 - 3*x - 1).subs(x, s)))
+\end{entrada}
+\begin{saida}
+3/2 - sqrt(13)/2 ~ -0.302776   verificação: 0
+3/2 + sqrt(13)/2 ~ 3.30278   verificação: 0
+\end{saida}
+
+\subsection{\texttt{solveset}: soluções em um conjunto}
+
+O \texttt{sp.solveset(equação, x, domínio)} devolve um \emph{conjunto}, permite escolher o domínio
+(\py{sp.S.Reals}, \py{sp.S.Complexes}) e descreve corretamente conjuntos infinitos de soluções:
+
+\begin{entrada}
+sp.solveset(x**2 + 1, x, sp.S.Reals), sp.solveset(sp.sin(x), x, sp.S.Reals)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \emptyset, \  \left\{2 n \pi\; \middle|\; n \in \mathbb{Z}\right\} \cup \left\{2 n \pi + \pi\; \middle|\; n \in \mathbb{Z}\right\}\right)$
+\end{saidamat}
+
+Isto é: $x^2+1=0$ não tem solução real e $\sin x = 0$ para $x = k\pi$, $k\in\ZZ$.
+
+\paragraph{Inequações.} Com \py{solveset} no domínio real também se resolvem inequações:
+
+\begin{entrada}
+sp.solveset(x**2 - 4 > 0, x, sp.S.Reals), sp.solveset((x - 1)/(x + 2) <= 0, x, sp.S.Reals)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \left(-\infty, -2\right) \cup \left(2, \infty\right), \  \left(-2, 1\right]\right)$
+\end{saidamat}
+
+\subsection{Sistemas de equações}
+
+Para um sistema, passa-se uma lista de equações e uma lista de incógnitas. Com \py{dict=True} as soluções vêm
+como dicionários \{variável: valor\}.
+
+\begin{entrada}
+sp.solve([x + y - 2, x**2 + y**2 + x - 10], [x, y], dict=True)
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left[ \left\{ x : \frac{3}{4} - \frac{\sqrt{57}}{4}, \  y : \frac{5}{4} + \frac{\sqrt{57}}{4}\right\}, \  \left\{ x : \frac{3}{4} + \frac{\sqrt{57}}{4}, \  y : \frac{5}{4} - \frac{\sqrt{57}}{4}\right\}\right]$
+\end{saidamat}
+
+Para sistemas \textbf{lineares} há o \py{sp.linsolve}, que também descreve sistemas indeterminados:
+
+\begin{entrada}
+eq1 = sp.Eq(x + y - 2*z, 1)
+eq2 = sp.Eq(x + y - z, 3)
+eq3 = sp.Eq(3*x + y - z, 3)
+sp.linsolve([eq1, eq2, eq3], [x, y, z])
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left\{\left( 0, \  5, \  2\right)\right\}$
+\end{saidamat}
+
+\begin{entrada}
+sp.linsolve([x + y + z - 1, x - y + 2*z - 3], [x, y, z])     # 2 equações, 3 incógnitas
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left\{\left( 2 - \frac{3 z}{2}, \  \frac{z}{2} - 1, \  z\right)\right\}$
+\end{saidamat}
+
+A solução depende de $z$ (variável livre): o sistema é possível e indeterminado, e o conjunto solução é uma reta
+no espaço.
+
+\subsection{Quando não há fórmula: \texttt{nsolve}}
+
+Pelo teorema de Abel--Ruffini (e pela teoria de Galois), não existe fórmula com radicais para as raízes de
+polinômios gerais de grau $\ge5$. Nesses casos, e em equações como $\cos x = x$, o SymPy não encontra a solução
+exata e precisamos de métodos \textbf{numéricos}. O \py{sp.nsolve(expr, x, chute)} procura uma solução perto de
+um valor inicial (usando o método de Newton):
+
+\begin{entrada}
+raizes = sp.solve(x**7 - x**6 + x**3 - 9, x)
+print(len(raizes), "raízes")
+raizes[0]
+\end{entrada}
+\begin{saida}
+7 raízes
+\end{saida}
+\begin{saidamat}
+$\displaystyle \operatorname{CRootOf} {\left(x^{7} - x^{6} + x^{3} - 9, 0\right)}$
+\end{saidamat}
+
+O SymPy sabe que há 7 raízes, mas a resposta apenas diz ``a raiz de índice 0 do polinômio''. Pedimos os valores numéricos:
+
+\begin{entrada}
+print(sp.nsolve(x**7 - x**6 + x**3 - 9, x, 1))
+print(sp.real_roots(x**7 - x**6 + x**3 - 9))
+print([r.evalf(6) for r in sp.Poly(x**7 - x**6 + x**3 - 9).nroots()])
+print(sp.nsolve(sp.cos(x) - x, x, 0.5))
+\end{entrada}
+\begin{saida}
+1.49827540261252
+[CRootOf(x**7 - x**6 + x**3 - 9, 0)]
+[1.49828, -1.10809 - 0.623891*I, -1.10809 + 0.623891*I, -0.221851 - 1.27147*I, -0.221851 + 1.27147*I, 1.0808 - 1.03041*I, 1.0808 + 1.03041*I]
+0.739085133215161
+\end{saida}
+
+O \py{nsolve} também resolve sistemas não lineares, com um chute para cada incógnita:
+
+\begin{entrada}
+sp.nsolve([x**5 + y**6 + x**3 - 1, x + y - 1], [x, y], [0.5, 0])
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left[\begin{matrix}0.837615759482675\\0.162384240517325\end{matrix}\right]$
+\end{saidamat}
+
+\begin{dica}
+Para escolher um bom chute, faça antes um gráfico (próxima seção): as soluções de $f(x)=0$ são os pontos onde o
+gráfico corta o eixo $x$.
+\end{dica}
+
+\begin{maxima}
+\texttt{solve}, \texttt{linsolve} e \texttt{realroots}/\texttt{allroots} do Maxima correspondem a \py{sp.solve},
+\py{sp.linsolve} e \py{sp.real_roots}/\py{sp.Poly(p).nroots()}. O \texttt{find\_root(cos(x) = x, x, 0, 1)} do
+Maxima corresponde a \py{sp.nsolve(sp.cos(x) - x, x, 0.5)}.
+\end{maxima}
+
+% ------------------------------------------------------------
+\section{Somatórios e números inteiros}
+% ------------------------------------------------------------
+
+O SymPy calcula somatórios de forma \emph{simbólica}, isto é, encontra fórmulas fechadas:
+
+\begin{entrada}
+k, n = sp.symbols('k n', integer=True, positive=True)
+sp.factor(sp.summation(k**2, (k, 1, n)))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \frac{n \left(n + 1\right) \left(2 n + 1\right)}{6}$
+\end{saidamat}
+
+\begin{entrada}
+sp.factor(sp.summation(k**3, (k, 1, n))), sp.summation(1/k**2, (k, 1, sp.oo)), sp.summation(sp.Rational(1, 2)**k, (k, 1, sp.oo))
+\end{entrada}
+\begin{saidamat}
+$\displaystyle \left( \frac{n^{2} \left(n + 1\right)^{2}}{4}, \  \frac{\pi^{2}}{6}, \  1\right)$
+\end{saidamat}
+
+\begin{entrada}
+print(sp.isprime(2**31 - 1), sp.factorint(360), sp.divisors(60))
+print(sp.prime(100), list(sp.primerange(1, 30)))
+\end{entrada}
+\begin{saida}
+True {2: 3, 3: 2, 5: 1} [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60]
+541 [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+\end{saida}
+
+O dicionário \py{{2: 3, 3: 2, 5: 1}} significa $360=2^3\cdot3^2\cdot5$, e \py{sp.prime(100)} é o centésimo primo.
+(O \py{primerange} gera os primos de um intervalo; o \py{list} serve para vê-los todos.)
+
+% ------------------------------------------------------------
+\section{Gráficos com o SymPy}
+% ------------------------------------------------------------
+
+O SymPy tem seus próprios comandos de gráfico, que recebem diretamente a \emph{expressão} (como o
+\texttt{plot2d} do Maxima). São práticos para gráficos rápidos; para gráficos elaborados, use o Matplotlib
+(Aula~6) com \py{sp.lambdify}.
+
+% figura: aula07-plot
+\begin{entrada}
+sp.plot(x**7 - x**6 + x**3 - 9, (x, -2, 2), ylim=(-50, 50), title="Uma raiz real perto de 1,5")
+\end{entrada}
+\saidafig[0.55]{aula07-plot}
+
+% figura: aula07-plot2
+\begin{entrada}
+sp.plot(sp.sin(x), sp.cos(x), x/2, (x, -2*sp.pi, 2*sp.pi), legend=True)
+\end{entrada}
+\saidafig[0.55]{aula07-plot2}
+
+Curvas definidas implicitamente, como as do sistema resolvido acima com \py{nsolve}, são feitas com
+\py{sp.plot_implicit}:
+
+% figura: aula07-implicit
+\begin{entrada}
+sp.plot_implicit(sp.Or(sp.Eq(x**5 + y**6 + x**3, 1), sp.Eq(x + y, 1)), (x, -2, 2), (y, -2, 2))
+\end{entrada}
+\saidafig[0.45]{aula07-implicit}
+
+O ponto de encontro das duas curvas perto de $(0{,}84;\ 0{,}16)$ é a solução encontrada pelo \py{nsolve}.
+
+\begin{observacao}
+Os gráficos do SymPy também aceitam curvas paramétricas (\py{sp.plot_parametric}) e superfícies
+(\py{from sympy.plotting import plot3d}).
+\end{observacao}
+
+\begin{professor}
+Como o material de Maxima da disciplina tem atividades de simplificação, fatoração e resolução de equações,
+sugere-se retomar aqui duas ou três delas, pedindo que os alunos as resolvam com o SymPy usando a tabela do
+Apêndice~\ref{ap:maxima}. Um ponto de atenção recorrente: \py{1/2*x} no SymPy é \py{0.5*x} (float); use
+\py{x/2} ou \py{sp.Rational(1, 2)*x}.
+\end{professor}
+
+% ------------------------------------------------------------
+\section{Exercícios}
+% ------------------------------------------------------------
+
+\begin{exercicio}[exato \emph{versus} aproximado]{ex:7-exato}
+Calcule de forma exata e com 30 algarismos: (a) $\sqrt{12}+\sqrt{27}$; (b) $\frac{1}{3}+\frac{2}{7}$;
+(c) $e^{\pi\sqrt{163}}$ (está muito perto de um inteiro!).
+\end{exercicio}
+
+\begin{exercicio}[manipulação]{ex:7-manip}
+(a) Expanda $(x-2y)^6$. (b) Fatore $x^6-1$ e $x^4-5x^2+4$. (c) Simplifique $\frac{x^3-8}{x^2-4}$.
+(d) Decomponha $\frac{x+1}{x^2(x-1)}$ em frações parciais.
+\end{exercicio}
+
+\begin{exercicio}[equações]{ex:7-eqs}
+Resolva: (a) $x^3-6x^2+11x-6=0$; (b) $2^x=32$; (c) $\sqrt{x+3}=x-3$ (verifique as soluções!);
+(d) $x^4+x^2-12=0$ nos reais e nos complexos; (e) $|2x-1|<3$.
+\end{exercicio}
+
+\begin{exercicio}[sistemas]{ex:7-sist}
+Resolva: (a) $\begin{cases}x+2y-z=4\\2x-y+z=1\\x+y+z=6\end{cases}$; (b) $\begin{cases}x^2+y^2=25\\x-y=1\end{cases}$;
+(c) Encontre $a,b,c$ tais que a parábola $y=ax^2+bx+c$ passe por $(1,2)$, $(2,3)$ e $(3,6)$.
+\end{exercicio}
+
+\begin{exercicio}[numérico]{ex:7-nsolve}
+Faça o gráfico de $f(x)=e^{-x}-x^2+2$ e use \py{nsolve} para encontrar todas as raízes reais.
+\end{exercicio}
+
+\begin{exercicio}[somatórios]{ex:7-somas}
+Encontre fórmulas fechadas para $\sum_{k=1}^n (2k-1)$, $\sum_{k=1}^n k(k+1)$ e $\sum_{k=0}^n 2^k$. Calcule
+$\sum_{k=1}^\infty\frac{1}{k(k+1)}$ e $\sum_{k=0}^\infty \frac{1}{k!}$.
+\end{exercicio}
