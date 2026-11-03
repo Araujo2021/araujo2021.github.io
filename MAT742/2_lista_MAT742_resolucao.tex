@@ -1,0 +1,627 @@
+\documentclass[12pt]{report}
+\usepackage[portuges]{babel} %hifenação em português e tradução de títulos como References
+\usepackage[latin1]{inputenc} %traduz os acentos do português
+\usepackage[dvips]{graphicx}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage[only,twlrm,ninrm,sevrm]{rawfonts}
+\usepackage[all]{xy}
+\usepackage{makeidx}
+%\usepackage{fancybox}
+%\usepackage{niceframe}
+\usepackage{newlfont}
+\usepackage{wrapfig}
+
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
+\newcommand{\G}{\mathbb G}
+\newcommand{\K}{\mathbb K}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\F}{\mathbb F}
+
+\topmargin=-13mm %distância entre o topo do papel e a primeira linha do texto
+\textwidth=6.6in  %comprimento das linhas
+\setlength{\textheight}{55pc} %distância entre a primeira e última linha do texto
+\oddsidemargin=0.0in
+%\linespread{1.2} %distância entre linhas
+\newenvironment{Nota}{{\bf Nota:}}{\vspace{.1in}}
+
+\newtheorem{teo}{Teorema}
+\newtheorem{prop}{Proposição}
+\newtheorem{lema}{Lema}
+\newtheorem{coro}{Corolário}
+\newtheorem{definicao}{Definição}
+\newtheorem{obs}{Observação}
+
+% Ambiente para as resoluções
+\newenvironment{resp}{\par\medskip\noindent{\bf Resolução.}\ }{\hfill$\blacksquare$\par\bigskip}
+
+\begin{document}
+\begin{center}
+\begin{minipage}[c]{0.7\linewidth}
+\begin{center}
+{\LARGE MAT 742}\\
+\vspace{0.2cm}
+{\Large EDPI -  2026/II}\\
+\vspace{0.2cm}
+\textbf{\large 2ª Lista de Exercício -- Resolução}\\
+\end{center}
+\end{minipage}
+\end{center}
+
+\vspace{1.0cm}
+
+\noindent\textbf{Notação.} Ao longo da lista,
+\[
+\Gamma(x,t)=\Phi(x,t)=\frac{1}{(4\pi t)^{n/2}}e^{-\frac{|x|^2}{4t}}\quad (x\in\R^n,\ t>0)
+\]
+é a solução fundamental da equação do calor. Usaremos repetidamente os fatos:
+\begin{itemize}
+\item[(F1)] $\Gamma\in C^\infty(\R^n\times(0,\infty))$ e $\Gamma_t=\Delta\Gamma$. De fato,
+$\Gamma_t=\big(-\frac{n}{2t}+\frac{|x|^2}{4t^2}\big)\Gamma$, $\nabla\Gamma=-\frac{x}{2t}\Gamma$ e
+$\Delta\Gamma=-\frac{n}{2t}\Gamma+\frac{|x|^2}{4t^2}\Gamma$.
+\item[(F2)] $\displaystyle\int_{\R^n}\Gamma(x,t)\,dx=1$ para todo $t>0$ (substituição $x=2\sqrt t\,z$ e $\int_{\R^n}e^{-|z|^2}dz=\pi^{n/2}$).
+\item[(F3)] Para cada $\delta>0$, $\displaystyle\int_{|z|\ge\delta}\Gamma(z,t)\,dz=\pi^{-n/2}\int_{|w|\ge \delta/(2\sqrt t)}e^{-|w|^2}dw\longrightarrow0$ quando $t\to0^+$.
+\end{itemize}
+
+\begin{enumerate}
+	\item
+Suponha que $f\in C_0^{2,1}(\mathbb R^n\times[0,+\infty))$ e $g\in C^0(\mathbb R^n)\cap L^\infty(\mathbb R^n)$. Defina
+\begin{equation}\label{eq:719}u(x,t)=\int_0^t\int_{\mathbb R^n}\Gamma(x-y,t-s)f(y,s)\,dy\,ds+\int_{\mathbb R^n}\Gamma(x-y,t)g(y)\,dy\end{equation}
+\begin{equation}\label{eq:720}\begin{split}
+	&=\int_0^t\int_{\mathbb R^n}\frac{e^{-\frac{|x-y|^2}{4(t-s)}}}{[4\pi(t-s)]^{n/2}}f(y,s)\,dy\,ds\\
+	&\qquad+\frac1{(4\pi t)^{n/2}}\int_{\mathbb R^n}e^{-\frac{|x-y|^2}{4t}}g(y)\,dy.
+	\end{split}\end{equation}
+	\textit{para $x\in\mathbb R^n$ e $t>0$. Então $u$ é uma solução de classe $C^{2,1}(\mathbb R^n\times(0,+\infty))\cap C^0(\mathbb R^n\times[0,+\infty))$ para o problema de valor inicial}
+	\begin{equation}\label{eq:721}\begin{cases}u_t-\Delta u=f(x,t)&\text{se }x\in\mathbb R^n\text{ e }t>0,\\u(x,0)=g(x)&\text{se }x\in\mathbb R^n.\end{cases}\end{equation}
+
+\begin{resp}
+Entendemos $f\in C_0^{2,1}$ como: $f$, $f_t$, $D_xf$, $D_x^2f$ contínuas em $\R^n\times[0,\infty)$ e $f$ com suporte compacto; em particular $f,f_t,D^2_xf$ são limitadas e uniformemente contínuas. Escrevemos $u=u_1+u_2$, com
+\[
+u_1(x,t)=\int_{\R^n}\Gamma(x-y,t)g(y)\,dy,\qquad u_2(x,t)=\int_0^t\int_{\R^n}\Gamma(x-y,t-s)f(y,s)\,dy\,ds,
+\]
+e definimos $u(x,0)=g(x)$.
+
+\medskip
+\noindent\textbf{Passo 1: $u_1\in C^\infty(\R^n\times(0,\infty))$ e $(u_1)_t-\Delta u_1=0$.}
+Toda derivada $D^\alpha_x\partial_t^k\Gamma(x-y,t)$ é da forma $P\big(x-y,\frac1t\big)\Gamma(x-y,t)$, com $P$ polinômio. Se $|x|\le R$ e $\delta\le t\le T_0$, então $|x-y|\ge |y|-R$ e
+\[
+\big|D^\alpha_x\partial_t^k\Gamma(x-y,t)\big|\le C(1+|y|)^m e^{-\frac{(|y|-R)_+^2}{4T_0}},
+\]
+que é integrável em $y$ e independe de $(x,t)$. Como $g$ é limitada, podemos derivar sob o sinal de integral quantas vezes quisermos; logo $u_1\in C^\infty(\R^n\times(0,\infty))$ e, por (F1),
+\[
+(u_1)_t-\Delta u_1=\int_{\R^n}\big[(\Gamma_t-\Delta_x\Gamma)(x-y,t)\big]g(y)\,dy=0.
+\]
+
+\noindent\textbf{Passo 2: $u_1(x,t)\to g(x_0)$ quando $(x,t)\to(x_0,0)$, $t>0$.}
+Dado $\varepsilon>0$, tome $\delta>0$ tal que $|g(y)-g(x_0)|<\varepsilon$ se $|y-x_0|<\delta$. Se $|x-x_0|<\delta/2$, então $|y-x_0|\ge\delta$ implica $|x-y|\ge\delta/2$. Por (F2),
+\[
+|u_1(x,t)-g(x_0)|\le\int_{\R^n}\Gamma(x-y,t)|g(y)-g(x_0)|\,dy
+\le \varepsilon+2\|g\|_\infty\int_{|z|\ge\delta/2}\Gamma(z,t)\,dz .
+\]
+Por (F3) o último termo é $<\varepsilon$ para $t$ pequeno. Logo $\limsup|u_1(x,t)-g(x_0)|\le2\varepsilon$, e $\varepsilon$ é arbitrário.
+
+\medskip
+\noindent\textbf{Passo 3: regularidade de $u_2$.}
+Mudando variáveis ($y\mapsto x-y$, $s\mapsto t-s$),
+\[
+u_2(x,t)=\int_0^t\int_{\R^n}\Gamma(y,s)f(x-y,t-s)\,dy\,ds .
+\]
+Como $f$ é de classe $C^{2,1}$, limitada com derivadas limitadas, e $\Gamma(\cdot,s)\ge0$ tem integral $1$, podemos derivar sob a integral:
+\begin{align*}
+D^2_xu_2(x,t)&=\int_0^t\int_{\R^n}\Gamma(y,s)D_x^2f(x-y,t-s)\,dy\,ds,\\
+(u_2)_t(x,t)&=\int_0^t\int_{\R^n}\Gamma(y,s)f_t(x-y,t-s)\,dy\,ds+\int_{\R^n}\Gamma(y,t)f(x-y,0)\,dy,
+\end{align*}
+(o último termo vem da derivada do limite superior $t$ da integral em $s$). Cada expressão é contínua em $\R^n\times(0,\infty)$ (convergência dominada, usando a continuidade uniforme de $f$, $f_t$, $D_x^2f$). Portanto $u_2\in C^{2,1}(\R^n\times(0,\infty))$. Além disso, $|u_2(x,t)|\le t\|f\|_\infty\to0$ quando $t\to0^+$, uniformemente em $x$.
+
+\medskip
+\noindent\textbf{Passo 4: $(u_2)_t-\Delta u_2=f$.} Usando $\partial_t[f(x-y,t-s)]=-\partial_s[f(x-y,t-s)]$ e $\Delta_x[f(x-y,t-s)]=\Delta_y[f(x-y,t-s)]$, temos, para $0<\varepsilon<t$,
+\begin{align*}
+(u_2)_t-\Delta u_2
+&=\underbrace{\int_\varepsilon^t\!\!\int_{\R^n}\Gamma(y,s)\big[(-\partial_s-\Delta_y)f(x-y,t-s)\big]dy\,ds}_{I_\varepsilon}\\
+&\quad+\underbrace{\int_0^\varepsilon\!\!\int_{\R^n}\Gamma(y,s)\big[(f_t-\Delta_xf)(x-y,t-s)\big]dy\,ds}_{J_\varepsilon}\\
+&\quad+\underbrace{\int_{\R^n}\Gamma(y,t)f(x-y,0)\,dy}_{K}.
+\end{align*}
+Temos $|J_\varepsilon|\le\varepsilon\big(\|f_t\|_\infty+\|D^2_xf\|_\infty\big)$. Em $I_\varepsilon$ integramos por partes em $s$ e em $y$ (não há termos de fronteira em $y$, pois $f$ tem suporte compacto):
+\begin{align*}
+I_\varepsilon&=\int_\varepsilon^t\!\!\int_{\R^n}\big[(\partial_s-\Delta_y)\Gamma(y,s)\big]f(x-y,t-s)\,dy\,ds\\
+&\quad+\int_{\R^n}\Gamma(y,\varepsilon)f(x-y,t-\varepsilon)\,dy-\int_{\R^n}\Gamma(y,t)f(x-y,0)\,dy .
+\end{align*}
+O primeiro termo é nulo por (F1) e o último é $-K$. Assim
+\[
+(u_2)_t(x,t)-\Delta u_2(x,t)=\lim_{\varepsilon\to0}\int_{\R^n}\Gamma(y,\varepsilon)f(x-y,t-\varepsilon)\,dy=f(x,t),
+\]
+pois, por (F2) e (F3), para todo $\delta>0$,
+\begin{align*}
+\Big|\int_{\R^n}\Gamma(y,\varepsilon)\big[f(x-y,t-\varepsilon)-f(x,t)\big]dy\Big|
+&\le\sup_{|y|\le\delta}|f(x-y,t-\varepsilon)-f(x,t)|\\
+&\quad+2\|f\|_\infty\int_{|y|>\delta}\Gamma(y,\varepsilon)\,dy,
+\end{align*}
+e o lado direito é tão pequeno quanto se queira pela continuidade uniforme de $f$.
+
+\medskip
+\noindent\textbf{Conclusão.} Pelos passos 1--4, $u=u_1+u_2\in C^{2,1}(\R^n\times(0,\infty))$ e $u_t-\Delta u=0+f=f$ para $t>0$. Pelos passos 2 e 3, $u(x,t)\to g(x_0)=u(x_0,0)$ quando $(x,t)\to(x_0,0)$; como $u$ é contínua em $t>0$, segue que $u\in C^0(\R^n\times[0,\infty))$.
+\end{resp}
+
+
+\item Suponha que $u\in C^{2,1}(\mathbb R^n\times(0,T))\cap C^0(\mathbb R^n\times[0,T])$ satisfaça
+\begin{equation}\label{eq:726}\begin{cases}u_t-\Delta u\leq0&\text{em }\mathbb R^n\times(0,T),\\u=g&\text{sobre }\mathbb R^n\times\{0\},\end{cases}\end{equation}
+\textit{e existem constantes $M,a>0$ tais que}
+\begin{equation}\label{eq:727}u(x,t)\leq Me^{a|x|^2}\quad\text{para todos }x\in\mathbb R^n,\ 0\leq t\leq T.\end{equation}
+\textit{Então}
+\begin{equation}\label{eq:728}\sup_{\mathbb R^n\times[0,T]}u\leq\sup_{\mathbb R^n}g.\end{equation}
+
+\begin{resp}
+Se $\sup g=+\infty$ não há o que provar; suponha $\sup g<\infty$. Usaremos o princípio do máximo fraco em domínios limitados.
+
+\begin{lema}\label{lema:pmf}
+Sejam $U\subset\R^n$ aberto limitado, $U_T=U\times(0,T)$ e $\partial_*U_T=(\overline U\times\{0\})\cup(\partial U\times[0,T])$. Se $w\in C^{2,1}(U_T)\cap C^0(\overline{U_T})$ e $w_t-\Delta w\le0$ em $U_T$, então $\max_{\overline{U_T}}w=\max_{\partial_*U_T}w$. O mesmo vale se $w\in C^{2,1}(U\times(0,T])$.
+\end{lema}
+
+\noindent\emph{Prova do lema.} Seja $0<T'<T$ (ou $T'=T$ no caso $w\in C^{2,1}(U\times(0,T])$) e, para $\varepsilon>0$, $w^\varepsilon=w-\varepsilon t$. Então $w^\varepsilon_t-\Delta w^\varepsilon\le-\varepsilon<0$ em $U\times(0,T']$. Suponha que o máximo de $w^\varepsilon$ em $\overline U\times[0,T']$ seja atingido em $(x_0,t_0)$ com $x_0\in U$ e $0<t_0\le T'$. Então $x_0$ é ponto de máximo interior de $w^\varepsilon(\cdot,t_0)$, logo $\Delta w^\varepsilon(x_0,t_0)\le0$; e $t\mapsto w^\varepsilon(x_0,t)$ tem máximo em $t_0\in(0,T']$, logo $w^\varepsilon_t(x_0,t_0)\ge0$ (igual a $0$ se $t_0<T'$; derivada lateral à esquerda $\ge0$ se $t_0=T'$). Assim $w^\varepsilon_t-\Delta w^\varepsilon\ge0$ em $(x_0,t_0)$, contradição. Logo
+\[
+\max_{\overline U\times[0,T']}w\le\max_{\overline U\times[0,T']}w^\varepsilon+\varepsilon T=\max_{\partial_*U_{T'}}w^\varepsilon+\varepsilon T\le\max_{\partial_*U_T}w+\varepsilon T .
+\]
+Fazendo $\varepsilon\to0$ e depois $T'\to T$ (continuidade de $w$ em $\overline{U_T}$) obtemos o lema. $\square$
+
+\medskip
+\noindent\textbf{Caso 1: $4aT<1$.} Então existe $\varepsilon>0$ com $4a(T+\varepsilon)<1$, e portanto existe $\gamma>0$ tal que
+\[
+a+\gamma=\frac{1}{4(T+\varepsilon)}.
+\]
+Fixe $y\in\R^n$, $\mu>0$ e defina
+\[
+v(x,t)=u(x,t)-\frac{\mu}{(T+\varepsilon-t)^{n/2}}e^{\frac{|x-y|^2}{4(T+\varepsilon-t)}},\qquad x\in\R^n,\ 0\le t\le T.
+\]
+A função subtraída satisfaz a equação do calor; de fato, com $\tau=T+\varepsilon-t$ e $w=\tau^{-n/2}e^{|x-y|^2/(4\tau)}$,
+\[
+w_t=\Big(\frac{n}{2\tau}+\frac{|x-y|^2}{4\tau^2}\Big)w,\qquad \Delta w=\Big(\frac{n}{2\tau}+\frac{|x-y|^2}{4\tau^2}\Big)w .
+\]
+Logo $v_t-\Delta v=u_t-\Delta u\le0$ em $\R^n\times(0,T)$. Fixe $r>0$ e aplique o Lema \ref{lema:pmf} em $U=B(y,r)$:
+\begin{itemize}
+\item em $t=0$: $v(x,0)<u(x,0)=g(x)\le\sup g$;
+\item em $|x-y|=r$, $0\le t\le T$: usando \eqref{eq:727} e $|x|\le|y|+r$,
+\[
+v(x,t)\le Me^{a(|y|+r)^2}-\frac{\mu}{(T+\varepsilon)^{n/2}}e^{\frac{r^2}{4(T+\varepsilon)}}
+=Me^{a(|y|+r)^2}-\mu\,[4(a+\gamma)]^{n/2}e^{(a+\gamma)r^2}.
+\]
+Como $(a+\gamma)r^2-a(|y|+r)^2=\gamma r^2-2a|y|r-a|y|^2\to+\infty$ quando $r\to\infty$, para $r$ suficientemente grande o lado direito é $\le\sup g$.
+\end{itemize}
+Assim $v\le\sup g$ em $\partial_*U_T$ e, pelo lema, $v\le\sup g$ em $\overline{B(y,r)}\times[0,T]$. Em particular, $v(y,t)\le\sup g$, isto é,
+\[
+u(y,t)\le\sup g+\frac{\mu}{(T+\varepsilon-t)^{n/2}}\qquad(0\le t\le T).
+\]
+Fazendo $\mu\to0$ e lembrando que $y$ é arbitrário, obtemos \eqref{eq:728}.
+
+\medskip
+\noindent\textbf{Caso geral.} Seja $T_1=\frac1{8a}$, de modo que $4aT_1=\frac12<1$. Aplicando o Caso 1 em $[0,\min\{T,T_1\}]$ obtemos $u\le\sup g$ ali. Se $T>T_1$, a função $\tilde u(x,t)=u(x,t+T_1)$ satisfaz as mesmas hipóteses em $[0,\min\{T-T_1,T_1\}]$ com dado inicial $\tilde g=u(\cdot,T_1)\le\sup g$; logo $u\le\sup\tilde g\le\sup g$ em $[T_1,\min\{T,2T_1\}]$. Repetindo o argumento um número finito de vezes, cobrimos $[0,T]$.
+\end{resp}
+
+\item Suponha que $u$ seja uma solução da equação do calor
+\[
+u_t-\Delta u=0
+\quad \text{em } \mathbb{R}^n\times(0,\infty).
+\]
+Mostre que:
+
+\begin{enumerate}
+	\item[(a)] Para cada $\lambda>0$, a função
+	\[
+	u^\lambda(x,t)=u(\lambda x,\lambda^2t)
+	\]
+	também resolve a equação do calor.
+
+	\item[(b)] Usando o item (a), mostre que a função
+	\[
+	v(x,t)=x\cdot\nabla u(x,t)+2t\,u_t(x,t)
+	\]
+	também resolve a equação do calor.
+\end{enumerate}
+
+\begin{resp}
+\noindent\textbf{(a)} Note que $(\lambda x,\lambda^2t)\in\R^n\times(0,\infty)$ sempre que $(x,t)\in\R^n\times(0,\infty)$. Pela regra da cadeia,
+\[
+u^\lambda_t(x,t)=\lambda^2u_t(\lambda x,\lambda^2t),\qquad u^\lambda_{x_ix_i}(x,t)=\lambda^2u_{x_ix_i}(\lambda x,\lambda^2t),
+\]
+donde
+\[
+u^\lambda_t(x,t)-\Delta u^\lambda(x,t)=\lambda^2\big[u_t-\Delta u\big](\lambda x,\lambda^2t)=0 .
+\]
+
+\noindent\textbf{(b)} Soluções da equação do calor são de classe $C^\infty$ (ou, se preferir, suponha $u$ suficientemente regular). Considere
+\[
+U(x,t,\lambda)=u^\lambda(x,t)=u(\lambda x,\lambda^2t),\qquad \lambda>0,
+\]
+que é suave em $(x,t,\lambda)$. Pela regra da cadeia,
+\[
+\frac{\partial U}{\partial\lambda}(x,t,\lambda)=\sum_{i=1}^nx_iu_{x_i}(\lambda x,\lambda^2t)+2\lambda t\,u_t(\lambda x,\lambda^2t),
+\]
+logo
+\[
+\frac{\partial U}{\partial\lambda}(x,t,1)=x\cdot\nabla u(x,t)+2tu_t(x,t)=v(x,t).
+\]
+Pelo item (a), $U_t-\Delta_xU=0$ para todo $\lambda>0$. Derivando essa identidade em relação a $\lambda$ e usando que as derivadas parciais comutam (Schwarz),
+\[
+0=\frac{\partial}{\partial\lambda}\big(U_t-\Delta_xU\big)=\Big(\frac{\partial U}{\partial\lambda}\Big)_t-\Delta_x\Big(\frac{\partial U}{\partial\lambda}\Big).
+\]
+Tomando $\lambda=1$: $v_t-\Delta v=0$ em $\R^n\times(0,\infty)$.
+
+\medskip
+\noindent\emph{Verificação direta (opcional).} Temos $v_t=x\cdot\nabla u_t+2u_t+2tu_{tt}$ e, como
+$\partial_{x_i}^2\big(\sum_jx_ju_{x_j}\big)=\partial_{x_i}\big(u_{x_i}+\sum_jx_ju_{x_jx_i}\big)=2u_{x_ix_i}+\sum_jx_ju_{x_jx_ix_i}$,
+\[
+\Delta v=2\Delta u+x\cdot\nabla(\Delta u)+2t\Delta u_t .
+\]
+Assim $v_t-\Delta v=x\cdot\nabla(u_t-\Delta u)+2(u_t-\Delta u)+2t\,\partial_t(u_t-\Delta u)=0$.
+\end{resp}
+
+\item Suponha que $n=1$ e
+\[
+u(x,t)=v\left(\frac{x^2}{t}\right),
+\quad x\in\mathbb{R},\quad t>0,
+\]
+onde $v=v(z)$, com $z>0$.
+
+\begin{enumerate}
+	\item[(a)] Mostre que $u_t=u_{xx}$ se, e somente se,
+	\[
+	4zv''(z)+(2+z)v'(z)=0,
+	\quad z>0.
+	\tag{*}
+	\]
+
+	\item[(b)] Mostre que a solução geral de $(*)$ é
+	\[
+	v(z)=C\int_0^z e^{-s/4}s^{-1/2}\,ds+D,
+	\]
+	onde $C,D\in\mathbb{R}$ são constantes arbitrárias.
+\end{enumerate}
+
+\begin{resp}
+\noindent\textbf{(a)} Como $v$ está definida para $z>0$, trabalhamos em $\{x\neq0\}\times(0,\infty)$, onde $z=x^2/t>0$; supomos $v\in C^2(0,\infty)$. Pela regra da cadeia, com $z=x^2/t$:
+\[
+u_t=-\frac{x^2}{t^2}v'(z)=-\frac{z}{t}v'(z),\qquad
+u_x=\frac{2x}{t}v'(z),
+\]
+\[
+u_{xx}=\frac2tv'(z)+\frac{4x^2}{t^2}v''(z)=\frac1t\big(2v'(z)+4zv''(z)\big).
+\]
+Portanto
+\[
+u_t-u_{xx}=-\frac1t\Big[4zv''(z)+(2+z)v'(z)\Big],\qquad z=\frac{x^2}{t}.
+\]
+Se $(*)$ vale, então $u_t-u_{xx}=0$. Reciprocamente, se $u_t=u_{xx}$ em $\{x\ne0\}\times(0,\infty)$, dado $z>0$ tomamos $(x,t)=(\sqrt z,1)$ e obtemos $4zv''(z)+(2+z)v'(z)=-t(u_t-u_{xx})(\sqrt z,1)=0$. Logo $u_t=u_{xx}\iff(*)$.
+
+\medskip
+\noindent\textbf{(b)} Seja $w=v'$. A equação $(*)$ é linear de primeira ordem em $w$:
+\[
+w'+\Big(\frac1{2z}+\frac14\Big)w=0,\qquad z>0 .
+\]
+Um fator integrante é $\mu(z)=\exp\big(\int(\frac1{2z}+\frac14)dz\big)=z^{1/2}e^{z/4}$, e
+\[
+\big(z^{1/2}e^{z/4}w(z)\big)'=z^{1/2}e^{z/4}\Big[w'+\Big(\frac1{2z}+\frac14\Big)w\Big]=0 .
+\]
+Assim $v$ resolve $(*)$ se, e somente se, $z^{1/2}e^{z/4}v'(z)=C$ constante, isto é,
+\[
+v'(z)=Ce^{-z/4}z^{-1/2},\qquad z>0 .
+\]
+A função $s\mapsto e^{-s/4}s^{-1/2}$ é integrável em $(0,1]$ (pois $s^{-1/2}$ o é), logo $F(z)=\int_0^ze^{-s/4}s^{-1/2}ds$ está bem definida, é $C^\infty$ em $(0,\infty)$ e $F'(z)=e^{-z/4}z^{-1/2}$. Portanto $(v-CF)'=0$ em $(0,\infty)$ (intervalo, conexo) e existe $D\in\R$ com
+\[
+v(z)=C\int_0^ze^{-s/4}s^{-1/2}\,ds+D .
+\]
+Reciprocamente, para quaisquer $C,D$, essa $v$ satisfaz $z^{1/2}e^{z/4}v'=C$, logo resolve $(*)$. Esta é, portanto, a solução geral.
+
+\medskip
+\noindent\emph{Observação.} Com $s=4\sigma^2$, obtemos $v\big(\tfrac{x^2}t\big)=4C\int_0^{|x|/(2\sqrt t)}e^{-\sigma^2}d\sigma+D=2\sqrt\pi\, C\,\mathrm{erf}\big(\tfrac{|x|}{2\sqrt t}\big)+D$. Tomando o ramo ímpar ($x$ no lugar de $|x|$) obtém-se a solução $\mathrm{erf}\big(\frac{x}{2\sqrt t}\big)$, suave em todo $\R\times(0,\infty)$, e sua derivada em $x$ é, a menos de constante, a solução fundamental $\Phi(x,t)$.
+\end{resp}
+
+\item Determine uma fórmula explícita para a solução do
+problema de valor inicial
+\[
+\begin{cases}
+	u_t-\Delta u+cu=f,
+	& \text{em } \mathbb{R}^n\times(0,\infty),\\[2mm]
+	u=g,
+	& \text{em } \mathbb{R}^n\times\{t=0\},
+\end{cases}
+\]
+onde $c\in\mathbb{R}$.
+
+\begin{resp}
+Suponha $f$ e $g$ como na Questão 1. Faça $w(x,t)=e^{ct}u(x,t)$. Então
+\[
+w_t=e^{ct}(u_t+cu),\qquad \Delta w=e^{ct}\Delta u,\qquad\text{logo}\qquad w_t-\Delta w=e^{ct}(u_t-\Delta u+cu)=e^{ct}f,
+\]
+e $w(x,0)=g(x)$. Ou seja, $w$ resolve
+\[
+\begin{cases}w_t-\Delta w=\tilde f:=e^{ct}f&\text{em }\R^n\times(0,\infty),\\ w=g&\text{em }\R^n\times\{t=0\}.\end{cases}
+\]
+Como $\tilde f\in C^{2,1}_0(\R^n\times[0,\infty))$, a Questão 1 fornece
+\[
+w(x,t)=\int_{\R^n}\Phi(x-y,t)g(y)\,dy+\int_0^t\!\!\int_{\R^n}\Phi(x-y,t-s)e^{cs}f(y,s)\,dy\,ds .
+\]
+Voltando a $u=e^{-ct}w$:
+\[
+\boxed{\;u(x,t)=\frac{e^{-ct}}{(4\pi t)^{n/2}}\int_{\R^n}e^{-\frac{|x-y|^2}{4t}}g(y)\,dy
++\int_0^t\!\!\int_{\R^n}\frac{e^{-c(t-s)}}{[4\pi(t-s)]^{n/2}}\,e^{-\frac{|x-y|^2}{4(t-s)}}f(y,s)\,dy\,ds.\;}
+\]
+Reciprocamente, como $w$ é solução (Questão 1), $u=e^{-ct}w\in C^{2,1}(\R^n\times(0,\infty))\cap C^0(\R^n\times[0,\infty))$ satisfaz $u_t-\Delta u+cu=e^{-ct}(w_t-\Delta w)=f$ e $u(\cdot,0)=g$.
+
+\smallskip
+\noindent\emph{Unicidade.} Se $u_1,u_2$ são soluções limitadas em $\R^n\times[0,T]$, então $W=e^{ct}(u_1-u_2)$ resolve $W_t-\Delta W=0$, $W(\cdot,0)=0$, e é limitada; pela Questão 2 aplicada a $\pm W$, $W\equiv0$. Logo a fórmula acima dá a única solução limitada em cada faixa $\R^n\times[0,T]$.
+\end{resp}
+
+\item Seja $g:[0,\infty)\to\mathbb{R}$ uma função
+satisfazendo $g(0)=0$. Mostre que a função
+\[
+u(x,t)=\frac{x}{\sqrt{4\pi}}
+\int_0^t
+\frac{1}{(t-s)^{3/2}}
+e^{-\frac{x^2}{4(t-s)}}g(s)\,ds
+\]
+é solução do problema de valor inicial e de contorno
+\[
+\begin{cases}
+	u_t-u_{xx}=0,
+	& \text{em } (0,\infty)\times(0,\infty),\\[2mm]
+	u=0,
+	& \text{em } (0,\infty)\times\{t=0\},\\[2mm]
+	u=g,
+	& \text{em } \{x=0\}\times[0,\infty).
+\end{cases}
+\]
+
+\noindent
+\textbf{Sugestão:} Considere
+\[
+v(x,t):=u(x,t)-g(t)
+\]
+e estenda $v$ ao conjunto $\{x<0\}$ por reflexão ímpar.
+
+\begin{resp}
+Suponha $g$ contínua (as condições de contorno são entendidas como limites: $u(x,t)\to0$ quando $t\to0^+$ e $u(x,t)\to g(t_0)$ quando $(x,t)\to(0,t_0)$). Em dimensão $1$, $\Phi(x,t)=(4\pi t)^{-1/2}e^{-x^2/(4t)}$ e $\Phi_x=-\frac{x}{2t}\Phi$. Defina
+\[
+K(x,\tau)=\frac{x}{\sqrt{4\pi}\,\tau^{3/2}}e^{-\frac{x^2}{4\tau}}=-2\,\Phi_x(x,\tau)\qquad(\tau>0),
+\]
+de modo que $u(x,t)=\displaystyle\int_0^tK(x,t-s)g(s)\,ds$.
+
+\medskip
+\noindent\textbf{Parte 1: de onde vem a fórmula (seguindo a sugestão).} Suponha, por um momento, $g\in C^1$ e que $u$ resolve o problema. Então $v=u-g(t)$ satisfaz
+\[
+v_t-v_{xx}=-g'(t)\ (x>0),\qquad v(x,0)=-g(0)=0,\qquad v(0,t)=0 .
+\]
+Seja $\tilde v(x,t)=-v(-x,t)$ para $x<0$ (reflexão ímpar). Como $v(0,t)=0$, $\tilde v$ resolve em $\R\times(0,\infty)$
+\[
+\tilde v_t-\tilde v_{xx}=\tilde f(x,t):=-g'(t)\,\mathrm{sgn}(x),\qquad\tilde v(x,0)=0 .
+\]
+Pela fórmula de Duhamel (Questão 1), com $\tau=t-s$,
+\[
+\tilde v(x,t)=-\int_0^tg'(s)\Big[\int_0^\infty\Phi(x-y,\tau)dy-\int_{-\infty}^0\Phi(x-y,\tau)dy\Big]ds
+=-\int_0^tg'(s)\,E(x,t-s)\,ds,
+\]
+onde, pela simetria de $\Phi(\cdot,\tau)$ e (F2),
+\[
+E(x,\tau)=\int_{-\infty}^x\Phi(z,\tau)dz-\int_x^\infty\Phi(z,\tau)dz=2\int_0^x\Phi(z,\tau)\,dz=\mathrm{erf}\Big(\frac{x}{2\sqrt\tau}\Big).
+\]
+Note que $\partial_\tau E(x,\tau)=2\int_0^x\Phi_{zz}(z,\tau)dz=2\Phi_x(x,\tau)-2\Phi_x(0,\tau)=2\Phi_x(x,\tau)=-K(x,\tau)$, e $E(x,0^+)=1$ para $x>0$. Logo $\frac{d}{ds}E(x,t-s)=K(x,t-s)$ e, integrando por partes (com $g(0)=0$),
+\begin{multline*}
+\int_0^tg'(s)E(x,t-s)ds=\big[g(s)E(x,t-s)\big]_{s=0}^{s=t}-\int_0^tg(s)K(x,t-s)ds\\
+=g(t)-\int_0^tK(x,t-s)g(s)ds .
+\end{multline*}
+Assim $v(x,t)=-g(t)+\int_0^tK(x,t-s)g(s)ds$ e $u=v+g$ é exatamente a fórmula do enunciado.
+
+\medskip
+Agora verificamos rigorosamente, supondo apenas $g$ contínua e $g(0)=0$, que a fórmula resolve o problema.
+
+\medskip
+\noindent\textbf{Parte 2: a equação.} Como $\Phi$ resolve a equação do calor e $\Phi\in C^\infty$, $K=-2\Phi_x$ também resolve: $K_\tau=K_{xx}$ em $\R\times(0,\infty)$. Além disso, cada derivada $\partial_x^j\partial_\tau^kK(x,\tau)$ é da forma $P(x,\tau^{-1/2})\,e^{-x^2/(4\tau)}$ com $P$ polinômio; logo, se $\delta\le x\le1/\delta$,
+\[
+\big|\partial_x^j\partial_\tau^kK(x,\tau)\big|\le C_\delta\,\tau^{-m}e^{-\delta^2/(4\tau)}\xrightarrow[\tau\to0^+]{}0 .
+\]
+Definindo $K(x,\tau)=0$ para $\tau\le0$, $K$ é $C^\infty$ em $\{x>0\}\times\R$, com derivadas limitadas em $[\delta,1/\delta]\times(-\infty,T_0]$. Então, para $x>0$, $t>0$, podemos derivar sob a integral:
+\[
+u_t(x,t)=K(x,0)g(t)+\int_0^tK_\tau(x,t-s)g(s)ds=\int_0^tK_\tau(x,t-s)g(s)ds,
+\]
+\[
+u_{xx}(x,t)=\int_0^tK_{xx}(x,t-s)g(s)ds,
+\]
+e as derivadas são contínuas. Portanto $u\in C^{2,1}((0,\infty)\times(0,\infty))$ e $u_t-u_{xx}=\int_0^t(K_\tau-K_{xx})(x,t-s)g(s)ds=0$.
+
+\medskip
+\noindent\textbf{Parte 3: uma identidade.} Com $\sigma=\frac{x}{2\sqrt\tau}$ (para $x>0$) temos $K(x,\tau)\,d\tau=-\frac{2}{\sqrt\pi}e^{-\sigma^2}d\sigma$, logo
+\[
+\int_0^tK(x,\tau)\,d\tau=\frac{2}{\sqrt\pi}\int_{x/(2\sqrt t)}^\infty e^{-\sigma^2}d\sigma=\mathrm{erfc}\Big(\frac{x}{2\sqrt t}\Big)\in(0,1). \tag{$\dagger$}
+\]
+Como $K>0$ para $x>0$, segue que
+\[
+|u(x,t)|\le\max_{[0,t]}|g|\cdot\mathrm{erfc}\Big(\frac{x}{2\sqrt t}\Big)\le\max_{[0,t]}|g| .\tag{$\ddagger$}
+\]
+
+\noindent\textbf{Parte 4: condição inicial.} Seja $x_0\ge0$. Se $(x,t)\to(x_0,0)$ com $x>0,t>0$, então por $(\ddagger)$ e pela continuidade de $g$ com $g(0)=0$,
+\[
+|u(x,t)|\le\max_{[0,t]}|g|\longrightarrow|g(0)|=0 .
+\]
+Assim $u=0$ em $(0,\infty)\times\{t=0\}$, e $u$ é contínua até o canto $(0,0)$, onde vale $0=g(0)$. (É aqui que a hipótese de compatibilidade $g(0)=0$ é essencial.)
+
+\medskip
+\noindent\textbf{Parte 5: condição de contorno.} Seja $t_0>0$ e $(x,t)\to(0,t_0)$ com $x>0$, $t\in[t_0/2,2t_0]$. Por $(\dagger)$,
+\[
+u(x,t)-g(t)\,\mathrm{erfc}\Big(\frac{x}{2\sqrt t}\Big)=\int_0^tK(x,t-s)\big[g(s)-g(t)\big]ds .
+\]
+Dado $\varepsilon>0$, pela continuidade uniforme de $g$ em $[0,2t_0]$ existe $\eta\in(0,t_0/2)$ com $|g(s)-g(t)|<\varepsilon$ se $|s-t|<\eta$. Dividindo a integral em $s\in(t-\eta,t]$ e $s\in[0,t-\eta]$ e usando $(\dagger)$ e $K(x,\tau)\le\frac{x}{\sqrt{4\pi}\eta^{3/2}}$ para $\tau\ge\eta$:
+\[
+\Big|\int_0^tK(x,t-s)[g(s)-g(t)]ds\Big|\le\varepsilon+2\max_{[0,2t_0]}|g|\cdot 2t_0\cdot\frac{x}{\sqrt{4\pi}\,\eta^{3/2}}\xrightarrow[x\to0^+]{}\varepsilon .
+\]
+Como $\mathrm{erfc}\big(\frac{x}{2\sqrt t}\big)\to1$ e $g(t)\to g(t_0)$, concluímos $\limsup|u(x,t)-g(t_0)|\le\varepsilon$, para todo $\varepsilon>0$. Logo $u(x,t)\to g(t_0)$, isto é, $u=g$ em $\{x=0\}\times[0,\infty)$ (o caso $t_0=0$ foi feito na Parte 4).
+
+\smallskip
+Pelas partes 2--5, $u$ resolve o problema de valor inicial e de contorno.
+\end{resp}
+
+\item Dizemos que uma função
+$v\in C^{2,1}(\Omega_T)$ é uma \textit{subsolução}
+da equação do calor se
+\[
+v_t-\Delta v\leq 0
+\quad \text{em } \Omega_T.
+\]
+
+\begin{enumerate}
+
+	\item[(a)] Mostre que, para qualquer subsolução $v$,
+	vale a desigualdade
+	\[
+	v(x,t)\leq
+	\frac{1}{4r^n}
+	\iint_{E(x,t;r)}
+	v(y,s)\,
+	\frac{|x-y|^2}{(t-s)^2}\,dy\,ds,
+	\]
+	para todo $E(x,t;r)\subset \Omega_T$.
+
+	\item[(b)] Demonstre que
+	\[
+	\max_{\overline{\Omega_T}}v
+	=
+	\max_{\partial_*\Omega_T}v.
+	\]
+
+	\item[(c)] Seja $\phi:\mathbb{R}\to\mathbb{R}$
+	uma função suave e convexa.
+	Suponha que $u$ seja solução da equação do calor
+	e defina
+	\[
+	v:=\phi(u).
+	\]
+	Mostre que $v$ é uma subsolução da equação do calor.
+
+	\item[(d)] Mostre que
+	\[
+	v:=|\nabla u|^2+u_t^2
+	\]
+	é uma subsolução da equação do calor, sempre que
+	$u$ for uma solução suficientemente regular
+	da equação do calor.
+
+\end{enumerate}
+
+\begin{resp}
+Aqui $\Omega\subset\R^n$ é aberto limitado, $\Omega_T=\Omega\times(0,T]$, $\partial_*\Omega_T=\overline{\Omega_T}\setminus\Omega_T$ é a fronteira parabólica e
+\[
+E(x,t;r)=\Big\{(y,s)\in\R^{n+1}:\ s\le t,\ \Phi(x-y,t-s)\ge\frac1{r^n}\Big\}
+\]
+é a bola de calor (heat ball) com ``topo'' em $(x,t)$.
+
+\medskip
+\noindent\textbf{(a)} Como em Evans, suponha $v$ suave (o caso $C^{2,1}$ segue por regularização; ver observação abaixo). Transladando, podemos supor $(x,t)=(0,0)$ e escrever $E(r)=E(0,0;r)$. Defina
+\[
+\varphi(r)=\frac1{r^n}\iint_{E(r)}v(y,s)\frac{|y|^2}{s^2}\,dy\,ds
+=\iint_{E(1)}v(ry,r^2s)\frac{|y|^2}{s^2}\,dy\,ds,
+\]
+onde usamos $y=ry'$, $s=r^2s'$ (note que $(y,s)\in E(r)\iff(y',s')\in E(1)$, pois $\Phi(ry',r^2s')=r^{-n}\Phi(y',s')$).
+
+\smallskip
+\noindent\emph{Passo 1: derivada de $\varphi$.} Derivando sob a integral e voltando às variáveis originais,
+\begin{align*}
+\varphi'(r)&=\iint_{E(1)}\Big(\sum_iv_{y_i}y_i\frac{|y|^2}{s^2}+2rv_s\frac{|y|^2}{s}\Big)dy\,ds\\
+&=\frac1{r^{n+1}}\iint_{E(r)}\sum_iv_{y_i}y_i\frac{|y|^2}{s^2}\,dy\,ds+\frac1{r^{n+1}}\iint_{E(r)}2v_s\frac{|y|^2}{s}\,dy\,ds=:A+B .
+\end{align*}
+Seja
+\[
+\psi(y,s)=-\frac n2\log(-4\pi s)+\frac{|y|^2}{4s}+n\log r=\log\big(r^n\Phi(y,-s)\big),\qquad s<0 .
+\]
+Então $\psi\ge0$ em $E(r)$, $\psi=0$ em $\partial E(r)$ e $\psi_{y_i}=\frac{y_i}{2s}$, isto é, $\frac{|y|^2}{s}=2\sum_iy_i\psi_{y_i}$. Logo, integrando por partes em $y_i$ (o termo de fronteira se anula pois $\psi=0$ em $\partial E(r)$),
+\[
+B=\frac1{r^{n+1}}\iint_{E(r)}4v_s\sum_iy_i\psi_{y_i}\,dy\,ds=-\frac1{r^{n+1}}\iint_{E(r)}\Big(4nv_s\psi+4\sum_iv_{sy_i}y_i\psi\Big)dy\,ds .
+\]
+Integrando por partes em $s$ o último termo (novamente sem termos de fronteira) e usando $\psi_s=-\frac n{2s}-\frac{|y|^2}{4s^2}$:
+\[
+-4\iint_{E(r)}\sum_iv_{sy_i}y_i\psi=4\iint_{E(r)}\sum_iv_{y_i}y_i\psi_s
+=\iint_{E(r)}\Big(-\frac{2n}{s}\sum_iv_{y_i}y_i-\sum_iv_{y_i}y_i\frac{|y|^2}{s^2}\Big).
+\]
+O último termo, dividido por $r^{n+1}$, é exatamente $-A$. Portanto
+\[
+\varphi'(r)=A+B=\frac1{r^{n+1}}\iint_{E(r)}\Big(-4nv_s\psi-\frac{2n}{s}\sum_iv_{y_i}y_i\Big)dy\,ds .
+\]
+Escrevendo $-4nv_s\psi=-4n(v_s-\Delta v)\psi-4n\Delta v\,\psi$ e integrando por partes em $y$ (com $\psi=0$ em $\partial E(r)$),
+\[
+-4n\iint_{E(r)}\Delta v\,\psi=4n\iint_{E(r)}\nabla v\cdot\nabla\psi=\iint_{E(r)}\frac{2n}{s}\sum_iv_{y_i}y_i .
+\]
+Assim os termos com $\nabla v$ se cancelam e
+\[
+\varphi'(r)=-\frac{4n}{r^{n+1}}\iint_{E(r)}\big(v_s-\Delta v\big)\,\psi\,dy\,ds\ \ge0,
+\]
+pois $v_s-\Delta v\le0$ e $\psi\ge0$ em $E(r)$. (Para soluções, $\varphi'\equiv0$, que é a fórmula do valor médio.)
+
+\smallskip
+\noindent\emph{Passo 2: o limite $r\to0$.} Afirmamos que
+\[
+\frac1{r^n}\iint_{E(r)}\frac{|y|^2}{s^2}\,dy\,ds=4\qquad\text{para todo }r>0. \tag{$\star$}
+\]
+Pela mudança de escala acima, o lado esquerdo não depende de $r$. Com $\tau=-s$, a seção de $E(r)$ no nível $\tau\in(0,\frac{r^2}{4\pi})$ é a bola $B(0,R(\tau))$, $R(\tau)^2=2n\tau\log\frac{r^2}{4\pi\tau}$. Usando (aqui $\Gamma(\cdot)$ denota a função Gama de Euler) $\int_{B(0,R)}|y|^2dy=\frac{n\omega_n}{n+2}R^{n+2}$ ($\omega_n=|B(0,1)|=\frac{\pi^{n/2}}{\Gamma(\frac n2+1)}$), $\tau=\frac{r^2}{4\pi}e^{-w}$ e $\int_0^\infty e^{-\frac n2w}w^{\frac{n+2}2}dw=\Gamma(\frac n2+2)\big(\frac2n\big)^{\frac n2+2}$:
+\begin{align*}
+\frac1{r^n}\iint_{E(r)}\frac{|y|^2}{s^2}
+&=\frac{n\omega_n}{(n+2)}\,(4\pi)^{-n/2}(2n)^{\frac{n+2}2}\Gamma\big(\tfrac n2+2\big)\Big(\frac2n\Big)^{\frac n2+2}\\
+&=\frac{8\,\Gamma(\frac n2+2)}{(n+2)\,\Gamma(\frac n2+1)}=\frac{8(\frac n2+1)}{n+2}=4 .
+\end{align*}
+Como $v$ é contínua e o peso $|y|^2/s^2$ é integrável em $E(1)$, por convergência dominada
+\[
+\lim_{\rho\to0^+}\varphi(\rho)=\lim_{\rho\to0^+}\iint_{E(1)}v(\rho y,\rho^2s)\frac{|y|^2}{s^2}\,dy\,ds=v(0,0)\iint_{E(1)}\frac{|y|^2}{s^2}=4v(0,0).
+\]
+
+\smallskip
+\noindent\emph{Conclusão.} Como $\varphi$ é não decrescente, $4v(0,0)=\lim_{\rho\to0}\varphi(\rho)\le\varphi(r)$, ou seja, voltando a $(x,t)$,
+\[
+v(x,t)\le\frac1{4r^n}\iint_{E(x,t;r)}v(y,s)\frac{|x-y|^2}{(t-s)^2}\,dy\,ds .
+\]
+
+\noindent\emph{Observação (caso $C^{2,1}$).} Se $v$ é apenas $C^{2,1}$, a regularização $v_\varepsilon=\eta_\varepsilon*v$ (com $\eta_\varepsilon\ge0$ mollificador em $(y,s)$) satisfaz $(v_\varepsilon)_t-\Delta v_\varepsilon=\eta_\varepsilon*(v_t-\Delta v)\le0$ e converge uniformemente a $v$ em compactos; aplicando a desigualdade a $v_\varepsilon$ em bolas de calor $E(x,t';r')$ ligeiramente menores e passando ao limite obtém-se o resultado para $v$.
+
+\medskip
+\noindent\textbf{(b)} Seja $v\in C^{2,1}(\Omega_T)\cap C^0(\overline{\Omega_T})$ subsolução. Para $\varepsilon>0$, $w=v-\varepsilon t$ satisfaz $w_t-\Delta w\le-\varepsilon<0$ em $\Omega_T$. Se o máximo de $w$ em $\overline{\Omega_T}$ (que existe, pois $\overline{\Omega_T}$ é compacto) fosse atingido em $(x_0,t_0)\in\Omega_T$, então $x_0\in\Omega$ e $0<t_0\le T$, de modo que $\Delta w(x_0,t_0)\le0$ e $w_t(x_0,t_0)\ge0$ (se $t_0=T$, usamos a derivada à esquerda). Daí $w_t-\Delta w\ge0$ em $(x_0,t_0)$, contradição. Logo
+\[
+\max_{\overline{\Omega_T}}v\le\max_{\overline{\Omega_T}}w+\varepsilon T=\max_{\partial_*\Omega_T}w+\varepsilon T\le\max_{\partial_*\Omega_T}v+\varepsilon T .
+\]
+Fazendo $\varepsilon\to0$ obtemos $\max_{\overline{\Omega_T}}v\le\max_{\partial_*\Omega_T}v$; a desigualdade contrária é trivial, pois $\partial_*\Omega_T\subset\overline{\Omega_T}$.
+
+\smallskip
+\noindent\emph{Versão forte via (a).} Se $\Omega$ é conexo e $M=\max_{\overline{\Omega_T}}v$ é atingido em $(x_0,t_0)\in\Omega_T$, então para $r$ pequeno, por (a) e por $(\star)$,
+\[
+M=v(x_0,t_0)\le\frac1{4r^n}\iint_{E(x_0,t_0;r)}v\,\frac{|x_0-y|^2}{(t_0-s)^2}\le\frac{M}{4r^n}\iint_{E(x_0,t_0;r)}\frac{|x_0-y|^2}{(t_0-s)^2}=M .
+\]
+A igualdade força $v\equiv M$ em $E(x_0,t_0;r)$ (o peso é positivo em quase todo ponto e $v\le M$ é contínua). Exatamente como na prova do princípio do máximo forte para soluções (Evans, \S2.3), propagando ao longo de segmentos de reta para trás no tempo, obtém-se $v\equiv M$ em $\overline\Omega\times[0,t_0]$. Em qualquer caso o máximo é também atingido em $\partial_*\Omega_T$, o que dá outra prova de (b).
+
+\medskip
+\noindent\textbf{(c)} Seja $u$ solução e $v=\phi(u)$. Pela regra da cadeia,
+\[
+v_t=\phi'(u)u_t,\qquad v_{x_i}=\phi'(u)u_{x_i},\qquad v_{x_ix_i}=\phi''(u)u_{x_i}^2+\phi'(u)u_{x_ix_i},
+\]
+logo $\Delta v=\phi''(u)|\nabla u|^2+\phi'(u)\Delta u$ e
+\[
+v_t-\Delta v=\phi'(u)\big(u_t-\Delta u\big)-\phi''(u)|\nabla u|^2=-\phi''(u)|\nabla u|^2\le0,
+\]
+pois $\phi''\ge0$ ($\phi$ convexa e suave). Portanto $v$ é subsolução.
+
+\medskip
+\noindent\textbf{(d)} Seja $u$ solução suficientemente regular (por exemplo $C^\infty$, o que sempre ocorre no interior). Derivando $u_t-\Delta u=0$ em relação a $x_i$ e a $t$, e comutando as derivadas, vemos que $u_{x_i}$ ($i=1,\dots,n$) e $u_t$ também são soluções da equação do calor. Pelo item (c) com $\phi(s)=s^2$, cada $w^2$ com $w\in\{u_{x_1},\dots,u_{x_n},u_t\}$ é subsolução; explicitamente
+\[
+(w^2)_t-\Delta(w^2)=2w(w_t-\Delta w)-2|\nabla w|^2=-2|\nabla w|^2 .
+\]
+Como a soma de subsoluções é subsolução (o operador é linear),
+\begin{align*}
+v_t-\Delta v&=\sum_{i=1}^n\big[(u_{x_i}^2)_t-\Delta(u_{x_i}^2)\big]+(u_t^2)_t-\Delta(u_t^2)\\
+&=-2\Big(\sum_{i,j=1}^nu_{x_ix_j}^2+\sum_{j=1}^nu_{tx_j}^2\Big)=-2\big(|D^2u|^2+|\nabla u_t|^2\big)\le0 .
+\end{align*}
+Logo $v=|\nabla u|^2+u_t^2$ é subsolução da equação do calor.
+\end{resp}
+
+\end{enumerate}
+
+
+\end{document}
