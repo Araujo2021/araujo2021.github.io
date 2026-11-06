@@ -1,7 +1,7 @@
 # Auditoria — "On the Ambrosetti–Brezis–Cerami conjecture"
 
 **Autores:** Anderson L.A. de Araujo, Luiz F.O. Faria
-**Arquivo auditado:** `abc_unicidade.pdf` (26 páginas)
+**Arquivo auditado:** `abc_unicidade.pdf` (26 páginas; removido do repositório — a fonte está em `abc_unicidade_original.tex`)
 **Data da auditoria:** 06/11/2026
 **Status:** armazenamento temporário (rascunho de trabalho)
 
@@ -88,14 +88,13 @@ Um revisor pode ler isso como sinal de que a prova está incompleta.
 | Símbolo | Usos conflitantes |
 |---|---|
 | `A` | amplitude `U_A(0) = A` **e** coeficiente de amortecimento `A = N-2-2a` |
-| `A_0`, `A_1` | Cor. 3.6 (`A_1 < A_0` pequenos) **vs** Lema 5.3 / Prop. 5.2 (`A_1` grande) |
-| `N` | dimensão **e** termo não linear `N(Z)` no Lema 4.2 |
+| `A_1` | variável local na prova do Cor. 3.6 (`A_1 < A_0`) **vs** limiar de amplitudes grandes na Prop. 5.2 / Teo. 6.1. Só legibilidade, sem conflito lógico (o `A_0` compartilhado entre Cor. 3.6 e Teo. 6.1 é intencional) |
 | `λ*` | limiar do Teo. 1.1 **e** parâmetro da solução singular de Zhao–Zhong (introdução) — significados diferentes |
 | `ε` | parâmetro da perturbação (Seção 5) **e** variável auxiliar no Lema 3.2 e na Prop. 3.5 |
 | `η`, `δ` | Prop. 3.5 **e** Lema 4.2 / Cor. 3.6 |
 | `c_0` | Prop. 3.5 **vs** `c_{0,1}` no Lema 5.3 |
 
-**Sugestão:** renomear o amortecimento para `α` (ou `κ`), a amplitude grande para `A_∞`, o limiar do teorema para `λ_0`, e `N(Z)` para `𝒩(Z)`.
+**Sugestão:** renomear o amortecimento para `α` (ou `κ`), a amplitude grande para `A_∞`, o limiar do teorema para `λ_0`. (No .tex o termo do Lema 4.2 já é `\mathcal N(Z)`; a confusão com `N` vinha só da extração de texto do PDF.)
 
 ---
 
@@ -122,3 +121,33 @@ Um revisor pode ler isso como sinal de que a prova está incompleta.
 3. Conferir as hipóteses exatas do teorema de simetria de [5] (3.4).
 4. Resolver os conflitos de notação (seção 5).
 5. Ajustes editoriais (seção 6).
+
+---
+
+## 8. Revisão implementada no .tex
+
+Arquivos:
+- `abc_unicidade_original.tex` — versão recebida, sem alterações.
+- `abc_unicidade_revisado.tex` — versão com as correções marcadas (o PDF compilado não fica no repositório).
+
+Marcação (legenda no topo da 1ª página):
+- **azul** = texto acrescentado; **vermelho riscado** = texto removido;
+- **[Removed: …]** em vermelho = trecho removido que contém fórmulas;
+- **verde [Note to authors: …]** = pendências que só os autores podem resolver;
+- as antigas marcas vermelhas (`\textcolor{red}`) viraram `\oldrev{}`, sem cor (conteúdo mantido).
+
+O que foi feito:
+1. **Novo Lema 3.6** (continuidade de `A ↦ R(A)` no conjunto aberto `{R(A) < ∞}`), provado sem estender a equação além do primeiro zero. A prova do Cor. 3.6 passou a usá-lo. *Atenção: a numeração mudou — o antigo Cor. 3.6 agora é Cor. 3.7.*
+2. **Prop. 3.3** enunciada na classe `H¹₀ ∩ C(B̄_R)`, com observação de que os perfis radiais de tiro estão nessa classe.
+3. **Frases condicionais** do Cor. 3.6 e do Teo. 6.1 reescritas como afirmações.
+4. **Teo. 6.1**: removida a frase adiantada sobre Prop. 3.5 e a desigualdade redundante `R* < min{c_{0,1}, c_*}`.
+5. **Prova do Teo. 1.1**: o passo `U_R(0) → 0` agora tem justificativa explícita (Lema 5.3 em `[a, A_1]` + Prop. 5.2, para todo `a > 0`). Antes dizia só "pela exclusão de `A ≥ A_0`", o que dá `A < A_0`, mas não `A → 0`.
+6. **Lema 4.2**: "We may also assume η₀ < η" trocado pela observação `K ≥ 1`.
+7. **Notação**: amortecimento `A → α`; parâmetro de Zhao–Zhong `λ_* → λ_ZZ`; constantes locais da Seção 3 renomeadas (`θ`, `σ`, `δ₁`, `η₁`, `c̄`, `Ã`).
+8. **Citações**: [2] GNN e [4] Ni–Nussbaum agora citados; novas referências Brezis–Oswald (Lema 3.2) e Joseph–Lundgren (Lema 4.1); frase sobre a incompatibilidade com Ma [3].
+9. **Edição**: "Consequently" repetido, espaço solto antes de "Since u_λ…", título "Acknowledgment of scope" → "Scope of the result".
+
+Pendências para os autores (notas verdes no PDF):
+- número exato do teorema de [5] e conferência das hipóteses; ver se GNN [2] já cobre "Lipschitz + não decrescente";
+- confirmar a referência clássica para o Lema 4.1 (e os dados bibliográficos novos);
+- se possível, indicar onde falha o argumento de Ma [3].
